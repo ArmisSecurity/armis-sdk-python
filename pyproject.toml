@@ -1,0 +1,27 @@
+[project]
+name = "armis_sdk"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Shai Lachmanovich", email = "shai@armis.com"},
+    {name = "Yakir Keisar", email = "yakir.keisar@armis.com"},
+]
+readme = "README.md"
+requires-python = ">=3.9"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+pydantic = "^2.10.5"
+httpx = "^0.28.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+pytest = "^8.3.4"
+python-dotenv = "^1.0.1"
+pytest-httpx = "^0.35.0"
+pytest-asyncio = "^0.25.2"
+setuptools = "^75.8.0"
+
