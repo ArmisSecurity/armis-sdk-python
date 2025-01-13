@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   test:
-    uses: ./.github/workflows/install.yml@master
+    uses: ./.github/workflows/install.yml
     runs-on: ubuntu-latest
 
     steps:
