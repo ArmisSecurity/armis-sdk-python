@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/install.yml
+    - uses: .github/workflows/composites/install.yml
 
-      - name: Run tests
-        run: poetry run pytest -vv
+    - name: Run tests
+      run: poetry run pytest -vv
