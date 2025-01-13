@@ -1,6 +1,6 @@
 # Based on https://github.com/marketplace/actions/python-poetry-action
 
-name: Python application
+name: Run tests
 
 on:
   - push
