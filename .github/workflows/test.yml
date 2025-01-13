@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: .github/workflows/composites/install.yml
+    - uses: ./.github/workflows/composites/install.yml
 
     - name: Run tests
       run: poetry run pytest -vv
