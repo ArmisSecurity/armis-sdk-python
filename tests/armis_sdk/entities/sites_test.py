@@ -133,7 +133,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
 
     assert hierarchy == [
         Site(
-            id="12",
+            id="1",
             name="mock_site_1",
             children=[
                 Site(
