@@ -11,16 +11,21 @@ runs:
 
     - name: Install poetry
       uses: abatilo/actions-poetry@v4
+      shell: bash
 
     - name: Setup a local virtual environment (if no poetry.toml file)
       run: |
         poetry config virtualenvs.create true --local
         poetry config virtualenvs.in-project true --local
+      shell: bash
+
     - uses: actions/cache@v3
       name: Define a cache for the virtual environment based on the lock file
+      shell: bash
       with:
         path: ./.venv
         key: venv-${{ hashFiles('poetry.lock') }}
 
     - name: Install dependencies
       run: poetry install
+      shell: bash
