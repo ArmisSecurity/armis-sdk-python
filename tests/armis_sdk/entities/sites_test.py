@@ -58,7 +58,7 @@ async def test_get_sites(from_response, expected, httpx_mock: pytest_httpx.HTTPX
 async def test_get_sites_with_multiple_pages(
     monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
 ):
-    monkeypatch.setenv("ARMIS_PAGE_SIZE", 2)
+    monkeypatch.setenv("ARMIS_PAGE_SIZE", "2")
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/?from=0&length=2",
         method="GET",
