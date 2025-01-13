@@ -1,0 +1,38 @@
+# Based on https://github.com/marketplace/actions/python-poetry-action
+
+name: Install deps
+
+on:
+  - workflow_call
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+
+    - name: Install poetry
+      uses: abatilo/actions-poetry@v4
+
+    - name: Setup a local virtual environment (if no poetry.toml file)
+      run: |
+        poetry config virtualenvs.create true --local
+        poetry config virtualenvs.in-project true --local
+
+    - uses: actions/cache@v3
+      name: Define a cache for the virtual environment based on the lock file
+      with:
+        path: ./.venv
+        key: venv-${{ hashFiles('poetry.lock') }}
+
+    - name: Install dependencies
+      run: poetry install
