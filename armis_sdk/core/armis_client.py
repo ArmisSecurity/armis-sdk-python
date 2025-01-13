@@ -46,13 +46,17 @@ class ArmisClient:
 
         self._base_url = BASE_URL.format(tenant=tenant)
         self._auth = ArmisAuth(self._base_url, secret_key)
-        self._user_agent = f"ArmisSDK/v{VERSION} ({client_id})"
+        self._user_agent = f"ArmisPythonSDK/v{VERSION}"
+        self._client_id = client_id
 
     def client(self):
         return httpx.AsyncClient(
             auth=self._auth,
             base_url=self._base_url,
-            headers={"User-Agent": self._user_agent},
+            headers={
+                "User-Agent": self._user_agent,
+                "Armis-API-Client-Id": self._client_id,
+            },
         )
 
     async def paginate(
