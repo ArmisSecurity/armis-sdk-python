@@ -16,4 +16,4 @@ jobs:
     - uses: ./.github/workflows/install_deps
 
     - name: Run linter
-      run: poetry run pylint ./**/*.py
+      run: poetry run pylint .

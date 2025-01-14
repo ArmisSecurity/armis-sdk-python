@@ -6,14 +6,14 @@ from typing import Optional, Union, Type, AsyncIterator
 import httpx
 
 from armis_sdk.core.armis_auth import ArmisAuth
-from armis_sdk.entities.base_entity import BaseEntityType
+from armis_sdk.entities.base_entity import BaseEntityT
 
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 BASE_URL = "https://{tenant}.armis.com"
-DEFAULT_PAGE_LENGTH = 100
+DEFAULT_PAGE_LENGTH = "100"
 VERSION = importlib.metadata.version("armis_sdk")
 
 
@@ -60,8 +60,8 @@ class ArmisClient:
         )
 
     async def paginate(
-        self, url: str, key: str, model: Type[BaseEntityType]
-    ) -> AsyncIterator[BaseEntityType]:
+        self, url: str, key: str, model: Type[BaseEntityT]
+    ) -> AsyncIterator[BaseEntityT]:
         page_size = int(os.getenv(ARMIS_PAGE_SIZE, DEFAULT_PAGE_LENGTH))
         async with self.client() as client:
             from_ = 0

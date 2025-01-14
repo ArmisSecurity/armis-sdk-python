@@ -12,4 +12,4 @@ class BaseEntity(BaseModel):
     )
 
 
-BaseEntityType = TypeVar("BaseEntityType", bound=BaseEntity)
+BaseEntityT = TypeVar("BaseEntityT", bound=BaseEntity)

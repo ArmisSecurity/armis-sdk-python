@@ -1,0 +1,9 @@
+[MAIN]
+
+ignore-paths=
+    local,
+
+disable=
+    missing-class-docstring,
+    missing-module-docstring,
+    missing-function-docstring,
