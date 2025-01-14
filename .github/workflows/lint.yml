@@ -1,4 +1,4 @@
-name: Run tests
+name: Run linter
 
 on:
   - push
@@ -15,5 +15,5 @@ jobs:
 
     - uses: ./.github/workflows/install_deps
 
-    - name: Run tests
-      run: poetry run pytest -vv
+    - name: Run linter
+      run: poetry run pylint ./**/*.py

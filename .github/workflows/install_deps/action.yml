@@ -27,9 +27,3 @@ runs:
     - name: Install dependencies
       run: poetry install
       shell: bash
-
-    - name: Save Environment
-      uses: actions/upload-artifact@v3
-      with:
-        name: poetry-env
-        path: .venv
