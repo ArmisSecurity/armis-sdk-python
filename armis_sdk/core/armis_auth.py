@@ -14,7 +14,8 @@ class ArmisAuth(httpx.Auth):
 
     1. Before performing any request check if there's a valid access token.
     2. If there is, use it with the "Authorization" header.
-    3. If there isn't, make a POST request to "/api/v1/access_token/" to generate a new access token.
+    3. If there isn't, make a POST request to "/api/v1/access_token/"
+       to generate a new access token.
     4. Save the new access token and also use it with the "Authorization" header.
     """
 

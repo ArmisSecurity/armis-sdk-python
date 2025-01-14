@@ -2,6 +2,7 @@
 
 ignore-paths=
     local,
+    .venv
 
 disable=
     missing-class-docstring,
