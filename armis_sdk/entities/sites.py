@@ -22,8 +22,6 @@ class Site(BaseEntity):
 
 
 class SitesSdk(ArmisClient):
-    async def list(self) -> AsyncIterator[Site]:
-        return self.paginate("/api/v1/sites/", "sites", Site)
 
     async def hierarchy(self) -> List[Site]:
         id_to_site = {site.id: site async for site in await self.list()}
@@ -35,3 +33,6 @@ class SitesSdk(ArmisClient):
                 root.append(site)
 
         return root
+
+    async def list(self) -> AsyncIterator[Site]:
+        return self.paginate("/api/v1/sites/", "sites", Site)
