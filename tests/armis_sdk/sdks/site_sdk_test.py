@@ -72,6 +72,71 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
     ]
 
 
+async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/?from=0&length=100",
+        method="GET",
+        json={
+            "data": {
+                "sites": [
+                    {"id": "1", "name": "mock_site_1"},
+                    {"id": "2", "name": "mock_site_2", "parentId": "1"},
+                    {"id": "3", "name": "mock_site_3", "parentId": "1"},
+                    {"id": "4", "name": "mock_site_4", "parentId": "2"},
+                    {"id": "5", "name": "mock_site_5"},
+                    {"id": "6", "name": "mock_site_6", "parentId": "5"},
+                    {"id": "7", "name": "mock_site_7", "parentId": "unknown"},
+                ]
+            }
+        },
+    )
+    sites_sdk = SitesSdk()
+    hierarchy = await sites_sdk.hierarchy()
+
+    assert hierarchy == [
+        Site(
+            id="1",
+            name="mock_site_1",
+            children=[
+                Site(
+                    id="2",
+                    name="mock_site_2",
+                    parent_id="1",
+                    children=[
+                        Site(
+                            id="4",
+                            name="mock_site_4",
+                            parent_id="2",
+                        )
+                    ],
+                ),
+                Site(
+                    id="3",
+                    name="mock_site_3",
+                    parent_id="1",
+                ),
+            ],
+        ),
+        Site(
+            id="5",
+            name="mock_site_5",
+            children=[
+                Site(
+                    id="6",
+                    name="mock_site_6",
+                    parent_id="5",
+                )
+            ],
+        ),
+        Site(
+            id="7",
+            name="mock_site_7",
+            parent_id="unknown",
+            children=[],
+        ),
+    ]
+
+
 @pytest.mark.parametrize(
     ["from_response", "expected"],
     [
