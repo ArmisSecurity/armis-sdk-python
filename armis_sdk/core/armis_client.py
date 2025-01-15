@@ -1,12 +1,11 @@
 import os
 import importlib.metadata
 
-from typing import Optional, Union, Type, AsyncIterator
+from typing import Optional
 
 import httpx
 
 from armis_sdk.core.armis_auth import ArmisAuth
-from armis_sdk.entities.base_entity import BaseEntityT
 
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
@@ -17,7 +16,7 @@ DEFAULT_PAGE_LENGTH = 100
 VERSION = importlib.metadata.version("armis_sdk")
 
 
-class ArmisClient:
+class ArmisClient:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         tenant: Optional[str] = None,
@@ -58,22 +57,3 @@ class ArmisClient:
                 "Armis-API-Client-Id": self._client_id,
             },
         )
-
-    async def paginate(
-        self, url: str, key: str, model: Type[BaseEntityT]
-    ) -> AsyncIterator[BaseEntityT]:
-        page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
-        async with self.client() as client:
-            from_ = 0
-            while from_ is not None:
-                params = {"from": from_, "length": page_size}
-                data = self._get_data(await client.get(url, params=params))
-                items = data[key]
-                for item in items:
-                    yield model.model_validate(item)
-                from_ = data.get("next")
-
-    @classmethod
-    def _get_data(cls, response: httpx.Response) -> Optional[Union[dict, list]]:
-        response.raise_for_status()
-        return response.json()["data"]

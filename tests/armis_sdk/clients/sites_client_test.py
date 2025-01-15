@@ -1,9 +1,10 @@
 import pytest
 import pytest_httpx
 
-from armis_sdk.entities.sites import SitesSdk, Site
+from armis_sdk.clients.sites_client import SitesClient
+from armis_sdk.entities.site import Site
 
-pytest_plugins = ["tests.plugins.setup_plugin"]
+pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 
 async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
@@ -24,8 +25,8 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
             }
         },
     )
-    sites_sdk = SitesSdk()
-    hierarchy = await sites_sdk.hierarchy()
+    sites_client = SitesClient()
+    hierarchy = await sites_client.hierarchy()
 
     assert hierarchy == [
         Site(
@@ -114,8 +115,8 @@ async def list_sites(from_response, expected, httpx_mock: pytest_httpx.HTTPXMock
         json={"data": {"sites": [from_response]}},
     )
 
-    sites_sdk = SitesSdk()
-    sites = [site async for site in await sites_sdk.list()]
+    sites_client = SitesClient()
+    sites = [site async for site in await sites_client.list()]
 
     assert sites == [expected]
 
@@ -163,8 +164,8 @@ async def test_list_sites_with_multiple_pages(
         },
     )
 
-    sites_sdk = SitesSdk()
-    sites = [site async for site in await sites_sdk.list()]
+    sites_client = SitesClient()
+    sites = [site async for site in await sites_client.list()]
 
     assert sites == [
         Site(id="1", name="mock_site_1"),
