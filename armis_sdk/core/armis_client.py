@@ -13,7 +13,7 @@ ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 BASE_URL = "https://{tenant}.armis.com"
-DEFAULT_PAGE_LENGTH = "100"
+DEFAULT_PAGE_LENGTH = 100
 VERSION = importlib.metadata.version("armis_sdk")
 
 
@@ -62,7 +62,7 @@ class ArmisClient:
     async def paginate(
         self, url: str, key: str, model: Type[BaseEntityT]
     ) -> AsyncIterator[BaseEntityT]:
-        page_size = int(os.getenv(ARMIS_PAGE_SIZE, DEFAULT_PAGE_LENGTH))
+        page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
         async with self.client() as client:
             from_ = 0
             while from_ is not None:
