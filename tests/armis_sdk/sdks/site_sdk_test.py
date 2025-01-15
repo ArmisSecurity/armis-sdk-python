@@ -1,9 +1,10 @@
 import pytest
 import pytest_httpx
 
-from armis_sdk.entities.sites import SitesSdk, Site
+from armis_sdk.entities.site import Site
+from armis_sdk.sdks.site_sdk import SitesSdk
 
-pytest_plugins = ["tests.plugins.setup_plugin"]
+pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 
 async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
