@@ -1,4 +1,6 @@
+.DS_Store
 .env
 .idea
+__pycache__
 dist
 local
