@@ -1,7 +1,7 @@
 from typing import Optional
 
+from armis_sdk.clients.sites_client import SitesClient
 from armis_sdk.core.armis_client import ArmisClient
-from armis_sdk.sdks.site_sdk import SitesSdk
 
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
@@ -18,4 +18,4 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
         self.client = ArmisClient(
             tenant=tenant, client_id=client_id, secret_key=secret_key
         )
-        self.sites = SitesSdk(self.client)
+        self.sites = SitesClient(self.client)

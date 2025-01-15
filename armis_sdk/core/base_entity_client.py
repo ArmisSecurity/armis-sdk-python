@@ -4,7 +4,7 @@ from typing import Optional, AsyncIterator, Type, Union
 import httpx
 
 from armis_sdk.core.armis_client import ArmisClient
-from armis_sdk.entities.base_entity import BaseEntityT
+from armis_sdk.core.base_entity import BaseEntityT
 
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
@@ -13,7 +13,7 @@ ARMIS_TENANT = "ARMIS_TENANT"
 DEFAULT_PAGE_LENGTH = 100
 
 
-class BaseSdk:  # pylint: disable=too-few-public-methods
+class BaseEntityClient:  # pylint: disable=too-few-public-methods
 
     def __init__(self, armis_client: Optional[ArmisClient] = None) -> None:
         self._armis_client = armis_client or ArmisClient()

@@ -1,11 +1,10 @@
 from typing import List, AsyncIterator
 
-
-from armis_sdk.core.base_sdk import BaseSdk
+from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.site import Site
 
 
-class SitesSdk(BaseSdk):
+class SitesClient(BaseEntityClient):
 
     async def hierarchy(self) -> List[Site]:
         id_to_site = {site.id: site async for site in await self.list()}

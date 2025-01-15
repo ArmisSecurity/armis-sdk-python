@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import Field
 
-from armis_sdk.entities.base_entity import BaseEntity
+from armis_sdk.core.base_entity import BaseEntity
 
 
 class Site(BaseEntity):
