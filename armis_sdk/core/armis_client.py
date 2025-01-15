@@ -6,7 +6,7 @@ from typing import Optional, Union, Type, AsyncIterator
 import httpx
 
 from armis_sdk.core.armis_auth import ArmisAuth
-from armis_sdk.entities.base_entity import BaseEntityType
+from armis_sdk.entities.base_entity import BaseEntityT
 
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
@@ -60,9 +60,9 @@ class ArmisClient:
         )
 
     async def paginate(
-        self, url: str, key: str, model: Type[BaseEntityType]
-    ) -> AsyncIterator[BaseEntityType]:
-        page_size = int(os.getenv(ARMIS_PAGE_SIZE, DEFAULT_PAGE_LENGTH))
+        self, url: str, key: str, model: Type[BaseEntityT]
+    ) -> AsyncIterator[BaseEntityT]:
+        page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
         async with self.client() as client:
             from_ = 0
             while from_ is not None:

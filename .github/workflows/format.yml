@@ -1,4 +1,4 @@
-name: Run tests
+name: Run formatter
 
 on:
   - push
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  format:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,5 +15,5 @@ jobs:
 
     - uses: ./.github/workflows/install_deps
 
-    - name: Run tests
-      run: poetry run pytest -vv
+    - name: Run formatter
+      run: poetry run black --check --diff .
