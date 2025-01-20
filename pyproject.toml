@@ -13,6 +13,9 @@ requires-python = ">=3.9"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.isort]
+profile = "black"
+
 [tool.poetry.dependencies]
 pydantic = "^2.10.5"
 httpx = "^0.28.1"
@@ -25,4 +28,5 @@ pytest-httpx = "^0.35.0"
 pytest-asyncio = "^0.25.2"
 setuptools = "^75.8.0"
 pylint = "^3.3.3"
+isort = "^5.13.2"
 

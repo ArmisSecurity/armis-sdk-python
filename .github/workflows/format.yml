@@ -17,3 +17,7 @@ jobs:
 
     - name: Run formatter
       run: poetry run black --check --diff .
+
+    - name: Run isort
+      run: poetry run isort --diff --check-only .
+
