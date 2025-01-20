@@ -1,5 +1,8 @@
 import os
-from typing import Optional, AsyncIterator, Type, Union
+from typing import AsyncIterator
+from typing import Optional
+from typing import Type
+from typing import Union
 
 import httpx
 

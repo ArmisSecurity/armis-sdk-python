@@ -108,7 +108,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
         ),
     ],
 )
-async def list_sites(from_response, expected, httpx_mock: pytest_httpx.HTTPXMock):
+async def test_list_sites(from_response, expected, httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/?from=0&length=100",
         method="GET",
