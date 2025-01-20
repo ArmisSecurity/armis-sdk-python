@@ -1,6 +1,5 @@
-import os
 import importlib.metadata
-
+import os
 from typing import Optional
 
 import httpx

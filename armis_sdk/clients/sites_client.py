@@ -1,4 +1,5 @@
-from typing import List, AsyncIterator
+from typing import AsyncIterator
+from typing import List
 
 from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.site import Site
