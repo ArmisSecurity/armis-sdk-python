@@ -10,31 +10,44 @@ from armis_sdk.entities.site import Site
 
 
 class SitesClient(BaseEntityClient):
+    # pylint: disable=line-too-long
+    """
+    A client for interacting with sites.
+
+    The primary entity for this client is [Site][armis_sdk.entities.site.Site].
+
+    Attributes:
+        network_equipment_client (NetworkEquipmentClient): An instance of [NetworkEquipmentClient][armis_sdk.clients.network_equipment_client.NetworkEquipmentClient]
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.network_equipment_client = NetworkEquipmentClient(self._armis_client)
 
     async def hierarchy(self) -> List[Site]:
-        """Create a hierarchy of the sites, taking into account the parent-child relationships.
+        """Create a hierarchy of the tenant's sites, taking into account the parent-child relationships.
 
         Returns:
             A list of `Site` objects, that are themselves not children of any other site.
             Each site has a `.children` property that includes its direct children.
 
         Example:
-            >>> import asyncio
-            >>> sites_client = SitesClient()
-            >>>
-            >>> async def print_hierarchy():
-            >>>     print(await sites_client.hierarchy())
-            >>>
-            >>> asyncio.run(print_hierarchy())
-            >>> # example output
-            >>> # [
-            >>> #     Site(id="1", children=[Site(id="3")]),
-            >>> #     Site(id="2"),
-            >>> # ]
+            ```python linenums="1" hl_lines="2"
+            sites_client = SitesClient()
+            print(await sites_client.hierarchy())
+            ```
+            Will output this structure (depending on the actual data):
+            ```python linenums="1"
+            [
+                Site(
+                    id="1",
+                    children=[
+                        Site(id="3"),
+                    ],
+                ),
+                Site(id="2"),
+            ]
+            ```
         """
         id_to_site = {site.id: site async for site in await self.list()}
         root = []
@@ -54,17 +67,17 @@ class SitesClient(BaseEntityClient):
             An (async) iterator of `Site` object.
 
         Example:
-            >>> import asyncio
-            >>> sites_client = SitesClient()
-            >>>
-            >>> async def print_sites():
-            >>>     async for site in await sites_client.list()
-            >>>         print(site)
-            >>>
-            >>> asyncio.run(print_sites())
-            >>> # example output
-            >>> # Site(id="1")
-            >>> # Site(id="2")
+            ```python linenums="1" hl_lines="2"
+            sites_client = SitesClient()
+            async for site in await sites_client.list()
+                print(site)
+
+            ```
+            Will output:
+            ```python linenums="1"
+            Site(id="1")
+            Site(id="2")
+            ```
         """
         return self._paginate("/api/v1/sites/", "sites", Site)
 
@@ -78,14 +91,11 @@ class SitesClient(BaseEntityClient):
             ResponseError: If an error occurs while communicating with the API.
 
         Example:
-            >>> import asyncio
-            >>> sites_client = SitesClient()
-            >>>
-            >>> async def update_site():
-            >>>     site = Site(id="1", location="new location")
-            >>>     await sites_client.update(site)
-            >>>
-            >>> asyncio.run(update_site())
+            ```python linenums="1" hl_lines="3"
+            sites_client = SitesClient()
+            site = Site(id="1", location="new location")
+            await sites_client.update(site)
+            ```
         """
         data = site.model_dump(
             exclude={"children", "id", "network_equipment_device_ids"},

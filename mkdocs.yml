@@ -1,0 +1,54 @@
+site_name: Armis Python SDK
+repo_url: https://github.com/ArmisSecurity/armis-sdk-python
+
+nav:
+  - Getting started: getting_started.md
+  - Entities:
+      - Site: entities/Site.md
+  - Clients:
+      - NetworkEquipmentClient: clients/NetworkEquipmentClient.md
+      - SitesClient: clients/SitesClient.md
+  - Core:
+      - ArmisClient: core/ArmisClient.md
+      - ArmisSdk: core/ArmisSdk.md
+      - Errors: core/errors.md
+  - About Armis: about.md
+
+theme:
+  name: material
+  palette:
+    primary: custom
+  theme:
+    features:
+      - content.code.annotate
+      - content.code.copy
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [ . ]
+          options:
+            members_order: source
+            show_bases: true
+            show_source: false
+            show_root_heading: true
+            summary: true
+  - search
+  - section-index
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra_css:
+  - stylesheets/extra.css
