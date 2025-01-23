@@ -34,3 +34,9 @@ mkdocs = "^1.6.1"
 mkdocstrings-python = "^1.13.0"
 mkdocs-material = "^9.5.50"
 
+
+[[tool.poetry.source]]
+name = "testpypi"
+url = "https://test.pypi.org/legacy/"
+priority = "test"
+

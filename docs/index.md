@@ -3,6 +3,7 @@ Welcome to the documentation of the **Armis Python SDK**!
 This website will provide you all the information you'll need to interact with the SDK.
 
 ## Installation
+Use your favourite package manager to install the SDK, for example:
 ```shell linenums="1"
 pip install armis_sdk
 ```
