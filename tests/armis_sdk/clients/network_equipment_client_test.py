@@ -21,7 +21,7 @@ async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/1/network-equipment/_bulk/",
         method="POST",
-        match_json=[5, 6],
+        match_json={"networkEquipmentDeviceIds": [5, 6]},
     )
 
     # Remove old ids

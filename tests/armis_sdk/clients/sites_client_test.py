@@ -211,7 +211,7 @@ async def test_update_with_network_equipment_device_ids(
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/1/network-equipment/_bulk/",
         method="POST",
-        match_json=[1, 2, 3],
+        match_json={"networkEquipmentDeviceIds": [1, 2, 3]},
     )
 
     sites_client = SitesClient()
