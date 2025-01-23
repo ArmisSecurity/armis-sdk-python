@@ -23,18 +23,20 @@ class SitesClient(BaseEntityClient):
             Each site has a `.children` property that includes its direct children.
 
         Example:
-            >>> import asyncio
-            >>> sites_client = SitesClient()
-            >>>
-            >>> async def print_hierarchy():
-            >>>     print(await sites_client.hierarchy())
-            >>>
-            >>> asyncio.run(print_hierarchy())
-            >>> # example output
-            >>> # [
-            >>> #     Site(id="1", children=[Site(id="3")]),
-            >>> #     Site(id="2"),
-            >>> # ]
+            ```python
+            import asyncio
+            sites_client = SitesClient()
+
+            async def print_hierarchy():
+                print(await sites_client.hierarchy())
+
+            asyncio.run(print_hierarchy())
+            # example output
+            # [
+            #     Site(id="1", children=[Site(id="3")]),
+            #     Site(id="2"),
+            # ]
+            ```
         """
         id_to_site = {site.id: site async for site in await self.list()}
         root = []
@@ -54,17 +56,19 @@ class SitesClient(BaseEntityClient):
             An (async) iterator of `Site` object.
 
         Example:
-            >>> import asyncio
-            >>> sites_client = SitesClient()
-            >>>
-            >>> async def print_sites():
-            >>>     async for site in await sites_client.list()
-            >>>         print(site)
-            >>>
-            >>> asyncio.run(print_sites())
-            >>> # example output
-            >>> # Site(id="1")
-            >>> # Site(id="2")
+            ```python
+            import asyncio
+            sites_client = SitesClient()
+
+            async def print_sites():
+                async for site in await sites_client.list()
+                    print(site)
+
+            asyncio.run(print_sites())
+            # example output
+            # Site(id="1")
+            # Site(id="2")
+            ```
         """
         return self._paginate("/api/v1/sites/", "sites", Site)
 
@@ -78,14 +82,16 @@ class SitesClient(BaseEntityClient):
             ResponseError: If an error occurs while communicating with the API.
 
         Example:
-            >>> import asyncio
-            >>> sites_client = SitesClient()
-            >>>
-            >>> async def update_site():
-            >>>     site = Site(id="1", location="new location")
-            >>>     await sites_client.update(site)
-            >>>
-            >>> asyncio.run(update_site())
+            ```python
+            import asyncio
+            sites_client = SitesClient()
+
+            async def update_site():
+                site = Site(id="1", location="new location")
+                await sites_client.update(site)
+
+            asyncio.run(update_site())
+            ```
         """
         data = site.model_dump(
             exclude={"children", "id", "network_equipment_device_ids"},
