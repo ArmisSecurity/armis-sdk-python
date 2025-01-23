@@ -48,7 +48,7 @@ armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>", client_id="<c
 Once you have an instance of `ArmisSdk`, you can start interacting with the various clients, each handles use-cases of a specific entity.
 
 
-> [!INFO]
+> [!NOTE]
 > Note that all functions in this SDK that eventually make HTTP requests are asynchronous.
 
 For example, if you want to update a site's location:
