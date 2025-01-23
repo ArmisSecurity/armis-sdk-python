@@ -73,11 +73,11 @@ class SitesClient(BaseEntityClient):
 
             sites_client = SitesClient()
 
-            async def print_sites():
+            async def main():
                 async for site in await sites_client.list()
                     print(site)
 
-            asyncio.run(print_sites())
+            asyncio.run(main())
             ```
             Will output:
             ```python
