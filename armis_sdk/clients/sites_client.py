@@ -25,17 +25,27 @@ class SitesClient(BaseEntityClient):
         Example:
             ```python
             import asyncio
+
+            from armis_sdk.clients.sites_client import SitesClient
+
             sites_client = SitesClient()
 
-            async def print_hierarchy():
+            async def main():
                 print(await sites_client.hierarchy())
 
-            asyncio.run(print_hierarchy())
-            # example output
-            # [
-            #     Site(id="1", children=[Site(id="3")]),
-            #     Site(id="2"),
-            # ]
+            asyncio.run(main())
+            ```
+            Will output this structure (depending on the actual data):
+            ```python linenums="1"
+            [
+                Site(
+                    id="1",
+                    children=[
+                        Site(id="3"),
+                    ],
+                ),
+                Site(id="2"),
+            ]
             ```
         """
         id_to_site = {site.id: site async for site in await self.list()}
@@ -58,6 +68,9 @@ class SitesClient(BaseEntityClient):
         Example:
             ```python
             import asyncio
+
+            from armis_sdk.clients.sites_client import SitesClient
+
             sites_client = SitesClient()
 
             async def print_sites():
@@ -65,9 +78,11 @@ class SitesClient(BaseEntityClient):
                     print(site)
 
             asyncio.run(print_sites())
-            # example output
-            # Site(id="1")
-            # Site(id="2")
+            ```
+            Will output:
+            ```python
+            Site(id="1")
+            Site(id="2")
             ```
         """
         return self._paginate("/api/v1/sites/", "sites", Site)
@@ -84,13 +99,16 @@ class SitesClient(BaseEntityClient):
         Example:
             ```python
             import asyncio
+
+            from armis_sdk.clients.sites_client import SitesClient
+
             sites_client = SitesClient()
 
-            async def update_site():
+            async def main():
                 site = Site(id="1", location="new location")
                 await sites_client.update(site)
 
-            asyncio.run(update_site())
+            asyncio.run(main())
             ```
         """
         data = site.model_dump(

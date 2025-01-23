@@ -26,13 +26,17 @@ class NetworkEquipmentClient(
 
         Example:
             ```python
+            import asyncio
+
+            from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
+
             network_equipment_client = NetworkEquipmentClient()
 
-            async def update():
+            async def main():
                 site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
                 await network_equipment_client.update(site)
 
-            asyncio.run(update())
+            asyncio.run(main())
             ```
         """
 
