@@ -32,9 +32,17 @@ class SitesClient(BaseEntityClient):
             Each site has a `.children` property that includes its direct children.
 
         Example:
-            ```python linenums="1" hl_lines="2"
+            ```python linenums="1" hl_lines="8"
+            import asyncio
+
+            from armis_sdk.clients.sites_client import SitesClient
+
             sites_client = SitesClient()
-            print(await sites_client.hierarchy())
+
+            async def main():
+                print(await sites_client.hierarchy())
+
+            asyncio.run(main())
             ```
             Will output this structure (depending on the actual data):
             ```python linenums="1"
@@ -67,11 +75,16 @@ class SitesClient(BaseEntityClient):
             An (async) iterator of `Site` object.
 
         Example:
-            ```python linenums="1" hl_lines="2"
-            sites_client = SitesClient()
-            async for site in await sites_client.list()
-                print(site)
+            ```python linenums="1" hl_lines="8"
+            import asyncio
 
+            from armis_sdk.clients.sites_client import SitesClient
+
+            sites_client = SitesClient()
+
+            async def main():
+                async for site in await sites_client.list()
+                    print(site)
             ```
             Will output:
             ```python linenums="1"
@@ -91,10 +104,18 @@ class SitesClient(BaseEntityClient):
             ResponseError: If an error occurs while communicating with the API.
 
         Example:
-            ```python linenums="1" hl_lines="3"
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.sites_client import SitesClient
+
             sites_client = SitesClient()
-            site = Site(id="1", location="new location")
-            await sites_client.update(site)
+
+            async def main():
+                site = Site(id="1", location="new location")
+                await sites_client.update(site)
+
+            asyncio.run(main())
             ```
         """
         data = site.model_dump(

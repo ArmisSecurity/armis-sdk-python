@@ -30,10 +30,18 @@ class NetworkEquipmentClient(
             ArmisError: If `site.network_equipment_device_ids` is not set.
 
         Example:
-            ```python linenums="1" hl_lines="3"
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
+
             network_equipment_client = NetworkEquipmentClient()
-            site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
-            await network_equipment_client.update(site)
+
+            async def main():
+                site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
+                await network_equipment_client.update(site)
+
+            asyncio.run(main())
             ```
         """
 
