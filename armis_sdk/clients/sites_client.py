@@ -85,6 +85,8 @@ class SitesClient(BaseEntityClient):
             async def main():
                 async for site in await sites_client.list()
                     print(site)
+
+            asyncio.run(main())
             ```
             Will output:
             ```python linenums="1"
