@@ -81,7 +81,7 @@ class NetworkEquipmentClient(
         async with self._armis_client.client() as client:
             response = await client.post(
                 f"/api/v1/sites/{site_id}/network-equipment/_bulk/",
-                json=list(network_equipment_device_ids),
+                json={"networkEquipmentDeviceIds": list(network_equipment_device_ids)},
             )
             try:
                 response.raise_for_status()
