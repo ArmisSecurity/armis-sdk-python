@@ -1,6 +1,3 @@
-# Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
-
 version: 2
 
 build:
@@ -8,10 +5,9 @@ build:
   tools:
     python: "3.9"
   jobs:
-    pre_install:
+    post_install:
       - pip install poetry
-    install:
-      - poetry install
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
 
 mkdocs:
    configuration: mkdocs.yml
