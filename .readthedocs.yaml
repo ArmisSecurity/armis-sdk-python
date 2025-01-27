@@ -8,6 +8,8 @@ build:
   tools:
     python: "3.9"
   jobs:
+    pre_install:
+      - pip install poetry
     install:
       - poetry install --no-root
 
