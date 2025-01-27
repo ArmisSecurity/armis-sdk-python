@@ -39,7 +39,6 @@ plugins:
             show_root_heading: true
             summary: true
   - search
-  - section-index
 
 markdown_extensions:
   - admonition
