@@ -4,6 +4,8 @@ from typing import Optional
 
 import httpx
 
+from armis_sdk.core import response_utils
+
 AUTHORIZATION = "Authorization"
 
 
@@ -39,7 +41,7 @@ class ArmisAuth(httpx.Auth):
         request.headers[AUTHORIZATION] = self._access_token
         response = yield request
 
-        if response.status_code == 401:
+        if response.status_code == httpx.codes.UNAUTHORIZED:
             access_token_response = yield self._build_access_token_request()
             self._update_access_token(access_token_response)
 
@@ -54,6 +56,8 @@ class ArmisAuth(httpx.Auth):
         )
 
     def _update_access_token(self, response: httpx.Response):
-        data = response.json()["data"]
+        response_utils.raise_for_status(response)
+        parsed = response_utils.parse_response(response)
+        data = parsed.get("data")
         self._access_token = data["access_token"]
         self._expires_at = datetime.datetime.fromisoformat(data["expiration_utc"])

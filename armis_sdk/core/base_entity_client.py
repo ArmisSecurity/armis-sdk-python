@@ -6,6 +6,7 @@ from typing import Union
 
 import httpx
 
+from armis_sdk.core import response_utils
 from armis_sdk.core.armis_client import ArmisClient
 from armis_sdk.core.base_entity import BaseEntityT
 
@@ -23,8 +24,9 @@ class BaseEntityClient:  # pylint: disable=too-few-public-methods
 
     @classmethod
     def _get_data(cls, response: httpx.Response) -> Optional[Union[dict, list]]:
-        response.raise_for_status()
-        return response.json()["data"]
+        response_utils.raise_for_status(response)
+        parsed = response_utils.parse_response(response)
+        return parsed.get("data")
 
     async def _paginate(
         self, url: str, key: str, model: Type[BaseEntityT]
