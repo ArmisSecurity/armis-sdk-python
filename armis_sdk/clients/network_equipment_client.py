@@ -13,6 +13,11 @@ from armis_sdk.entities.site import Site
 class NetworkEquipmentClient(
     BaseEntityClient
 ):  # pylint: disable=too-few-public-methods
+    """
+    A client for interacting with a site's network equipment.
+
+    The primary entity for this client is [Site][armis_sdk.entities.site.Site].
+    """
 
     async def update(self, site: Site):
         """Update a site's network equipment devices.
@@ -25,7 +30,7 @@ class NetworkEquipmentClient(
             ArmisError: If `site.network_equipment_device_ids` is not set.
 
         Example:
-            ```python
+            ```python linenums="1" hl_lines="9"
             import asyncio
 
             from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient

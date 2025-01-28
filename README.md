@@ -14,41 +14,55 @@ pip install armis_sdk
 ## Documentation
 For full documentation, please visit our [dedicated]() site.
 
-## Setup
-All operations are available through the `ArmisSdk` class.
-The simplest way to initialise it is by populating the following environment variables:
-* `ARMIS_TENANT`: The name of the Armis tenant you're working with.
-* `ARMIS_SECRET_KEY`: The secret key you got from the tenant and will be used to authenticate requests.
-* `ARMIS_CLIENT_ID`: The unique identifier of your app.
+## Usage
 
-and then:
+All interaction with the SDK happens through the [ArmisSdk][armis_sdk.core.armis_sdk.ArmisSdk] class. You'll need 3 things:
+
+1. **Tenant name**: The name of the tenant you want to interact with.
+2. **Secret key**: The secret key associated with the tenant, obtained from the tenant itself.
+3. **Client id**: A unique identifier for you application. Currently, this can be any string.
+
+You can either provide these values using the environment variables `ARMIS_TENANT`, `ARMIS_SECRET_KEY`, and `ARMIS_CLIENT_ID`:
 ```python
 from armis_sdk import ArmisSdk
 
-ArmisSdk()
+armis_sdk = ArmisSdk()
 ```
-Alternatively, you can pass the values directly:
+
+or by passing them explicitly:
 ```python
 from armis_sdk import ArmisSdk
 
-ArmisSdk(
-    tenant="<my_tenant>", 
-    secret_key="<my_secret_key>",
-    client_id="<my_client_id>",
-)
+armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>", client_id="<client_id>")
 ```
 
-## Asynchronous code
-All method in the SDK are asynchronous unless specified otherwise.
-For example, if you wish to iterate over all sites in your tenant, you should:
+> [!TIP]
+> If you're building an application that interacts with multiple tenants, you can populae only the `ARMIS_CLIENT_ID` environment variable and pass the `tenant` and `secret_key` explicitly:
+> ```python
+> from armis_sdk import ArmisSdk
+>
+> armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>")
+> ```
+
+## Entity clients
+Once you have an instance of `ArmisSdk`, you can start interacting with the various clients, each handles use-cases of a specific entity.
+
+
+> [!NOTE]
+> Note that all functions in this SDK that eventually make HTTP requests are asynchronous.
+
+For example, if you want to update a site's location:
 ```python
 import asyncio
+
 from armis_sdk import ArmisSdk
+from armis_sdk.entities.site import Site
+
+armis_sdk = ArmisSdk()
 
 async def main():
-    armis_sdk = ArmisSdk()
-    async for site in await armis_sdk.sites.list():
-        print(site)
+    site = Site(id="1", location="new location")
+    await armis_sdk.sites.update(site)
 
 asyncio.run(main())
 ```

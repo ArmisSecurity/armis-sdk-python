@@ -10,20 +10,29 @@ from armis_sdk.entities.site import Site
 
 
 class SitesClient(BaseEntityClient):
+    # pylint: disable=line-too-long
+    """
+    A client for interacting with sites.
+
+    The primary entity for this client is [Site][armis_sdk.entities.site.Site].
+
+    Attributes:
+        network_equipment_client (NetworkEquipmentClient): An instance of [NetworkEquipmentClient][armis_sdk.clients.network_equipment_client.NetworkEquipmentClient]
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.network_equipment_client = NetworkEquipmentClient(self._armis_client)
 
     async def hierarchy(self) -> List[Site]:
-        """Create a hierarchy of the sites, taking into account the parent-child relationships.
+        """Create a hierarchy of the tenant's sites, taking into account the parent-child relationships.
 
         Returns:
             A list of `Site` objects, that are themselves not children of any other site.
             Each site has a `.children` property that includes its direct children.
 
         Example:
-            ```python
+            ```python linenums="1" hl_lines="8"
             import asyncio
 
             from armis_sdk.clients.sites_client import SitesClient
@@ -66,7 +75,7 @@ class SitesClient(BaseEntityClient):
             An (async) iterator of `Site` object.
 
         Example:
-            ```python
+            ```python linenums="1" hl_lines="8"
             import asyncio
 
             from armis_sdk.clients.sites_client import SitesClient
@@ -80,7 +89,7 @@ class SitesClient(BaseEntityClient):
             asyncio.run(main())
             ```
             Will output:
-            ```python
+            ```python linenums="1"
             Site(id="1")
             Site(id="2")
             ```
@@ -97,7 +106,7 @@ class SitesClient(BaseEntityClient):
             ResponseError: If an error occurs while communicating with the API.
 
         Example:
-            ```python
+            ```python linenums="1" hl_lines="9"
             import asyncio
 
             from armis_sdk.clients.sites_client import SitesClient

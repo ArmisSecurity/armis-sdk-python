@@ -16,6 +16,10 @@ VERSION = importlib.metadata.version("armis_sdk")
 
 
 class ArmisClient:  # pylint: disable=too-few-public-methods
+    """
+    A class that provides easy access to the Armis API, taking care of authenticating requests.
+    """
+
     def __init__(
         self,
         tenant: Optional[str] = None,
