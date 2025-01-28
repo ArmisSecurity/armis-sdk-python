@@ -22,19 +22,14 @@ jobs:
       run: echo "VERSION=v$(poetry version -s)" >> $GITHUB_ENV
 
     - name: Check if release exists
-      run: |
-        RELEASE_EXISTS=$(gh release view ${{ env.VERSION }} --json name --jq '.name' || echo "")
-        if [ -z "$RELEASE_EXISTS" ]; then
-          echo "Release not found. Proceeding with job."
-          echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
-        else
-          echo "Release ${{ env.VERSION }} already exists."
-          echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
-        fi
+      uses: f2calv/gha-check-release-exists@v2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ReleaseName: ${{ env.VERSION }}
 
     - name: Create release if needed
       uses: actions/create-release@v1
-      if: env.RELEASE_EXISTS == 'false'
+      if: steps.check-release-exists.outputs.ReleaseExists == 'false'
       with:
         tag_name: ${{ env.VERSION }}
         release_name: ${{ env.VERSION }}
