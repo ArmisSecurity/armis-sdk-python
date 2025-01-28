@@ -102,7 +102,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
                 location="mock_location",
                 parent_id="1",
                 tier="mock_tier",
-                network_equipment_device_ids=["7", "8", "9"],
+                network_equipment_device_ids=[7, 8, 9],
             ),
             id="All fields",
         ),
@@ -174,3 +174,47 @@ async def test_list_sites_with_multiple_pages(
         Site(id="4", name="mock_site_4"),
         Site(id="5", name="mock_site_5"),
     ]
+
+
+async def test_update_with_nothing_to_change(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.reset()
+    sites_client = SitesClient()
+    site = Site(id="1")
+
+    await sites_client.update(site)
+
+
+async def test_update_simple_properties(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/",
+        method="PATCH",
+        match_json={"name": "new_name", "location": "new location"},
+    )
+
+    sites_client = SitesClient()
+    site = Site(id="1", name="new_name", location="new location")
+
+    await sites_client.update(site)
+
+
+async def test_update_with_network_equipment_device_ids(
+    httpx_mock: pytest_httpx.HTTPXMock,
+):
+    # List current ids
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/network-equipment/",
+        method="GET",
+        json={"data": {"networkEquipmentDeviceIds": []}},
+    )
+
+    # Add new ids
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/network-equipment/_bulk/",
+        method="POST",
+        match_json={"networkEquipmentDeviceIds": [1, 2, 3]},
+    )
+
+    sites_client = SitesClient()
+    site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
+
+    await sites_client.update(site)
