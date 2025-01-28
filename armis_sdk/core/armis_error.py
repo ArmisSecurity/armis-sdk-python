@@ -24,3 +24,15 @@ class ResponseError(ArmisError):
     def __init__(self, *args, response_errors: List[HTTPStatusError] = None):
         super().__init__(*args)
         self.response_errors = response_errors
+
+
+class NotFoundError(ResponseError):
+    """
+    A class for all errors raised when a requested resource was not found.
+    """
+
+
+class BadRequestError(ResponseError):
+    """
+    A class for all errors raised when a requested resource was malformed.
+    """
