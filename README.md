@@ -16,7 +16,7 @@ For full documentation, please visit our [dedicated](https://armis-armis-python-
 
 ## Usage
 
-All interaction with the SDK happens through the [ArmisSdk][armis_sdk.core.armis_sdk.ArmisSdk] class. You'll need 3 things:
+All interaction with the SDK happens through the ArmisSdk class. You'll need 3 things:
 
 1. **Tenant name**: The name of the tenant you want to interact with.
 2. **Secret key**: The secret key associated with the tenant, obtained from the tenant itself.
