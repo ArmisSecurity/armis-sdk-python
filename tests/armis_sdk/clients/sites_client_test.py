@@ -7,6 +7,19 @@ from armis_sdk.entities.site import Site
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 
+async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/",
+        method="GET",
+        json={"data": {"id": "1", "name": "mock_site_1"}},
+    )
+
+    sites_client = SitesClient()
+    site = await sites_client.get("1")
+
+    assert site == Site(id="1", name="mock_site_1")
+
+
 async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/?from=0&length=100",

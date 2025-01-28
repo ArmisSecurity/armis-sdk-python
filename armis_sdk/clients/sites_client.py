@@ -24,6 +24,39 @@ class SitesClient(BaseEntityClient):
         super().__init__(*args, **kwargs)
         self.network_equipment_client = NetworkEquipmentClient(self._armis_client)
 
+    async def get(self, site_id: str) -> Site:
+        """Get a `Site` by its ID.
+
+        Args:
+            site_id: The ID of the site to get.
+
+        Returns:
+            A `Site` object.
+
+        Example:
+            Example:
+            ```python linenums="1" hl_lines="8"
+            import asyncio
+
+            from armis_sdk.clients.sites_client import SitesClient
+
+            sites_client = SitesClient()
+
+            async def main():
+                print(await sites_client.get("1"))
+
+            asyncio.run(main())
+            ```
+            Will output:
+            ```python linenums="1"
+            Site(id="1")
+            ```
+        """
+        async with self._armis_client.client() as client:
+            response = await client.get(f"/api/v1/sites/{site_id}/")
+            data = self._get_data(response)
+            return Site.model_validate(data)
+
     async def hierarchy(self) -> List[Site]:
         """Create a hierarchy of the tenant's sites, taking into account the parent-child relationships.
 
