@@ -1,4 +1,5 @@
 site_name: Armis Python SDK
+site_url: !ENV READTHEDOCS_CANONICAL_URL
 repo_url: https://github.com/ArmisSecurity/armis-sdk-python
 
 nav:
@@ -53,3 +54,6 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+    - javascript/readthedocs.js
