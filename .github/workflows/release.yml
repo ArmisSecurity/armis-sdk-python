@@ -1,0 +1,45 @@
+name: Create release if needed
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+
+    - name: Install poetry
+      uses: abatilo/actions-poetry@v4
+
+    - name: Extract version
+      run: echo "VERSION=v$(poetry version -s)" >> $GITHUB_ENV
+
+    - name: Check if release exists
+      id: check-release-exists
+      uses: f2calv/gha-check-release-exists@v2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ReleaseName: ${{ env.VERSION }}
+
+    - name: Create release if needed
+      uses: actions/create-release@v1
+      if: steps.check-release-exists.outputs.ReleaseExists == 'false'
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: ${{ env.VERSION }}
+        body: |
+          This is the release for version ${{ env.VERSION }}.
+          - Automatically created by GitHub Actions.
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
