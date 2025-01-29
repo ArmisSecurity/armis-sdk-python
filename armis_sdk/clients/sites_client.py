@@ -50,7 +50,7 @@ class SitesClient(BaseEntityClient):
             ```
             Will output:
             ```python linenums="1"
-            Site(id="1", name="my site")
+            Site(id=1, name="my site")
             ```
         """
         if site.id is not None:
@@ -96,7 +96,7 @@ class SitesClient(BaseEntityClient):
 
             async def main():
                 sites_client = SitesClient()
-                site = Site(id="1")
+                site = Site(id=1)
                 await sites_client.delete(site)
 
             asyncio.run(main())
@@ -134,7 +134,7 @@ class SitesClient(BaseEntityClient):
             ```
             Will output:
             ```python linenums="1"
-            Site(id="1")
+            Site(id=1)
             ```
         """
         async with self._armis_client.client() as client:
@@ -166,12 +166,12 @@ class SitesClient(BaseEntityClient):
             ```python linenums="1"
             [
                 Site(
-                    id="1",
+                    id=1,
                     children=[
-                        Site(id="3"),
+                        Site(id=3),
                     ],
                 ),
-                Site(id="2"),
+                Site(id=2),
             ]
             ```
         """
@@ -208,8 +208,8 @@ class SitesClient(BaseEntityClient):
             ```
             Will output:
             ```python linenums="1"
-            Site(id="1")
-            Site(id="2")
+            Site(id=1)
+            Site(id=2)
             ```
         """
         return self._paginate("/api/v1/sites/", "sites", Site)
@@ -233,7 +233,7 @@ class SitesClient(BaseEntityClient):
 
             async def main():
                 sites_client = SitesClient()
-                site = Site(id="1", location="new location")
+                site = Site(id=1, location="new location")
                 await sites_client.update(site)
 
             asyncio.run(main())

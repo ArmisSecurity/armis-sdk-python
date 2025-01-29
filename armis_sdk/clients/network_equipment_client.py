@@ -36,7 +36,7 @@ class NetworkEquipmentClient(
 
             async def main():
                 network_equipment_client = NetworkEquipmentClient()
-                site = Site(id="1")
+                site = Site(id=1)
                 await network_equipment_client.add(site, [1, 2, 3])
 
             asyncio.run(main())
@@ -66,7 +66,7 @@ class NetworkEquipmentClient(
 
             async def main():
                 network_equipment_client = NetworkEquipmentClient()
-                site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
+                site = Site(id=1, network_equipment_device_ids=[1, 2, 3])
                 await network_equipment_client.update(site)
 
             asyncio.run(main())
