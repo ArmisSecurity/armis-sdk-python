@@ -1,4 +1,3 @@
-import asyncio
 from typing import List
 from typing import Set
 
@@ -82,14 +81,13 @@ class NetworkEquipmentClient(
         await self._insert(site.id, new_ids - current_ids)
         await self._delete(site.id, current_ids - new_ids)
 
-    async def _delete(self, site_id: str, network_equipment_device_ids: Set[int]):
+    async def _delete(self, site_id: int, network_equipment_device_ids: Set[int]):
         if not network_equipment_device_ids:
             return
 
         errors = []
         async with self._armis_client.client() as client:
-
-            async def _delete(device_id: int):
+            for device_id in network_equipment_device_ids:
                 response = await client.delete(
                     f"/api/v1/sites/{site_id}/network-equipment/{device_id}/"
                 )
@@ -98,8 +96,6 @@ class NetworkEquipmentClient(
                 except HTTPStatusError as error:
                     errors.append(error)
 
-            await asyncio.gather(*map(_delete, network_equipment_device_ids))
-
         if errors:
             raise ResponseError(
                 "Error while deleting network equipment "
@@ -107,7 +103,7 @@ class NetworkEquipmentClient(
                 response_errors=errors,
             )
 
-    async def _insert(self, site_id: str, network_equipment_device_ids: Set[int]):
+    async def _insert(self, site_id: int, network_equipment_device_ids: Set[int]):
         if not network_equipment_device_ids:
             return
 

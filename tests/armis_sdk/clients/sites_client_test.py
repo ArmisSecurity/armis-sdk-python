@@ -13,7 +13,12 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/",
         method="POST",
-        match_json={"name": "mock_site", "location": "mock_location", "parentId": 2},
+        match_json={
+            "name": "mock_site",
+            "location": "mock_location",
+            "parentId": 2,
+            "integrationIds": [4, 5, 6],
+        },
         json={"data": {"id": "1"}},
     )
     httpx_mock.add_response(
@@ -27,6 +32,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
         location="mock_location",
         parent_id=2,
         network_equipment_device_ids=[1, 2, 3],
+        integration_ids=[4, 5, 6],
     )
 
     sites_client = SitesClient()
@@ -38,6 +44,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
         location="mock_location",
         parent_id=2,
         network_equipment_device_ids=[1, 2, 3],
+        integration_ids=[4, 5, 6],
     )
 
 
@@ -95,6 +102,8 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
                 "id": "1",
                 "name": "mock_site_1",
                 "ruleAql": '{"or": ["asq1", "asq2"]}',
+                "networkEquipmentDeviceIds": ["1", "2", "3"],
+                "integrationIds": ["4", "5", "6"],
             }
         },
     )
@@ -103,7 +112,11 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
     site = await sites_client.get("1")
 
     assert site == Site(
-        id=1, name="mock_site_1", asq_rule=AsqRule(or_=["asq1", "asq2"])
+        id=1,
+        name="mock_site_1",
+        asq_rule=AsqRule(or_=["asq1", "asq2"]),
+        network_equipment_device_ids=[1, 2, 3],
+        integration_ids=[4, 5, 6],
     )
 
 
@@ -192,6 +205,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
                 "location": "mock_location",
                 "parentId": "1",
                 "tier": "mock_tier",
+                "integrationIds": ["4", "5", "6"],
                 "networkEquipmentDeviceIds": ["7", "8", "9"],
             },
             Site(
@@ -202,6 +216,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
                 location="mock_location",
                 parent_id=1,
                 tier="mock_tier",
+                integration_ids=[4, 5, 6],
                 network_equipment_device_ids=[7, 8, 9],
             ),
             id="All fields",
@@ -316,6 +331,37 @@ async def test_update_with_network_equipment_device_ids(
 
     sites_client = SitesClient()
     site = Site(id=1, network_equipment_device_ids=[1, 2, 3])
+
+    await sites_client.update(site)
+
+
+async def test_update_with_integration_id(httpx_mock: pytest_httpx.HTTPXMock):
+    # List current ids
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/integrations-ids/",
+        method="GET",
+        json={"data": {"integrationIds": []}},
+    )
+
+    # Add new ids
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/integrations-ids/",
+        method="POST",
+        match_json={"integrationId": 1},
+    )
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/integrations-ids/",
+        method="POST",
+        match_json={"integrationId": 2},
+    )
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/integrations-ids/",
+        method="POST",
+        match_json={"integrationId": 3},
+    )
+
+    sites_client = SitesClient()
+    site = Site(id=1, integration_ids=[1, 2, 3])
 
     await sites_client.update(site)
 

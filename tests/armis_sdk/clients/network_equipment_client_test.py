@@ -50,14 +50,14 @@ async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
 
     network_equipment_client = NetworkEquipmentClient()
 
-    site = Site(id="1", name="mock_site", network_equipment_device_ids=[2, 4, 5, 6])
+    site = Site(id=1, name="mock_site", network_equipment_device_ids=[2, 4, 5, 6])
 
     await network_equipment_client.update(site)
 
 
 @pytest.mark.usefixtures("setup_env_variables")
 async def test_update_with_no_devices_set():
-    site = Site(id="1", name="mock_site")
+    site = Site(id=1, name="mock_site")
     network_equipment_client = NetworkEquipmentClient()
 
     with pytest.raises(

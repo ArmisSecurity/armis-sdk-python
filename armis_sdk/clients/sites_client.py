@@ -2,6 +2,7 @@ from typing import AsyncIterator
 from typing import List
 
 from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
+from armis_sdk.clients.site_integrations_client import SiteIntegrationsClient
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.core.base_entity_client import BaseEntityClient
@@ -17,11 +18,13 @@ class SitesClient(BaseEntityClient):
 
     Attributes:
         network_equipment_client (NetworkEquipmentClient): An instance of [NetworkEquipmentClient][armis_sdk.clients.network_equipment_client.NetworkEquipmentClient]
+        site_integrations_client (SiteIntegrationsClient): An instance of [SiteIntegrationsClient][armis_sdk.clients.site_integrations_client.SiteIntegrationsClient]
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.network_equipment_client = NetworkEquipmentClient(self._armis_client)
+        self.site_integrations_client = SiteIntegrationsClient(self._armis_client)
 
     async def create(self, site: Site) -> Site:
         """Create a `Site`.
@@ -247,7 +250,12 @@ class SitesClient(BaseEntityClient):
 
         data = site.model_dump(
             by_alias=True,
-            exclude={"children", "id", "network_equipment_device_ids"},
+            exclude={
+                "children",
+                "id",
+                "integration_ids",
+                "network_equipment_device_ids",
+            },
             exclude_none=True,
         )
 
@@ -258,3 +266,6 @@ class SitesClient(BaseEntityClient):
 
         if site.network_equipment_device_ids is not None:
             await self.network_equipment_client.update(site)
+
+        if site.integration_ids is not None:
+            await self.site_integrations_client.update(site)
