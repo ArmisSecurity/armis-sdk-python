@@ -5,6 +5,7 @@ ignore-paths=
     .venv
 
 disable=
+    duplicate-code,
     missing-class-docstring,
     missing-module-docstring,
     missing-function-docstring,

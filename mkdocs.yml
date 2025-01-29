@@ -8,7 +8,6 @@ nav:
       - AsqRule: entities/AsqRule.md
       - Site: entities/Site.md
   - Clients:
-      - NetworkEquipmentClient: clients/NetworkEquipmentClient.md
       - SitesClient: clients/SitesClient.md
   - Core:
       - ArmisClient: core/ArmisClient.md
