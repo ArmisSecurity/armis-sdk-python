@@ -26,13 +26,19 @@ class ResponseError(ArmisError):
         self.response_errors = response_errors
 
 
-class NotFoundError(ResponseError):
+class AlreadyExistsError(ResponseError):
     """
-    A class for all errors raised when a requested resource was not found.
+    A class for all errors raised when an attempt is made to create a resource that already exists.
     """
 
 
 class BadRequestError(ResponseError):
     """
     A class for all errors raised when a requested resource was malformed.
+    """
+
+
+class NotFoundError(ResponseError):
+    """
+    A class for all errors raised when a requested resource was not found.
     """
