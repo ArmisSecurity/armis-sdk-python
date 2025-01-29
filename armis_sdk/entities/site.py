@@ -24,7 +24,7 @@ class Site(BaseEntity):
     The `Site` entity represents a physical location at the customer's environment.
     """
 
-    id: str = None
+    id: Optional[int] = Field(strict=False, default=None)
     """The id of the site."""
 
     name: Optional[str] = None
@@ -39,7 +39,7 @@ class Site(BaseEntity):
     location: Optional[str] = None
     """The name of the location of the site, such as an address."""
 
-    parent_id: Optional[str] = None
+    parent_id: Optional[int] = Field(strict=False, default=None)
     """The id of the parent site."""
 
     tier: Optional[str] = None

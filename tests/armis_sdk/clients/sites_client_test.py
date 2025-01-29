@@ -13,7 +13,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/",
         method="POST",
-        match_json={"name": "mock_site", "location": "mock_location", "parentId": "2"},
+        match_json={"name": "mock_site", "location": "mock_location", "parentId": 2},
         json={"data": {"id": "1"}},
     )
     httpx_mock.add_response(
@@ -25,7 +25,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
     site_to_create = Site(
         name="mock_site",
         location="mock_location",
-        parent_id="2",
+        parent_id=2,
         network_equipment_device_ids=[1, 2, 3],
     )
 
@@ -33,10 +33,10 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
     created_site = await sites_client.create(site_to_create)
 
     assert created_site == Site(
-        id="1",
+        id=1,
         name="mock_site",
         location="mock_location",
-        parent_id="2",
+        parent_id=2,
         network_equipment_device_ids=[1, 2, 3],
     )
 
@@ -45,7 +45,7 @@ async def test_create_with_id(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.reset()
 
     sites_client = SitesClient()
-    site = Site(id="1", name="mock_site", location="mock_location")
+    site = Site(id=1, name="mock_site", location="mock_location")
     with pytest.raises(
         ArmisError,
         match=(
@@ -70,7 +70,7 @@ async def test_delete(httpx_mock: pytest_httpx.HTTPXMock):
         url="https://mock_tenant.armis.com/api/v1/sites/1/", method="DELETE"
     )
 
-    site = Site(id="1")
+    site = Site(id=1)
     sites_client = SitesClient()
 
     await sites_client.delete(site)
@@ -103,7 +103,7 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
     site = await sites_client.get("1")
 
     assert site == Site(
-        id="1", name="mock_site_1", asq_rule=AsqRule(or_=["asq1", "asq2"])
+        id=1, name="mock_site_1", asq_rule=AsqRule(or_=["asq1", "asq2"])
     )
 
 
@@ -120,7 +120,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
                     {"id": "4", "name": "mock_site_4", "parentId": "2"},
                     {"id": "5", "name": "mock_site_5"},
                     {"id": "6", "name": "mock_site_6", "parentId": "5"},
-                    {"id": "7", "name": "mock_site_7", "parentId": "unknown"},
+                    {"id": "7", "name": "mock_site_7", "parentId": "999"},
                 ]
             }
         },
@@ -130,43 +130,43 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
 
     assert hierarchy == [
         Site(
-            id="1",
+            id=1,
             name="mock_site_1",
             children=[
                 Site(
-                    id="2",
+                    id=2,
                     name="mock_site_2",
-                    parent_id="1",
+                    parent_id=1,
                     children=[
                         Site(
-                            id="4",
+                            id=4,
                             name="mock_site_4",
-                            parent_id="2",
+                            parent_id=2,
                         )
                     ],
                 ),
                 Site(
-                    id="3",
+                    id=3,
                     name="mock_site_3",
-                    parent_id="1",
+                    parent_id=1,
                 ),
             ],
         ),
         Site(
-            id="5",
+            id=5,
             name="mock_site_5",
             children=[
                 Site(
-                    id="6",
+                    id=6,
                     name="mock_site_6",
-                    parent_id="5",
+                    parent_id=5,
                 )
             ],
         ),
         Site(
-            id="7",
+            id=7,
             name="mock_site_7",
-            parent_id="unknown",
+            parent_id=999,
             children=[],
         ),
     ]
@@ -178,7 +178,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
         pytest.param(
             {"id": "1", "name": "mock_site_1"},
             Site(
-                id="1",
+                id=1,
                 name="mock_site_1",
             ),
             id="Only mandatory fields",
@@ -195,12 +195,12 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
                 "networkEquipmentDeviceIds": ["7", "8", "9"],
             },
             Site(
-                id="2",
+                id=2,
                 name="mock_site_2",
                 lat=1.23,
                 lng=4.56,
                 location="mock_location",
-                parent_id="1",
+                parent_id=1,
                 tier="mock_tier",
                 network_equipment_device_ids=[7, 8, 9],
             ),
@@ -268,18 +268,18 @@ async def test_list_sites_with_multiple_pages(
     sites = [site async for site in await sites_client.list()]
 
     assert sites == [
-        Site(id="1", name="mock_site_1"),
-        Site(id="2", name="mock_site_2"),
-        Site(id="3", name="mock_site_3"),
-        Site(id="4", name="mock_site_4"),
-        Site(id="5", name="mock_site_5"),
+        Site(id=1, name="mock_site_1"),
+        Site(id=2, name="mock_site_2"),
+        Site(id=3, name="mock_site_3"),
+        Site(id=4, name="mock_site_4"),
+        Site(id=5, name="mock_site_5"),
     ]
 
 
 async def test_update_with_nothing_to_change(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.reset()
     sites_client = SitesClient()
-    site = Site(id="1")
+    site = Site(id=1)
 
     await sites_client.update(site)
 
@@ -288,11 +288,11 @@ async def test_update_simple_properties(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/api/v1/sites/1/",
         method="PATCH",
-        match_json={"name": "new_name", "location": "new location", "parentId": "2"},
+        match_json={"name": "new_name", "location": "new location", "parentId": 2},
     )
 
     sites_client = SitesClient()
-    site = Site(id="1", name="new_name", location="new location", parent_id="2")
+    site = Site(id=1, name="new_name", location="new location", parent_id=2)
 
     await sites_client.update(site)
 
@@ -315,7 +315,7 @@ async def test_update_with_network_equipment_device_ids(
     )
 
     sites_client = SitesClient()
-    site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
+    site = Site(id=1, network_equipment_device_ids=[1, 2, 3])
 
     await sites_client.update(site)
 

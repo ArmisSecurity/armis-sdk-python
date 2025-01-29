@@ -70,7 +70,7 @@ class SitesClient(BaseEntityClient):
         async with self._armis_client.client() as client:
             response = await client.post("/api/v1/sites/", json=payload)
             data = self._get_data(response)
-            created_site = site.model_copy(update={"id": str(data["id"])}, deep=True)
+            created_site = site.model_copy(update={"id": int(data["id"])}, deep=True)
 
         if site.network_equipment_device_ids:
             await self.network_equipment_client.add(
