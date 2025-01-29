@@ -1,4 +1,6 @@
-from typing import List, Union, Optional
+from typing import List
+from typing import Optional
+from typing import Union
 
 from pydantic import Field
 from pydantic import model_validator
