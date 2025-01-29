@@ -9,6 +9,20 @@ pytest_plugins = ["tests.plugins.setup_plugin"]
 
 
 @pytest.mark.usefixtures("setup_env_variables", "authorized")
+async def test_add(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/api/v1/sites/1/network-equipment/_bulk/",
+        method="POST",
+        match_json={"networkEquipmentDeviceIds": [1, 2, 3]},
+    )
+
+    network_equipment_client = NetworkEquipmentClient()
+    site = Site(id="1")
+
+    await network_equipment_client.add(site, [1, 2, 3])
+
+
+@pytest.mark.usefixtures("setup_env_variables", "authorized")
 async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
     # List current ids
     httpx_mock.add_response(

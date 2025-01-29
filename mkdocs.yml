@@ -5,6 +5,7 @@ repo_url: https://github.com/ArmisSecurity/armis-sdk-python
 nav:
   - Getting started: index.md
   - Entities:
+      - AsqRule: entities/AsqRule.md
       - Site: entities/Site.md
   - Clients:
       - NetworkEquipmentClient: clients/NetworkEquipmentClient.md

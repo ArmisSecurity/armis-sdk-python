@@ -4,6 +4,7 @@ from typing import Set
 
 from httpx import HTTPStatusError
 
+from armis_sdk.core import response_utils
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.core.armis_error import ResponseError
 from armis_sdk.core.base_entity_client import BaseEntityClient
@@ -18,6 +19,33 @@ class NetworkEquipmentClient(
 
     The primary entity for this client is [Site][armis_sdk.entities.site.Site].
     """
+
+    async def add(self, site: Site, network_equipment_device_ids: List[int]):
+        """Add network equipment devices to a site.
+
+        Args:
+            site: The site to update.
+            network_equipment_device_ids: The network equipment device IDs to add.
+
+        Example:
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
+
+
+            async def main():
+                network_equipment_client = NetworkEquipmentClient()
+                site = Site(id="1")
+                await network_equipment_client.add(site, [1, 2, 3])
+
+            asyncio.run(main())
+            ```
+        """
+
+        if not network_equipment_device_ids:
+            return
+        await self._insert(site.id, set(network_equipment_device_ids))
 
     async def update(self, site: Site):
         """Update a site's network equipment devices.
@@ -35,9 +63,9 @@ class NetworkEquipmentClient(
 
             from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
 
-            network_equipment_client = NetworkEquipmentClient()
 
             async def main():
+                network_equipment_client = NetworkEquipmentClient()
                 site = Site(id="1", network_equipment_device_ids=[1, 2, 3])
                 await network_equipment_client.update(site)
 
@@ -88,14 +116,7 @@ class NetworkEquipmentClient(
                 f"/api/v1/sites/{site_id}/network-equipment/_bulk/",
                 json={"networkEquipmentDeviceIds": list(network_equipment_device_ids)},
             )
-            try:
-                response.raise_for_status()
-            except HTTPStatusError as error:
-                raise ResponseError(
-                    "Error while inserting network equipment "
-                    f"device ids {network_equipment_device_ids!r} to site {site_id!r} ",
-                    response_errors=[error],
-                ) from error
+            response_utils.raise_for_status(response)
 
     async def _list(self, site_id) -> List[int]:
         async with self._armis_client.client() as client:

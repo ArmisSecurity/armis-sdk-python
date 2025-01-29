@@ -5,6 +5,7 @@ from typing import Union
 import httpx
 from httpx import HTTPStatusError
 
+from armis_sdk.core.armis_error import AlreadyExistsError
 from armis_sdk.core.armis_error import BadRequestError
 from armis_sdk.core.armis_error import NotFoundError
 from armis_sdk.core.armis_error import ResponseError
@@ -24,10 +25,14 @@ def raise_for_status(response: httpx.Response):
     except HTTPStatusError as error:
         parsed = parse_response(error.response)
         message = parsed.get("message", "Something went wrong.")
+
         if error.response.status_code == httpx.codes.NOT_FOUND:
             raise NotFoundError(message, response_errors=[error]) from error
 
         if error.response.status_code == httpx.codes.BAD_REQUEST:
             raise BadRequestError(message, response_errors=[error]) from error
+
+        if error.response.status_code == httpx.codes.CONFLICT:
+            raise AlreadyExistsError(message, response_errors=[error]) from error
 
         raise ResponseError(message, response_errors=[error]) from error
