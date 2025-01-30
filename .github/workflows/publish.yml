@@ -4,7 +4,8 @@ name: Publish to PyPI
 on:
   release:
     types:
-      - published
+      - created
+  workflow_dispatch:
 
 jobs:
   build:
