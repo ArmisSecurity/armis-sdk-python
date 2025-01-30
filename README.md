@@ -12,7 +12,7 @@ pip install armis_sdk
 ```
 
 ## Documentation
-For full documentation, please visit our [dedicated](https://armis-armis-python-sdk.readthedocs-hosted.com/) site.
+For full documentation, please visit our [dedicated](https://armis-python-sdk.readthedocs.io) site.
 
 ## Usage
 
