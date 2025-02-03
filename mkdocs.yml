@@ -52,6 +52,11 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
 
+extra:
+  analytics:
+    provider: google
+    property: G-RNCS8V9TDB
+
 extra_css:
   - stylesheets/extra.css
 
