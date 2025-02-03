@@ -6,7 +6,10 @@ from armis_sdk.core.armis_client import ArmisClient
 
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
-VERSION = importlib.metadata.version("armis_sdk")
+try:
+    VERSION = importlib.metadata.version("armis_sdk")
+except importlib.metadata.PackageNotFoundError:
+    VERSION = "unknown"
 
 
 async def test_request_headers(httpx_mock: pytest_httpx.HTTPXMock):

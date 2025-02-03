@@ -12,7 +12,10 @@ ARMIS_TENANT = "ARMIS_TENANT"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 BASE_URL = "https://{tenant}.armis.com"
 DEFAULT_PAGE_LENGTH = 100
-VERSION = importlib.metadata.version("armis_sdk")
+try:
+    VERSION = importlib.metadata.version("armis_sdk")
+except importlib.metadata.PackageNotFoundError:
+    VERSION = "unknown"
 
 
 class ArmisClient:  # pylint: disable=too-few-public-methods
