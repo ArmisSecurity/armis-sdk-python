@@ -22,10 +22,12 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
         ```python linenums="1" hl_lines="3"
         import asyncio
 
+        from armis_sdk import ArmisSdk
+
         armis_sdk = ArmisSdk()
 
         async def main():
-            async for site in await sites_client.list():
+            async for site in await armis_sdk.sites.list():
                 print(site)
 
         asyncio.run(main())
