@@ -34,7 +34,7 @@ class Site(BaseEntity):
     """
     The latitude coordinate of the physical location of the site on earth.
 
-    This field is read-only and is automatically derrived from the 
+    This field is read-only and is automatically derived from the 
     [`location`][armis_sdk.entities.site.Site.location] field.
     
     Example: `37.7900103`
@@ -45,7 +45,7 @@ class Site(BaseEntity):
     """
     The longitude coordinate of the physical location of the site on earth.
 
-    This field is read-only and is automatically derrived from the 
+    This field is read-only and is automatically derived from the 
     [`location`][armis_sdk.entities.site.Site.location] field.
     
     Example: `-122.4007818`
