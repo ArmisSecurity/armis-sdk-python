@@ -1,5 +1,6 @@
 import importlib.metadata
 import platform
+
 import httpx
 import pytest_httpx
 
