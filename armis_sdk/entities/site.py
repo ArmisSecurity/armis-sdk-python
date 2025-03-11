@@ -30,14 +30,36 @@ class Site(BaseEntity):
     name: Optional[str] = None
     """The name of the site."""
 
-    lat: Optional[float] = None
-    """Together with `lng`, represents the physical location of the site on earth."""
+    lat: Optional[float] = Field(frozen=True, default=None)
+    """
+    The latitude coordinate of the physical location of the site on earth.
 
-    lng: Optional[float] = None
-    """Together with `lat`, represents the physical location of the site on earth."""
+    This field is read-only and is automatically derived from the 
+    [`location`][armis_sdk.entities.site.Site.location] field.
+    
+    Example: `37.7900103`
+
+    """
+
+    lng: Optional[float] = Field(frozen=True, default=None)
+    """
+    The longitude coordinate of the physical location of the site on earth.
+
+    This field is read-only and is automatically derived from the 
+    [`location`][armis_sdk.entities.site.Site.location] field.
+    
+    Example: `-122.4007818`
+    """
 
     location: Optional[str] = None
-    """The name of the location of the site, such as an address."""
+    """
+    The name of the location of the site, such as an address.
+    
+    Example: `548 Market Street Suite 97439 San Francisco, CA 94104-5401`
+    
+    When this field is set, the [`lat`][armis_sdk.entities.site.Site.lat] and 
+    [`lng`][armis_sdk.entities.site.Site.lng] are automatically derived from it.
+    """
 
     parent_id: Optional[int] = Field(strict=False, default=None)
     """The id of the parent site."""
