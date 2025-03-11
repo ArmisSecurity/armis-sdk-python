@@ -1,5 +1,6 @@
 import importlib.metadata
-
+import platform
+import httpx
 import pytest_httpx
 
 from armis_sdk.core.armis_client import ArmisClient
@@ -15,7 +16,11 @@ except importlib.metadata.PackageNotFoundError:
 async def test_request_headers(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         match_headers={
-            "User-Agent": f"ArmisPythonSDK/v{VERSION}",
+            "User-Agent": (
+                f"Python/{platform.python_version()} "
+                f"python-httpx/{httpx.__version__} "
+                f"ArmisPythonSDK/v{VERSION}"
+            ),
             "Armis-API-Client-Id": "mock_client_id",
         },
         url="https://mock_tenant.armis.com/mock/endpoint",

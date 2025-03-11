@@ -1,7 +1,7 @@
 import importlib.metadata
 import os
 from typing import Optional
-
+import platform
 import httpx
 
 from armis_sdk.core.armis_auth import ArmisAuth
@@ -16,6 +16,12 @@ try:
     VERSION = importlib.metadata.version("armis_sdk")
 except importlib.metadata.PackageNotFoundError:
     VERSION = "unknown"
+
+USER_AGENT_PARTS = [
+    f"Python/{platform.python_version()}",
+    httpx.Client().headers.get("User-Agent"),
+    f"ArmisPythonSDK/v{VERSION}",
+]
 
 
 class ArmisClient:  # pylint: disable=too-few-public-methods
@@ -51,7 +57,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
 
         self._base_url = BASE_URL.format(tenant=tenant)
         self._auth = ArmisAuth(self._base_url, secret_key)
-        self._user_agent = f"ArmisPythonSDK/v{VERSION}"
+        self._user_agent = " ".join(USER_AGENT_PARTS)
         self._client_id = client_id
 
     def client(self):
