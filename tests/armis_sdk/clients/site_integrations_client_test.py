@@ -47,9 +47,18 @@ async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
 
 
 @pytest.mark.usefixtures("setup_env_variables")
-async def test_update_with_no_integrations_set():
+async def test_update_without_site_integration_ids():
     site = Site(id=1, name="mock_site")
     site_integrations_client = SiteIntegrationsClient()
 
     with pytest.raises(ArmisError, match="The property 'integration_ids' must be set."):
+        await site_integrations_client.update(site)
+
+
+@pytest.mark.usefixtures("setup_env_variables")
+async def test_update_without_site_id():
+    site = Site()
+    site_integrations_client = SiteIntegrationsClient()
+
+    with pytest.raises(ArmisError, match="The property 'id' must be set."):
         await site_integrations_client.update(site)
