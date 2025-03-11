@@ -17,3 +17,14 @@ jobs:
 
     - name: Run tests
       run: poetry run pytest -vv
+  mypy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: ./.github/workflows/install_deps
+
+    - name: Run mypy
+      run: poetry run mypy .
+
