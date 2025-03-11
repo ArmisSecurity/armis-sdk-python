@@ -44,6 +44,9 @@ class SiteIntegrationsClient(
             ```
         """
 
+        if site.id is None:
+            raise ArmisError("The property 'id' must be set.")
+
         if site.integration_ids is None:
             raise ArmisError("The property 'integration_ids' must be set.")
 
@@ -101,5 +104,5 @@ class SiteIntegrationsClient(
     async def _list(self, site_id: int) -> List[int]:
         async with self._armis_client.client() as client:
             response = await client.get(f"/api/v1/sites/{site_id}/integrations-ids/")
-            data = self._get_data(response)
+            data = self._get_dict(response)
         return data["integrationIds"]

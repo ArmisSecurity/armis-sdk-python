@@ -4,6 +4,7 @@ while interacting with the SDK.
 """
 
 from typing import List
+from typing import Optional
 
 from httpx import HTTPStatusError
 
@@ -21,7 +22,7 @@ class ResponseError(ArmisError):
     For example, if the server returns 400 for invalid input, an instance of this class will be raised.
     """
 
-    def __init__(self, *args, response_errors: List[HTTPStatusError] = None):
+    def __init__(self, *args, response_errors: Optional[List[HTTPStatusError]] = None):
         super().__init__(*args)
         self.response_errors = response_errors
 

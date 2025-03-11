@@ -41,9 +41,12 @@ class NetworkEquipmentClient(
             asyncio.run(main())
             ```
         """
+        if site.id is None:
+            raise ArmisError("The property 'id' must be set.")
 
         if not network_equipment_device_ids:
             return
+
         await self._insert(site.id, set(network_equipment_device_ids))
 
     async def update(self, site: Site):
@@ -71,6 +74,9 @@ class NetworkEquipmentClient(
             asyncio.run(main())
             ```
         """
+
+        if site.id is None:
+            raise ArmisError("The property 'id' must be set.")
 
         if site.network_equipment_device_ids is None:
             raise ArmisError("The property 'network_equipment_device_ids' must be set.")
@@ -117,5 +123,5 @@ class NetworkEquipmentClient(
     async def _list(self, site_id) -> List[int]:
         async with self._armis_client.client() as client:
             response = await client.get(f"/api/v1/sites/{site_id}/network-equipment/")
-            data = self._get_data(response)
+            data = self._get_dict(response)
         return data["networkEquipmentDeviceIds"]

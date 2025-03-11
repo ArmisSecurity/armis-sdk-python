@@ -72,7 +72,7 @@ class SitesClient(BaseEntityClient):
         )
         async with self._armis_client.client() as client:
             response = await client.post("/api/v1/sites/", json=payload)
-            data = self._get_data(response)
+            data = self._get_dict(response)
             created_site = site.model_copy(update={"id": int(data["id"])}, deep=True)
 
         if site.network_equipment_device_ids:
@@ -142,7 +142,7 @@ class SitesClient(BaseEntityClient):
         """
         async with self._armis_client.client() as client:
             response = await client.get(f"/api/v1/sites/{site_id}/")
-            data = self._get_data(response)
+            data: dict = self._get_dict(response)
             return Site.model_validate(data)
 
     async def hierarchy(self) -> List[Site]:
