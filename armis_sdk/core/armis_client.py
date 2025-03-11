@@ -1,7 +1,8 @@
 import importlib.metadata
 import os
-from typing import Optional
 import platform
+from typing import Optional
+
 import httpx
 
 from armis_sdk.core.armis_auth import ArmisAuth
