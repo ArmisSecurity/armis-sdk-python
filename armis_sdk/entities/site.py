@@ -58,7 +58,7 @@ class Site(BaseEntity):
     ] = None
     """The ids of the integration associated with the site."""
 
-    children: Optional[List["Site"]] = Field(default_factory=list)
+    children: List["Site"] = Field(default_factory=list)
     """The sub-sites that are directly under this site 
     (their `parent_id` will match this site's `id`)."""
 

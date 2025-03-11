@@ -5,6 +5,7 @@ from typing import Optional
 import httpx
 
 from armis_sdk.core import response_utils
+from armis_sdk.core.armis_error import ArmisError
 
 AUTHORIZATION = "Authorization"
 
@@ -27,16 +28,23 @@ class ArmisAuth(httpx.Auth):
         self._base_url = base_url
         self._secret_key = secret_key
         self._access_token: Optional[str] = None
-        self._expires_at: Optional[datetime] = None
+        self._expires_at: Optional[datetime.datetime] = None
 
     def auth_flow(
         self, request: httpx.Request
     ) -> typing.Generator[httpx.Request, httpx.Response, None]:
-        if self._access_token is None or self._expires_at < datetime.datetime.now(
-            datetime.timezone.utc
+        if (
+            self._access_token is None
+            or self._expires_at is None
+            or self._expires_at < datetime.datetime.now(datetime.timezone.utc)
         ):
             access_token_response = yield self._build_access_token_request()
             self._update_access_token(access_token_response)
+
+        if self._access_token is None:
+            raise ArmisError(
+                "Something went wrong, there is no access token available."
+            )
 
         request.headers[AUTHORIZATION] = self._access_token
         response = yield request
@@ -57,7 +65,7 @@ class ArmisAuth(httpx.Auth):
 
     def _update_access_token(self, response: httpx.Response):
         response_utils.raise_for_status(response)
-        parsed = response_utils.parse_response(response)
-        data = parsed.get("data")
+        parsed = response_utils.parse_response(response, dict)
+        data: dict = parsed.get("data") or {}
         self._access_token = data["access_token"]
         self._expires_at = datetime.datetime.fromisoformat(data["expiration_utc"])

@@ -17,9 +17,18 @@ async def test_add(httpx_mock: pytest_httpx.HTTPXMock):
     )
 
     network_equipment_client = NetworkEquipmentClient()
-    site = Site(id="1")
+    site = Site(id=1)
 
     await network_equipment_client.add(site, [1, 2, 3])
+
+
+@pytest.mark.usefixtures("setup_env_variables")
+async def test_add_without_site_id():
+    site = Site()
+    network_equipment_client = NetworkEquipmentClient()
+
+    with pytest.raises(ArmisError, match="The property 'id' must be set."):
+        await network_equipment_client.add(site, [1, 2, 3])
 
 
 @pytest.mark.usefixtures("setup_env_variables", "authorized")
@@ -56,11 +65,20 @@ async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
 
 
 @pytest.mark.usefixtures("setup_env_variables")
-async def test_update_with_no_devices_set():
+async def test_update_without_site_network_equipment_device_ids():
     site = Site(id=1, name="mock_site")
     network_equipment_client = NetworkEquipmentClient()
 
     with pytest.raises(
         ArmisError, match="The property 'network_equipment_device_ids' must be set."
     ):
+        await network_equipment_client.update(site)
+
+
+@pytest.mark.usefixtures("setup_env_variables")
+async def test_update_without_site_id():
+    site = Site()
+    network_equipment_client = NetworkEquipmentClient()
+
+    with pytest.raises(ArmisError, match="The property 'id' must be set."):
         await network_equipment_client.update(site)
