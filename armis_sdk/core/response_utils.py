@@ -13,6 +13,22 @@ from armis_sdk.core.armis_error import ResponseError
 DataTypeT = TypeVar("DataTypeT", dict, list)
 
 
+def get_data(
+    response: httpx.Response,
+    data_type: Type[DataTypeT],
+) -> DataTypeT:
+    raise_for_status(response)
+    parsed = parse_response(response, dict)
+    data = parsed.get("data")
+    if not isinstance(data, data_type):
+        raise ResponseError("Response data represents neither a dict nor a list.")
+    return data
+
+
+def get_data_dict(response: httpx.Response):
+    return get_data(response, dict)
+
+
 def parse_response(
     response: httpx.Response,
     data_type: Type[DataTypeT],

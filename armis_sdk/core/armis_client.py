@@ -1,10 +1,13 @@
 import importlib.metadata
 import os
 import platform
+from typing import AsyncIterator
 from typing import Optional
+from typing import TypeVar
 
 import httpx
 
+from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
 
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
@@ -23,6 +26,7 @@ USER_AGENT_PARTS = [
     httpx.Client().headers.get("User-Agent"),
     f"ArmisPythonSDK/v{VERSION}",
 ]
+DataTypeT = TypeVar("DataTypeT", dict, list)
 
 
 class ArmisClient:  # pylint: disable=too-few-public-methods
@@ -70,3 +74,45 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 "Armis-API-Client-Id": self._client_id,
             },
         )
+
+    async def list(self, url: str, key: str) -> AsyncIterator[dict]:
+        """List all items from a paginated endpoint.
+
+        Args:
+            url (str): The relative endpoint URL.
+            key (str): The key inside the data object that contains the items.
+
+        Returns:
+            An (async) iterator of `dict`s.
+
+        Example:
+            ```python linenums="1" hl_lines="8"
+            import asyncio
+
+            from armis_sdk.core.armis_client import ArmisClient
+
+
+            async def main():
+                armis_client = ArmisClient()
+                async for item in armis_client.list("/api/v1/sites/", "sites"):
+                    print(item)
+
+            asyncio.run(main())
+            ```
+            Will output:
+            ```python linenums="1"
+            {...}
+            {...}
+            ```
+        """
+        page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
+        async with self.client() as client:
+            from_ = 0
+            while from_ is not None:
+                params = {"from": from_, "length": page_size}
+                response = await client.get(url, params=params)
+                data = response_utils.get_data_dict(response)
+                items = data[key]
+                for item in items:
+                    yield item
+                from_ = data.get("next")

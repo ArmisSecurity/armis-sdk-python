@@ -64,8 +64,6 @@ class ArmisAuth(httpx.Auth):
         )
 
     def _update_access_token(self, response: httpx.Response):
-        response_utils.raise_for_status(response)
-        parsed = response_utils.parse_response(response, dict)
-        data: dict = parsed.get("data") or {}
+        data = response_utils.get_data_dict(response)
         self._access_token = data["access_token"]
         self._expires_at = datetime.datetime.fromisoformat(data["expiration_utc"])
