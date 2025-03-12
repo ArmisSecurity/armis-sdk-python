@@ -3,6 +3,7 @@ from typing import Set
 
 from httpx import HTTPStatusError
 
+from armis_sdk.core import response_utils
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.core.armis_error import ResponseError
 from armis_sdk.core.base_entity_client import BaseEntityClient
@@ -51,7 +52,7 @@ class SiteIntegrationsClient(
             raise ArmisError("The property 'integration_ids' must be set.")
 
         new_ids = set(site.integration_ids)
-        current_ids = set(await self._list(site.id))
+        current_ids = set(await self._list_ids(site.id))
 
         await self._insert(site.id, new_ids - current_ids)
         await self._delete(site.id, current_ids - new_ids)
@@ -101,8 +102,8 @@ class SiteIntegrationsClient(
                 response_errors=errors,
             )
 
-    async def _list(self, site_id: int) -> List[int]:
+    async def _list_ids(self, site_id: int) -> List[int]:
         async with self._armis_client.client() as client:
             response = await client.get(f"/api/v1/sites/{site_id}/integrations-ids/")
-            data = self._get_dict(response)
+            data = response_utils.get_data_dict(response)
         return data["integrationIds"]

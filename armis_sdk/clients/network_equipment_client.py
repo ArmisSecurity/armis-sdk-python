@@ -82,7 +82,7 @@ class NetworkEquipmentClient(
             raise ArmisError("The property 'network_equipment_device_ids' must be set.")
 
         new_ids = set(site.network_equipment_device_ids)
-        current_ids = set(await self._list(site.id))
+        current_ids = set(await self._list_ids(site.id))
 
         await self._insert(site.id, new_ids - current_ids)
         await self._delete(site.id, current_ids - new_ids)
@@ -120,8 +120,8 @@ class NetworkEquipmentClient(
             )
             response_utils.raise_for_status(response)
 
-    async def _list(self, site_id) -> List[int]:
+    async def _list_ids(self, site_id) -> List[int]:
         async with self._armis_client.client() as client:
             response = await client.get(f"/api/v1/sites/{site_id}/network-equipment/")
-            data = self._get_dict(response)
+            data = response_utils.get_data_dict(response)
         return data["networkEquipmentDeviceIds"]
