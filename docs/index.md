@@ -46,6 +46,8 @@ you can start interacting with the various clients, each handles use-cases of a 
 
     Note that all functions in this SDK that eventually make HTTP requests are asynchronous.
 
+    However, for convenience, all public asynchronous functions can also be executed in a synchronous way.
+
 
 For example, if you want to update a site's location:
 ```python linenums="1" hl_lines="10"

@@ -50,6 +50,8 @@ Once you have an instance of `ArmisSdk`, you can start interacting with the vari
 
 > [!NOTE]
 > Note that all functions in this SDK that eventually make HTTP requests are asynchronous.
+> 
+> However, for convenience, all public asynchronous functions can also be executed in a synchronous way. 
 
 For example, if you want to update a site's location:
 ```python
