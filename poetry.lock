@@ -1393,6 +1393,18 @@ files = [
 markers = {docs = "python_version < \"3.11\""}
 
 [[package]]
+name = "universalasync"
+version = "0.4.0.1"
+description = "A library to help automate the creation of universal python libraries"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "universalasync-0.4.0.1-py3-none-any.whl", hash = "sha256:55691b23f8265ff9a658d5eaee5a0375d75ac46432862198178c9a360062ba52"},
+    {file = "universalasync-0.4.0.1.tar.gz", hash = "sha256:aadf1f20170366b76fb0317a343775c403842c8db25062f7d68184a09b3e882c"},
+]
+
+[[package]]
 name = "urllib3"
 version = "2.3.0"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1477,4 +1489,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9"
-content-hash = "f7fca603cd63a9079930d02219c221101f1aceaad0be7876b841f1ef4ee9a502"
+content-hash = "e55a0ae5b2c733cb6799e26dc6987e31a189d188a5528121add45d7cb893c0fd"
