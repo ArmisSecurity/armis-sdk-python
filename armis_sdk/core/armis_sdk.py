@@ -27,7 +27,7 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
         armis_sdk = ArmisSdk()
 
         async def main():
-            async for site in await armis_sdk.sites.list():
+            async for site in armis_sdk.sites.list():
                 print(site)
 
         asyncio.run(main())

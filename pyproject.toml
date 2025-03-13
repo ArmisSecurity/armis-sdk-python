@@ -23,6 +23,7 @@ plugins = ['pydantic.mypy']
 [tool.poetry.dependencies]
 pydantic = "^2.10.5"
 httpx = "^0.28.1"
+universalasync = "^0.4.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"

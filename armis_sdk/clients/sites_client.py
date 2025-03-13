@@ -1,6 +1,8 @@
 from typing import AsyncIterator
 from typing import List
 
+import universalasync
+
 from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
 from armis_sdk.clients.site_integrations_client import SiteIntegrationsClient
 from armis_sdk.core import response_utils
@@ -9,6 +11,7 @@ from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.site import Site
 
 
+@universalasync.wrap
 class SitesClient(BaseEntityClient):
     # pylint: disable=line-too-long
     """
@@ -178,7 +181,7 @@ class SitesClient(BaseEntityClient):
             ]
             ```
         """
-        id_to_site = {site.id: site async for site in await self.list()}
+        id_to_site = {site.id: site async for site in self.list()}
         root = []
         for site in id_to_site.values():
             if parent := id_to_site.get(site.parent_id):
@@ -204,7 +207,7 @@ class SitesClient(BaseEntityClient):
 
             async def main():
                 sites_client = SitesClient()
-                async for site in await sites_client.list()
+                async for site in sites_client.list()
                     print(site)
 
             asyncio.run(main())
@@ -215,7 +218,8 @@ class SitesClient(BaseEntityClient):
             Site(id=2)
             ```
         """
-        return self._list("/api/v1/sites/", "sites", Site)
+        async for item in self._list("/api/v1/sites/", "sites", Site):
+            yield item
 
     async def update(self, site: Site):
         """Update a site's properties.

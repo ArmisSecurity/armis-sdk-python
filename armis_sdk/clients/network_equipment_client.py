@@ -1,6 +1,7 @@
 from typing import List
 from typing import Set
 
+import universalasync
 from httpx import HTTPStatusError
 
 from armis_sdk.core import response_utils
@@ -10,6 +11,7 @@ from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.site import Site
 
 
+@universalasync.wrap
 class NetworkEquipmentClient(
     BaseEntityClient
 ):  # pylint: disable=too-few-public-methods

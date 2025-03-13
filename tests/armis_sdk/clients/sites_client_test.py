@@ -231,7 +231,7 @@ async def test_list_sites(from_response, expected, httpx_mock: pytest_httpx.HTTP
     )
 
     sites_client = SitesClient()
-    sites = [site async for site in await sites_client.list()]
+    sites = [site async for site in sites_client.list()]
 
     assert sites == [expected]
 
@@ -280,7 +280,7 @@ async def test_list_sites_with_multiple_pages(
     )
 
     sites_client = SitesClient()
-    sites = [site async for site in await sites_client.list()]
+    sites = [site async for site in sites_client.list()]
 
     assert sites == [
         Site(id=1, name="mock_site_1"),
