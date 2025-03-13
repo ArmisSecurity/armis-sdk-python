@@ -21,6 +21,8 @@ class AsqRule(BaseEntity):
         AsqRule(and_=["asq1"])
         # or
         AsqRule(or_=["asq1"])
+        # or
+        AsqRule.from_asq("asq1")
         ```
 
         A rule that matches either `asq1` _or_ `asq2` (or both).
@@ -44,6 +46,13 @@ class AsqRule(BaseEntity):
 
     or_: Optional[List[Union[str, "AsqRule"]]] = Field(alias="or", default=None)
     """Rules that at least one of them must match."""
+
+    @classmethod
+    def from_asq(cls, asq: str) -> "AsqRule":
+        """
+        Create a `AsqRule` object from a single ASQ string.
+        """
+        return AsqRule(or_=[asq])
 
     @model_validator(mode="after")
     def validate_structure(self) -> "AsqRule":
