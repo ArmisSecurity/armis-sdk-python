@@ -3,8 +3,10 @@ import os
 import platform
 from typing import AsyncIterator
 from typing import Optional
+from typing import TypeVar
 
 import httpx
+import universalasync
 
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
@@ -25,8 +27,10 @@ USER_AGENT_PARTS = [
     httpx.Client().headers.get("User-Agent"),
     f"ArmisPythonSDK/v{VERSION}",
 ]
+DataTypeT = TypeVar("DataTypeT", dict, list)
 
 
+@universalasync.wrap
 class ArmisClient:  # pylint: disable=too-few-public-methods
     """
     A class that provides easy access to the Armis API, taking care of authenticating requests.
