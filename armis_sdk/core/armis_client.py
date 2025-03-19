@@ -3,7 +3,6 @@ import os
 import platform
 from typing import AsyncIterator
 from typing import Optional
-from typing import TypeVar
 
 import httpx
 
@@ -15,7 +14,7 @@ ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 BASE_URL = "https://{tenant}.armis.com"
-DEFAULT_PAGE_LENGTH = 100
+DEFAULT_PAGE_LENGTH = 1000
 try:
     VERSION = importlib.metadata.version("armis_sdk")
 except importlib.metadata.PackageNotFoundError:
@@ -26,7 +25,6 @@ USER_AGENT_PARTS = [
     httpx.Client().headers.get("User-Agent"),
     f"ArmisPythonSDK/v{VERSION}",
 ]
-DataTypeT = TypeVar("DataTypeT", dict, list)
 
 
 class ArmisClient:  # pylint: disable=too-few-public-methods
