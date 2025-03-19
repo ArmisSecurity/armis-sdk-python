@@ -16,7 +16,7 @@ ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 BASE_URL = "https://{tenant}.armis.com"
-DEFAULT_PAGE_LENGTH = 100
+DEFAULT_PAGE_LENGTH = 1000
 try:
     VERSION = importlib.metadata.version("armis_sdk")
 except importlib.metadata.PackageNotFoundError:
