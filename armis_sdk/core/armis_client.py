@@ -5,11 +5,10 @@ from typing import AsyncIterator
 from typing import Optional
 from typing import TypeVar
 
-from httpx_retries import Retry
-from httpx_retries import RetryTransport
-
 import httpx
 import universalasync
+from httpx_retries import Retry
+from httpx_retries import RetryTransport
 
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
