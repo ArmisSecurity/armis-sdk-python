@@ -38,6 +38,7 @@ DataTypeT = TypeVar("DataTypeT", dict, list)
 class ArmisClient:  # pylint: disable=too-few-public-methods
     """
     A class that provides easy access to the Armis API, taking care of:
+
     1. Authenticating requests.
     2. Retrying of failed requests (when applicable).
     3. Pagination of requests (when applicable).
