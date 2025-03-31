@@ -5,6 +5,9 @@ from typing import AsyncIterator
 from typing import Optional
 from typing import TypeVar
 
+from httpx_retries import Retry
+from httpx_retries import RetryTransport
+
 import httpx
 import universalasync
 
@@ -12,6 +15,7 @@ from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
 
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
+ARMIS_REQUEST_RETRIES = "ARMIS_REQUEST_RETRIES"
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
@@ -33,7 +37,10 @@ DataTypeT = TypeVar("DataTypeT", dict, list)
 @universalasync.wrap
 class ArmisClient:  # pylint: disable=too-few-public-methods
     """
-    A class that provides easy access to the Armis API, taking care of authenticating requests.
+    A class that provides easy access to the Armis API, taking care of:
+    1. Authenticating requests.
+    2. Retrying of failed requests (when applicable).
+    3. Pagination of requests (when applicable).
     """
 
     def __init__(
@@ -66,8 +73,13 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         self._auth = ArmisAuth(self._base_url, secret_key)
         self._user_agent = " ".join(USER_AGENT_PARTS)
         self._client_id = client_id
+        try:
+            self._default_retries = int(os.getenv(ARMIS_REQUEST_RETRIES, "0"))
+        except ValueError:
+            self._default_retries = 0
 
-    def client(self):
+    def client(self, retries: Optional[int] = None):
+        retries = retries if retries is not None else self._default_retries
         return httpx.AsyncClient(
             auth=self._auth,
             base_url=self._base_url,
@@ -75,6 +87,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 "User-Agent": self._user_agent,
                 "Armis-API-Client-Id": self._client_id,
             },
+            transport=RetryTransport(retry=Retry(total=retries)),
         )
 
     async def list(self, url: str, key: str) -> AsyncIterator[dict]:
