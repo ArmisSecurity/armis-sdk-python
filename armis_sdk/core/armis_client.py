@@ -13,12 +13,14 @@ from httpx_retries import RetryTransport
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
 
+ARMIS_BASE_DOMAIN = "ARMIS_BASE_DOMAIN"
+ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
 ARMIS_REQUEST_RETRIES = "ARMIS_REQUEST_RETRIES"
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
-ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
-BASE_URL = "https://{tenant}.armis.com"
+BASE_DOMAIN = "armis.com"
+BASE_URL = "https://{tenant}.{base_domain}"
 DEFAULT_PAGE_LENGTH = 1000
 try:
     VERSION = importlib.metadata.version("armis_sdk")
@@ -48,10 +50,12 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         tenant: Optional[str] = None,
         secret_key: Optional[str] = None,
         client_id: Optional[str] = None,
+        base_domain: Optional[str] = BASE_DOMAIN,
     ):
         tenant = os.getenv(ARMIS_TENANT, tenant)
         secret_key = os.getenv(ARMIS_SECRET_KEY, secret_key)
         client_id = os.getenv(ARMIS_CLIENT_ID, client_id)
+        base_domain = os.getenv(ARMIS_BASE_DOMAIN, base_domain)
 
         if not tenant:
             raise ValueError(
@@ -69,7 +73,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 f"or pass an explicit value to the constructor"
             )
 
-        self._base_url = BASE_URL.format(tenant=tenant)
+        self._base_url = BASE_URL.format(tenant=tenant, base_domain=base_domain)
         self._auth = ArmisAuth(self._base_url, secret_key)
         self._user_agent = " ".join(USER_AGENT_PARTS)
         self._client_id = client_id
