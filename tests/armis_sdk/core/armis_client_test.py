@@ -34,6 +34,7 @@ async def test_request_headers(httpx_mock: pytest_httpx.HTTPXMock):
 
 async def test_retries(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
+    monkeypatch.setenv("ARMIS_REQUEST_BACKOFF", "0")
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails

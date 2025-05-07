@@ -16,6 +16,7 @@ from armis_sdk.core.armis_auth import ArmisAuth
 ARMIS_BASE_DOMAIN = "ARMIS_BASE_DOMAIN"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
+ARMIS_REQUEST_BACKOFF = "ARMIS_REQUEST_BACKOFF"
 ARMIS_REQUEST_RETRIES = "ARMIS_REQUEST_RETRIES"
 ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
 ARMIS_TENANT = "ARMIS_TENANT"
@@ -78,12 +79,18 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         self._user_agent = " ".join(USER_AGENT_PARTS)
         self._client_id = client_id
         try:
-            self._default_retries = int(os.getenv(ARMIS_REQUEST_RETRIES, "0"))
+            self._default_retries = int(os.getenv(ARMIS_REQUEST_RETRIES, "3"))
         except ValueError:
             self._default_retries = 0
+        try:
+            self._default_backoff = float(os.getenv(ARMIS_REQUEST_BACKOFF, "0.5"))
+        except ValueError:
+            self._default_backoff = 0
 
-    def client(self, retries: Optional[int] = None):
+    def client(self, retries: Optional[int] = None, backoff: Optional[float] = None):
         retries = retries if retries is not None else self._default_retries
+        backoff = backoff if backoff is not None else self._default_backoff
+        retry = Retry(total=retries, backoff_factor=backoff)
         return httpx.AsyncClient(
             auth=self._auth,
             base_url=self._base_url,
@@ -91,7 +98,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 "User-Agent": self._user_agent,
                 "Armis-API-Client-Id": self._client_id,
             },
-            transport=RetryTransport(retry=Retry(total=retries)),
+            transport=RetryTransport(retry=retry),
         )
 
     async def list(self, url: str, key: str) -> AsyncIterator[dict]:
