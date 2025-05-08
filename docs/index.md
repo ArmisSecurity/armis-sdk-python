@@ -9,13 +9,14 @@ pip install armis_sdk
 ```
 ## Usage
 
-All interaction with the SDK happens through the [ArmisSdk][armis_sdk.core.armis_sdk.ArmisSdk] class. You'll need 3 things:
+All interaction with the SDK happens through the [ArmisSdk][armis_sdk.core.armis_sdk.ArmisSdk] class. You'll need a few things:
 
 1. **Tenant name**: The name of the tenant you want to interact with.
 2. **Secret key**: The secret key associated with the tenant, obtained from the tenant itself.
 3. **Client id**: A unique identifier for you application. Currently, this can be any string.
+4. **(optional) Base domain**: The base domain of you tenant, defaults to `armis.com`,
 
-You can either provide these values using the environment variables `ARMIS_TENANT`, `ARMIS_SECRET_KEY`, and `ARMIS_CLIENT_ID`:
+You can either provide these values using the environment variables `ARMIS_TENANT`, `ARMIS_SECRET_KEY`, `ARMIS_CLIENT_ID`, and `ARMIS_BASE_DOMAIN`:
 ```python linenums="1"
 from armis_sdk import ArmisSdk
 
@@ -26,7 +27,7 @@ or by passing them explicitly:
 ```python linenums="1"
 from armis_sdk import ArmisSdk
 
-armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>", client_id="<client_id>")
+armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>", client_id="<client_id>", base_domain="<base_domain>")
 ```
 !!!tip
 
