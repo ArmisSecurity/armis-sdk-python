@@ -23,6 +23,7 @@ plugins = ['pydantic.mypy']
 [tool.poetry.dependencies]
 pydantic = "*"
 httpx = "*"
+httpx-retries = "*"
 universalasync = "*"
 
 [tool.poetry.group.build.dependencies]

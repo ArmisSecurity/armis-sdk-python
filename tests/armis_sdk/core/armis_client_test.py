@@ -32,6 +32,70 @@ async def test_request_headers(httpx_mock: pytest_httpx.HTTPXMock):
         await client.get("/mock/endpoint")
 
 
+async def test_retries(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
+    monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
+    monkeypatch.setenv("ARMIS_REQUEST_BACKOFF", "0")
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails
+    )
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.GATEWAY_TIMEOUT,  # first retry, fails again
+    )
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.OK,  # second retry, succeeds
+    )
+
+    armis_client = ArmisClient()
+    async with armis_client.client() as client:
+        response = await client.get("/mock/endpoint")
+
+    assert response.status_code == httpx.codes.OK
+
+
+async def test_retries_with_eventual_failure(
+    monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
+):
+    monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails
+    )
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.GATEWAY_TIMEOUT,  # first retry, fails again
+    )
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.GATEWAY_TIMEOUT,  # second retry, fails again
+    )
+
+    armis_client = ArmisClient()
+    async with armis_client.client() as client:
+        response = await client.get("/mock/endpoint")
+
+    assert response.status_code == httpx.codes.GATEWAY_TIMEOUT
+
+
+async def test_retrie_with_writable_method(
+    monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
+):
+    monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
+    httpx_mock.add_response(
+        method="POST",
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails - shouldn't retry!
+    )
+
+    armis_client = ArmisClient()
+    async with armis_client.client() as client:
+        response = await client.post("/mock/endpoint")
+
+    assert response.status_code == httpx.codes.GATEWAY_TIMEOUT
+
+
 async def test_list_with_multiple_pages(
     monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
 ):
