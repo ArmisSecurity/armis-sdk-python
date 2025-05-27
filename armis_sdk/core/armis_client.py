@@ -87,10 +87,29 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         except ValueError:
             self._default_backoff = 0
 
+    def _get_proxy_config(self):
+        """Get proxy configuration from environment variables."""
+        proxy = (
+            os.getenv('HTTPS_PROXY') or 
+            os.getenv('https_proxy') or 
+            os.getenv('HTTP_PROXY') or 
+            os.getenv('http_proxy')
+        )
+        return proxy
+
     def client(self, retries: Optional[int] = None, backoff: Optional[float] = None):
         retries = retries if retries is not None else self._default_retries
         backoff = backoff if backoff is not None else self._default_backoff
         retry = Retry(total=retries, backoff_factor=backoff)
+        
+        proxy = self._get_proxy_config()
+        
+        if proxy:
+            http_transport = httpx.AsyncHTTPTransport(proxy=proxy)
+            transport = RetryTransport(retry=retry, transport=http_transport)
+        else:
+            transport = RetryTransport(retry=retry)
+        
         return httpx.AsyncClient(
             auth=self._auth,
             base_url=self._base_url,
@@ -98,7 +117,8 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 "User-Agent": self._user_agent,
                 "Armis-API-Client-Id": self._client_id,
             },
-            transport=RetryTransport(retry=retry),
+            transport=transport,
+            trust_env=True,
         )
 
     async def list(self, url: str, key: str) -> AsyncIterator[dict]:
