@@ -153,34 +153,30 @@ async def test_list_with_multiple_pages(
 
 async def test_proxy_configuration(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     """Test that proxy environment variables are properly configured in the client."""
-    
+
     proxy_url = "http://test-proxy:8080"
     monkeypatch.setenv("HTTPS_PROXY", proxy_url)
-    
+
     httpx_mock.add_response(
         method="POST",
         url="https://mock_tenant.armis.com/api/v1/access_token/",
-        json={
-            "data": {
-                "access_token": "mock_token",
-                "expires_in": 3600
-            }
-        }
+        json={"data": {"access_token": "mock_token", "expires_in": 3600}},
     )
-    
+
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
-        json={"success": True}
+        url="https://mock_tenant.armis.com/mock/endpoint", json={"success": True}
     )
 
     armis_client = ArmisClient()
-    
+
     proxy = armis_client._get_proxy_config()
     assert proxy == proxy_url, f"Expected {proxy_url}, got {proxy}"
-    
+
     async with armis_client.client() as client:
-        assert client._trust_env is True, "trust_env should be True for environment variable support"        
-        
+        assert (
+            client._trust_env is True
+        ), "trust_env should be True for environment variable support"
+
         # Test that requests work with proxy configuration
         response = await client.get("/mock/endpoint")
         assert response.status_code == 200
@@ -189,24 +185,24 @@ async def test_proxy_configuration(monkeypatch, httpx_mock: pytest_httpx.HTTPXMo
 
 async def test_proxy_environment_variable_priority(monkeypatch):
     """Test that proxy environment variables are checked in correct priority order."""
-    
+
     monkeypatch.setenv("HTTP_PROXY", "http://lower-priority:8080")
     monkeypatch.setenv("HTTPS_PROXY", "http://higher-priority:8080")
     monkeypatch.setenv("http_proxy", "http://lowercase-priority:8080")
 
     armis_client = ArmisClient()
-    
+
     proxy = armis_client._get_proxy_config()
     assert proxy == "http://higher-priority:8080", "HTTPS_PROXY should take priority"
 
 
 async def test_proxy_with_authentication(monkeypatch):
     """Test proxy configuration with username and password."""
-    
+
     proxy_url = "http://user:pass@proxy.company.com:8080"
     monkeypatch.setenv("HTTPS_PROXY", proxy_url)
 
     armis_client = ArmisClient()
-    
+
     proxy = armis_client._get_proxy_config()
     assert proxy == proxy_url, "Proxy with auth should be configured correctly"
