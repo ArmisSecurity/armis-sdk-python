@@ -169,7 +169,7 @@ async def test_list_with_multiple_pages(
 async def test_proxy(monkeypatch, httpx_mock, env_var, proxy_url, expected_proxy):
     monkeypatch.setenv(env_var, proxy_url)
 
-    # `proxy_url` must match, 
+    # proxy_url must match,
     # Order of parameters in the query string does not matter
     httpx_mock.add_response(
         url="https://mock_tenant.armis.com/mock/endpoint",
