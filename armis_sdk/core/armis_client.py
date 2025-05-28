@@ -44,6 +44,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
     1. Authenticating requests.
     2. Retrying of failed requests (when applicable).
     3. Pagination of requests (when applicable).
+    4. Proxy configuration via HTTPS_PROXY and HTTP_PROXY environment variables.
     """
 
     def __init__(
@@ -87,24 +88,12 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         except ValueError:
             self._default_backoff = 0
 
-    def _get_proxy_config(self):
-        """Get proxy configuration from environment variables."""
-        proxy = (
-            os.getenv("HTTPS_PROXY")
-            or os.getenv("https_proxy")
-            or os.getenv("HTTP_PROXY")
-            or os.getenv("http_proxy")
-        )
-        return proxy
-
     def client(self, retries: Optional[int] = None, backoff: Optional[float] = None):
         retries = retries if retries is not None else self._default_retries
         backoff = backoff if backoff is not None else self._default_backoff
         retry = Retry(total=retries, backoff_factor=backoff)
 
-        proxy = self._get_proxy_config()
-
-        if proxy:
+        if proxy := self._get_proxy_config():
             http_transport = httpx.AsyncHTTPTransport(proxy=proxy)
             transport = RetryTransport(retry=retry, transport=http_transport)
         else:
@@ -162,3 +151,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 for item in items:
                     yield item
                 from_ = data.get("next")
+
+    def _get_proxy_config(self):
+        """Get proxy configuration from environment variables."""
+        return os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
