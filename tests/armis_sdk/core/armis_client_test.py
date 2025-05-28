@@ -4,6 +4,7 @@ import platform
 import httpx
 import pytest
 import pytest_httpx
+
 from armis_sdk.core.armis_client import ArmisClient
 
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
