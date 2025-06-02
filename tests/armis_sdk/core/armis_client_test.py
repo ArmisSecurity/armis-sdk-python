@@ -2,6 +2,7 @@ import importlib.metadata
 import platform
 
 import httpx
+import pytest
 import pytest_httpx
 
 from armis_sdk.core.armis_client import ArmisClient
@@ -149,3 +150,34 @@ async def test_list_with_multiple_pages(
         {"id": "4", "name": "mock_site_4"},
         {"id": "5", "name": "mock_site_5"},
     ]
+
+
+@pytest.mark.parametrize(
+    ["env_var", "proxy_url", "expected_proxy"],
+    [
+        (
+            "HTTP_PROXY",
+            "http://test-proxy:8080?b=1&a=2",
+            "http://test-proxy:8080/?a=2&b=1",
+        ),
+        (
+            "HTTPS_PROXY",
+            "https://user:pass@proxy.company.com:8080?b=1&a=2&c=3",
+            "https://user:pass@proxy.company.com:8080/?c=3&b=1&a=2",
+        ),
+    ],
+)
+async def test_proxy(monkeypatch, httpx_mock, env_var, proxy_url, expected_proxy):
+    monkeypatch.setenv(env_var, proxy_url)
+
+    # proxy_url must match,
+    # Order of parameters in the query string does not matter
+    httpx_mock.add_response(
+        url="https://mock_tenant.armis.com/mock/endpoint",
+        proxy_url=expected_proxy,
+        json={"ok": True},
+    )
+
+    async with ArmisClient().client() as client:
+        resp = await client.get("/mock/endpoint")
+        assert resp.json() == {"ok": True}
