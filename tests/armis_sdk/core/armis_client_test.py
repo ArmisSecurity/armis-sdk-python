@@ -153,7 +153,7 @@ async def test_list_with_multiple_pages(
 
 
 @pytest.mark.parametrize(
-    "env_var,proxy_url, expected_proxy",
+    ["env_var", "proxy_url", "expected_proxy"],
     [
         (
             "HTTP_PROXY",
