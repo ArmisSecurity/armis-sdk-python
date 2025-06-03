@@ -1,6 +1,6 @@
 [project]
 name = "armis_sdk"
-version = "0.3.0"
+version = "0.4.0"
 description = "The Armis SDK is a package that encapsulates common use-cases for interacting with the Armis platform."
 authors = [
     { name = "Shai Lachmanovich", email = "shai@armis.com" },
