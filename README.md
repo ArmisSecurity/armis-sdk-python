@@ -16,11 +16,11 @@ For full documentation, please visit our [dedicated](https://armis-python-sdk.re
 
 ## Usage
 
-All interaction with the SDK happens through the `ArmisSdk` class. You'll need 3 things:
+All interaction with the SDK happens through the `ArmisSdk` class. You'll need three things:
 
 1. **Tenant name**: The name of the tenant you want to interact with.
 2. **Secret key**: The secret key associated with the tenant, obtained from the tenant itself.
-3. **Client id**: A unique identifier for you application. Currently, this can be any string.
+3. **Client id**: A unique identifier for your application. Currently, this can be any string.
 
 You can either provide these values using the environment variables `ARMIS_TENANT`, `ARMIS_SECRET_KEY`, and `ARMIS_CLIENT_ID`:
 ```python
@@ -37,7 +37,7 @@ armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>", client_id="<c
 ```
 
 > [!TIP]
-> If you're building an application that interacts with multiple tenants, you can populae only the `ARMIS_CLIENT_ID` environment variable and pass the `tenant` and `secret_key` explicitly:
+> If you're building an application that interacts with multiple tenants, you can populate only the `ARMIS_CLIENT_ID` environment variable and pass the `tenant` and `secret_key` explicitly:
 > ```python
 > from armis_sdk import ArmisSdk
 >
@@ -45,7 +45,7 @@ armis_sdk = ArmisSdk(tenant="<tenant>", secret_key="<secret_key>", client_id="<c
 > ```
 
 ## Entity clients
-Once you have an instance of `ArmisSdk`, you can start interacting with the various clients, each handles use-cases of a specific entity.
+Once you have an instance of `ArmisSdk`, you can start interacting with the various clients. Each handles use-cases of a specific entity.
 
 
 > [!NOTE]

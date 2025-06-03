@@ -13,7 +13,7 @@ from armis_sdk.entities.site import Site
 
 @universalasync.wrap
 class NetworkEquipmentClient(
-    BaseEntityClient
+    BaseEntityClient,
 ):  # pylint: disable=too-few-public-methods
     """
     A client for interacting with a site's network equipment.
