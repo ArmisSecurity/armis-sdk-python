@@ -6,6 +6,9 @@ on:
     types:
       - published
   workflow_dispatch:
+  repository_dispatch:
+    types:
+      - trigger-publish
 
 jobs:
   build:

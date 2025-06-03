@@ -32,6 +32,7 @@ jobs:
         ReleaseName: ${{ env.VERSION }}
 
     - name: Create release if needed
+      id: create-release
       uses: actions/create-release@v1
       if: steps.check-release-exists.outputs.ReleaseExists == 'false'
       with:
@@ -44,3 +45,9 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Trigger publish to Pypi
+      uses: peter-evans/repository-dispatch@v3
+      if: steps.create-release.outcome == 'success'
+      with:
+        event-type: trigger-publish
