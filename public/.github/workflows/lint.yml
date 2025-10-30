@@ -1,0 +1,19 @@
+name: Run linter
+
+on:
+  - push
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: ./.github/workflows/install_deps
+
+    - name: Run linter
+      run: poetry run pylint .
