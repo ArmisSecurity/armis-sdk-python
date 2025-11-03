@@ -15,7 +15,7 @@ class BaseEntityClient:  # pylint: disable=too-few-public-methods
 
     @universalasync.async_to_sync_wraps
     async def _list(
-        self, url: str, key: str, model: Type[BaseEntityT]
+        self, url: str, model: Type[BaseEntityT]
     ) -> AsyncIterator[BaseEntityT]:
-        async for item in self._armis_client.list(url, key):
+        async for item in self._armis_client.list(url):
             yield model.model_validate(item)

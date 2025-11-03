@@ -23,9 +23,8 @@ async def test_request_headers(httpx_mock: pytest_httpx.HTTPXMock):
                 f"python-httpx/{httpx.__version__} "
                 f"ArmisPythonSDK/v{VERSION}"
             ),
-            "Armis-API-Client-Id": "mock_client_id",
         },
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
     )
 
     armis_client = ArmisClient()
@@ -37,15 +36,15 @@ async def test_retries(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
     monkeypatch.setenv("ARMIS_REQUEST_BACKOFF", "0")
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails
     )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # first retry, fails again
     )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.OK,  # second retry, succeeds
     )
 
@@ -61,15 +60,15 @@ async def test_retries_with_eventual_failure(
 ):
     monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails
     )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # first retry, fails again
     )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # second retry, fails again
     )
 
@@ -86,7 +85,7 @@ async def test_retrie_with_writable_method(
     monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
     httpx_mock.add_response(
         method="POST",
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         status_code=httpx.codes.GATEWAY_TIMEOUT,  # original request, fails - shouldn't retry!
     )
 
@@ -102,46 +101,40 @@ async def test_list_with_multiple_pages(
 ):
     monkeypatch.setenv("ARMIS_PAGE_SIZE", "2")
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/api/v1/sites/?from=0&length=2",
+        url="https://api.armis.com/v3/settings/sites?limit=2",
         method="GET",
         json={
-            "data": {
-                "next": 2,
-                "sites": [
-                    {"id": "1", "name": "mock_site_1"},
-                    {"id": "2", "name": "mock_site_2"},
-                ],
-            }
+            "next": 2,
+            "items": [
+                {"id": "1", "name": "mock_site_1"},
+                {"id": "2", "name": "mock_site_2"},
+            ],
         },
     )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/api/v1/sites/?from=2&length=2",
+        url="https://api.armis.com/v3/settings/sites?after=2&limit=2",
         method="GET",
         json={
-            "data": {
-                "next": 4,
-                "sites": [
-                    {"id": "3", "name": "mock_site_3"},
-                    {"id": "4", "name": "mock_site_4"},
-                ],
-            }
+            "next": 4,
+            "items": [
+                {"id": "3", "name": "mock_site_3"},
+                {"id": "4", "name": "mock_site_4"},
+            ],
         },
     )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/api/v1/sites/?from=4&length=2",
+        url="https://api.armis.com/v3/settings/sites?after=4&limit=2",
         method="GET",
         json={
-            "data": {
-                "next": None,
-                "sites": [
-                    {"id": "5", "name": "mock_site_5"},
-                ],
-            }
+            "next": None,
+            "items": [
+                {"id": "5", "name": "mock_site_5"},
+            ],
         },
     )
 
     armis_client = ArmisClient()
-    items = [item async for item in armis_client.list("/api/v1/sites/", "sites")]
+    items = [item async for item in armis_client.list("/v3/settings/sites")]
 
     assert items == [
         {"id": "1", "name": "mock_site_1"},
@@ -173,7 +166,7 @@ async def test_proxy(monkeypatch, httpx_mock, env_var, proxy_url, expected_proxy
     # proxy_url must match,
     # Order of parameters in the query string does not matter
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/mock/endpoint",
+        url="https://api.armis.com/mock/endpoint",
         proxy_url=expected_proxy,
         json={"ok": True},
     )
