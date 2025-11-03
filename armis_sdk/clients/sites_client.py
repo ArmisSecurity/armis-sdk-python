@@ -3,8 +3,6 @@ from typing import List
 
 import universalasync
 
-from armis_sdk.clients.network_equipment_client import NetworkEquipmentClient
-from armis_sdk.clients.site_integrations_client import SiteIntegrationsClient
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.core.base_entity_client import BaseEntityClient
@@ -18,16 +16,7 @@ class SitesClient(BaseEntityClient):
     A client for interacting with sites.
 
     The primary entity for this client is [Site][armis_sdk.entities.site.Site].
-
-    Attributes:
-        network_equipment_client (NetworkEquipmentClient): An instance of [NetworkEquipmentClient][armis_sdk.clients.network_equipment_client.NetworkEquipmentClient]
-        site_integrations_client (SiteIntegrationsClient): An instance of [SiteIntegrationsClient][armis_sdk.clients.site_integrations_client.SiteIntegrationsClient]
     """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.network_equipment_client = NetworkEquipmentClient(self._armis_client)
-        self.site_integrations_client = SiteIntegrationsClient(self._armis_client)
 
     async def create(self, site: Site) -> Site:
         """Create a `Site`.
@@ -69,21 +58,13 @@ class SitesClient(BaseEntityClient):
             raise ArmisError("Can't create a site without a name.")
 
         payload = site.model_dump(
-            by_alias=True,
-            exclude={"children", "network_equipment_device_ids"},
+            exclude={"children"},
             exclude_none=True,
         )
         async with self._armis_client.client() as client:
-            response = await client.post("/api/v1/sites/", json=payload)
+            response = await client.post("/v3/settings/sites", json=payload)
             data = response_utils.get_data_dict(response)
-            created_site = site.model_copy(update={"id": int(data["id"])}, deep=True)
-
-        if site.network_equipment_device_ids:
-            await self.network_equipment_client.add(
-                created_site, site.network_equipment_device_ids
-            )
-
-        return created_site
+            return Site.model_validate(data)
 
     async def delete(self, site: Site):
         """Delete a `Site`.
@@ -112,10 +93,10 @@ class SitesClient(BaseEntityClient):
             raise ArmisError("Can't delete a site without an id.")
 
         async with self._armis_client.client() as client:
-            response = await client.delete(f"/api/v1/sites/{site.id}/")
+            response = await client.delete(f"/v3/settings/sites/{site.id}")
             response_utils.raise_for_status(response)
 
-    async def get(self, site_id: str) -> Site:
+    async def get(self, site_id: int) -> Site:
         """Get a `Site` by its ID.
 
         Args:
@@ -144,7 +125,7 @@ class SitesClient(BaseEntityClient):
             ```
         """
         async with self._armis_client.client() as client:
-            response = await client.get(f"/api/v1/sites/{site_id}/")
+            response = await client.get(f"/v3/settings/sites/{site_id}")
             data = response_utils.get_data_dict(response)
             return Site.model_validate(data)
 
@@ -218,10 +199,10 @@ class SitesClient(BaseEntityClient):
             Site(id=2)
             ```
         """
-        async for item in self._list("/api/v1/sites/", "sites", Site):
+        async for item in self._list("/v3/settings/sites", Site):
             yield item
 
-    async def update(self, site: Site):
+    async def update(self, site: Site) -> Site:
         """Update a site's properties.
 
         Args:
@@ -253,23 +234,14 @@ class SitesClient(BaseEntityClient):
             )
 
         data = site.model_dump(
-            by_alias=True,
-            exclude={
-                "children",
-                "id",
-                "integration_ids",
-                "network_equipment_device_ids",
-            },
+            exclude={"children", "id"},
             exclude_none=True,
         )
 
-        if data:
-            async with self._armis_client.client() as client:
-                response = await client.patch(f"/api/v1/sites/{site.id}/", json=data)
-                response_utils.raise_for_status(response)
+        if not data:
+            return site
 
-        if site.network_equipment_device_ids is not None:
-            await self.network_equipment_client.update(site)
-
-        if site.integration_ids is not None:
-            await self.site_integrations_client.update(site)
+        async with self._armis_client.client() as client:
+            response = await client.patch(f"/v3/settings/sites/{site.id}", json=data)
+            data = response_utils.get_data_dict(response)
+            return Site.model_validate(data)

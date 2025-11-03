@@ -12,16 +12,17 @@ from httpx_retries import RetryTransport
 
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
+from armis_sdk.core.client_credentials import ClientCredentials
 
-ARMIS_BASE_DOMAIN = "ARMIS_BASE_DOMAIN"
+API_BASE_URL = "https://api.armis.com"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
+ARMIS_CLIENT_SECRET = "ARMIS_CLIENT_SECRET"
 ARMIS_PAGE_SIZE = "ARMIS_PAGE_SIZE"
 ARMIS_REQUEST_BACKOFF = "ARMIS_REQUEST_BACKOFF"
 ARMIS_REQUEST_RETRIES = "ARMIS_REQUEST_RETRIES"
-ARMIS_SECRET_KEY = "ARMIS_SECRET_KEY"
-ARMIS_TENANT = "ARMIS_TENANT"
-BASE_DOMAIN = "armis.com"
-BASE_URL = "https://{tenant}.{base_domain}"
+ARMIS_SCOPES = "ARMIS_SCOPES"
+ARMIS_AUDIENCE = "ARMIS_AUDIENCE"
+ARMIS_VENDOR_ID = "ARMIS_VENDOR_ID"
 DEFAULT_PAGE_LENGTH = 1000
 try:
     VERSION = importlib.metadata.version("armis_sdk")
@@ -47,38 +48,10 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
     4. Proxy configuration via HTTPS_PROXY and HTTP_PROXY environment variables.
     """
 
-    def __init__(
-        self,
-        tenant: Optional[str] = None,
-        secret_key: Optional[str] = None,
-        client_id: Optional[str] = None,
-        base_domain: Optional[str] = BASE_DOMAIN,
-    ):
-        tenant = os.getenv(ARMIS_TENANT, tenant)
-        secret_key = os.getenv(ARMIS_SECRET_KEY, secret_key)
-        client_id = os.getenv(ARMIS_CLIENT_ID, client_id)
-        base_domain = os.getenv(ARMIS_BASE_DOMAIN, base_domain)
-
-        if not tenant:
-            raise ValueError(
-                f"Either populate the {ARMIS_TENANT!r} environment variable "
-                f"or pass an explicit value to the constructor"
-            )
-        if not secret_key:
-            raise ValueError(
-                f"Either populate the {ARMIS_SECRET_KEY!r} environment variable "
-                f"or pass an explicit value to the constructor"
-            )
-        if not client_id:
-            raise ValueError(
-                f"Either populate the {ARMIS_CLIENT_ID!r} environment variable "
-                f"or pass an explicit value to the constructor"
-            )
-
-        self._base_url = BASE_URL.format(tenant=tenant, base_domain=base_domain)
-        self._auth = ArmisAuth(self._base_url, secret_key)
+    def __init__(self, credentials: Optional[ClientCredentials] = None):
+        credentials = self._get_credentials(credentials)
+        self._auth = ArmisAuth(API_BASE_URL, credentials)
         self._user_agent = " ".join(USER_AGENT_PARTS)
-        self._client_id = client_id
         try:
             self._default_retries = int(os.getenv(ARMIS_REQUEST_RETRIES, "3"))
         except ValueError:
@@ -101,21 +74,19 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
 
         return httpx.AsyncClient(
             auth=self._auth,
-            base_url=self._base_url,
+            base_url=API_BASE_URL,
             headers={
                 "User-Agent": self._user_agent,
-                "Armis-API-Client-Id": self._client_id,
             },
             transport=transport,
             trust_env=True,
         )
 
-    async def list(self, url: str, key: str) -> AsyncIterator[dict]:
+    async def list(self, url: str) -> AsyncIterator[dict]:
         """List all items from a paginated endpoint.
 
         Args:
             url (str): The relative endpoint URL.
-            key (str): The key inside the data object that contains the items.
 
         Returns:
             An (async) iterator of `dict`s.
@@ -129,7 +100,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
 
             async def main():
                 armis_client = ArmisClient()
-                async for item in armis_client.list("/api/v1/sites/", "sites"):
+                async for item in armis_client.list("/v3/settings/sites"):
                     print(item)
 
             asyncio.run(main())
@@ -142,16 +113,63 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         """
         page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
         async with self.client() as client:
-            from_ = 0
-            while from_ is not None:
-                params = {"from": from_, "length": page_size}
+            params = {"limit": page_size}
+            while True:
                 response = await client.get(url, params=params)
                 data = response_utils.get_data_dict(response)
-                items = data[key]
+                items = data["items"]
                 for item in items:
                     yield item
-                from_ = data.get("next")
+                if next_ := data.get("next"):
+                    params["after"] = next_
+                else:
+                    break
 
-    def _get_proxy_config(self):
+    @classmethod
+    def _get_credentials(
+        cls, credentials: Optional[ClientCredentials]
+    ) -> ClientCredentials:
+        credentials = credentials or ClientCredentials()
+        credentials.vendor_id = credentials.vendor_id or os.getenv(ARMIS_VENDOR_ID)
+        credentials.audience = credentials.audience or os.getenv(ARMIS_AUDIENCE)
+        credentials.client_id = credentials.client_id or os.getenv(ARMIS_CLIENT_ID)
+        credentials.client_secret = credentials.client_secret or os.getenv(
+            ARMIS_CLIENT_SECRET
+        )
+        env_scopes = os.getenv(ARMIS_SCOPES)
+        credentials.scopes = credentials.scopes or (
+            env_scopes.split(",") if env_scopes else []
+        )
+
+        if not credentials.audience:
+            raise ValueError(
+                f"Either populate the {ARMIS_AUDIENCE!r} environment variable "
+                "or pass an explicit value to the ClientCredentials class"
+            )
+        if not credentials.client_id:
+            raise ValueError(
+                f"Either populate the {ARMIS_CLIENT_ID!r} environment variable "
+                "or pass an explicit value to the ClientCredentials class"
+            )
+        if not credentials.client_secret:
+            raise ValueError(
+                f"Either populate the {ARMIS_CLIENT_SECRET!r} environment variable "
+                "or pass an explicit value to the ClientCredentials class"
+            )
+        if not credentials.scopes:
+            raise ValueError(
+                f"Either populate the {ARMIS_SCOPES!r} environment variable "
+                "or pass an explicit value to the ClientCredentials class"
+            )
+        if not credentials.vendor_id:
+            raise ValueError(
+                f"Either populate the {ARMIS_VENDOR_ID!r} environment variable "
+                "or pass an explicit value to the ClientCredentials class"
+            )
+
+        return credentials
+
+    @classmethod
+    def _get_proxy_config(cls):
         """Get proxy configuration from environment variables."""
         return os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
