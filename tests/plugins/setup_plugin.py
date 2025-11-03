@@ -6,23 +6,29 @@ import pytest_httpx
 
 @pytest.fixture
 def setup_env_variables(monkeypatch):
+    monkeypatch.setenv("ARMIS_AUDIENCE", "https://mock.armis.com/")
     monkeypatch.setenv("ARMIS_CLIENT_ID", "mock_client_id")
-    monkeypatch.setenv("ARMIS_SECRET_KEY", "mock_secret_key")
-    monkeypatch.setenv("ARMIS_TENANT", "mock_tenant")
+    monkeypatch.setenv("ARMIS_CLIENT_SECRET", "mock_client_secret")
+    monkeypatch.setenv("ARMIS_SCOPES", "ALL")
+    monkeypatch.setenv("ARMIS_VENDOR_ID", "mock_vendor_id")
 
 
 @pytest.fixture
 def authorized(httpx_mock: pytest_httpx.HTTPXMock):
-    expire_at = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
-        minutes=1
-    )
     httpx_mock.add_response(
-        url="https://mock_tenant.armis.com/api/v1/access_token/",
+        url="https://api.armis.com/v3/oauth/token",
         method="POST",
+        match_json={
+            "grant_type": "client_credentials",
+            "vendor_id": "mock_vendor_id",
+            "audience": "https://mock.armis.com/",
+            "client_id": "mock_client_id",
+            "client_secret": "mock_client_secret",
+            "scopes": ["ALL"],
+        },
         json={
-            "data": {
-                "access_token": "mock_access_token",
-                "expiration_utc": expire_at.isoformat(),
-            }
+            "access_token": "mock_access_token",
+            "token_type": "Bearer",
+            "expires_in": datetime.timedelta(minutes=1).total_seconds(),
         },
     )
