@@ -67,7 +67,7 @@ class Site(BaseEntity):
     tier: Optional[str] = None
     """The tier of the site."""
 
-    asq_rule: Optional[AsqRule] = Field(alias="rule", default=None)
+    asq_rule: Optional[AsqRule] = Field(default=None)
     """The ASQ rule of the site."""
 
     network_equipment_device_ids: Annotated[
