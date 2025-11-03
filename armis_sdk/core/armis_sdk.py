@@ -1,8 +1,8 @@
 from typing import Optional
 
 from armis_sdk.clients.sites_client import SitesClient
-from armis_sdk.core import armis_client
 from armis_sdk.core.armis_client import ArmisClient
+from armis_sdk.core.client_credentials import ClientCredentials
 
 
 class ArmisSdk:  # pylint: disable=too-few-public-methods
@@ -31,17 +31,6 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
         ```
     """
 
-    def __init__(
-        self,
-        tenant: Optional[str] = None,
-        secret_key: Optional[str] = None,
-        client_id: Optional[str] = None,
-        base_domain: Optional[str] = armis_client.BASE_DOMAIN,
-    ):
-        self.client = ArmisClient(
-            tenant=tenant,
-            client_id=client_id,
-            secret_key=secret_key,
-            base_domain=base_domain,
-        )
-        self.sites = SitesClient(self.client)
+    def __init__(self, credentials: Optional[ClientCredentials] = None):
+        self.client: ArmisClient = ArmisClient(credentials=credentials)
+        self.sites: SitesClient = SitesClient(self.client)
