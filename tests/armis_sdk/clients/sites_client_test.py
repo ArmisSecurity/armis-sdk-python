@@ -123,7 +123,7 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
 
 async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
-        url="https://api.armis.com/v3/settings/sites?limit=1000",
+        url="https://api.armis.com/v3/settings/sites?limit=100",
         method="GET",
         json={
             "items": [
@@ -224,7 +224,7 @@ async def test_hierarchy(httpx_mock: pytest_httpx.HTTPXMock):
 )
 async def test_list_sites(from_response, expected, httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
-        url="https://api.armis.com/v3/settings/sites?limit=1000",
+        url="https://api.armis.com/v3/settings/sites?limit=100",
         method="GET",
         json={"items": [from_response]},
     )
