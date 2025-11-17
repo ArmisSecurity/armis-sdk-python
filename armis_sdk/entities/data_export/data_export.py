@@ -9,6 +9,7 @@ class DataExport(BaseModel):
     """
     The `DataExport` entity represents the data export of an entity.
     """
+
     enabled: bool
     """Whether the entity is enabled or not for data export."""
 

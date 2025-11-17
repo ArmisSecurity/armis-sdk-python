@@ -11,6 +11,7 @@ class Application(BaseExportedEntity):
     """
     This class represents an application row that was exported using the data export API.
     """
+
     entity_name: ClassVar[str] = "applications"
 
     device_id: int
@@ -57,7 +58,9 @@ class Application(BaseExportedEntity):
             vendor=series.loc["vendor"],
             name=series.loc["name"],
             version=series.loc["version"],
-            cpe=cls._value_or_none(series.loc["cpe"] if "cpe" in series.index else None),
+            cpe=cls._value_or_none(
+                series.loc["cpe"] if "cpe" in series.index else None
+            ),
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series["last_seen"].to_pydatetime(),
         )

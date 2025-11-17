@@ -11,13 +11,11 @@ T = TypeVar("T", bound="BaseExportedEntity")
 class BaseExportedEntity(BaseModel, abc.ABC):
     @classmethod
     @abc.abstractmethod
-    def series_to_model(cls: Type[T], series: pandas.Series) -> T:
-        ...
+    def series_to_model(cls: Type[T], series: pandas.Series) -> T: ...
 
     @property
     @abc.abstractmethod
-    def entity_name(self):
-        ...
+    def entity_name(self): ...
 
     @classmethod
     def _to_list(cls, value) -> list:

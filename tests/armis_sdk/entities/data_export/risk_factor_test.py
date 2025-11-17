@@ -10,9 +10,21 @@ from armis_sdk.entities.data_export.risk_factor import RiskFactorRecommendedActi
 RiskFactorNT = collections.namedtuple(
     "RiskFactorNT",
     [
-        "device_id", "category", "type", "description", "score", "status", "group", "remidiation",
-        "remidiation_description", "remoidiation_recommended_actions", "first_seen", "last_seen",
-        "status_update_time", "status_updated_by_user_id", "status_update_reason",
+        "device_id",
+        "category",
+        "type",
+        "description",
+        "score",
+        "status",
+        "group",
+        "remidiation",
+        "remidiation_description",
+        "remoidiation_recommended_actions",
+        "first_seen",
+        "last_seen",
+        "status_update_time",
+        "status_updated_by_user_id",
+        "status_update_reason",
     ],
 )
 
@@ -30,7 +42,14 @@ def test_series_to_model():
             "remidiation": "remediation1",
             "remidiation_description": "remediation_description1",
             "remoidiation_recommended_actions": json.dumps(
-                [{"id": 1, "title": "title1", "description": "description1", "type": "type1"}],
+                [
+                    {
+                        "id": 1,
+                        "title": "title1",
+                        "description": "description1",
+                        "type": "type1",
+                    }
+                ],
             ),
             "first_seen": pandas.Timestamp.fromisoformat("2025-11-01"),
             "last_seen": pandas.Timestamp.fromisoformat("2025-11-04"),

@@ -92,7 +92,9 @@ class DataExportClient(BaseEntityClient):
         """
         data_export = await self.get(entity)
         if not data_export.enabled:
-            raise ArmisError("Data export is disabled for this entity, please enable it first.")
+            raise ArmisError(
+                "Data export is disabled for this entity, please enable it first."
+            )
 
         if data_export.file_format != "parquet":
             raise ArmisError("Only parquet files supported")
@@ -162,5 +164,7 @@ class DataExportClient(BaseEntityClient):
         """
         data = {"enabled": enabled}
         async with self._armis_client.client() as client:
-            response = await client.patch(f"/v3/data-export/{entity.entity_name}", json=data)
+            response = await client.patch(
+                f"/v3/data-export/{entity.entity_name}", json=data
+            )
             response_utils.raise_for_status(response)

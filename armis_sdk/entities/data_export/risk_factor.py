@@ -24,8 +24,9 @@ class RiskFactorRecommendedAction(BaseModel):
     """
     The description of the recommended action
 
-    **Example**: `Regularly update all operating systems and firmware on network devices to the latest versions
-    to reduce the potential for exploitation of vulnerabilities via obsolete protocols.`
+    **Example**: `Regularly update all operating systems and firmware on network devices 
+    to the latest versions to reduce the potential for exploitation of vulnerabilities 
+    via obsolete protocols.`
     """
 
     type: str
@@ -40,6 +41,7 @@ class RiskFactor(BaseExportedEntity):
     """
     This class represents a risk factor row that was exported using the data export API.
     """
+
     entity_name: ClassVar[str] = "risk-factors"
 
     device_id: int
@@ -140,6 +142,8 @@ class RiskFactor(BaseExportedEntity):
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series.loc["last_seen"].to_pydatetime(),
             status_update_time=cls._value_or_none(series.loc["status_update_time"]),
-            status_updated_by_user_id=cls._value_or_none(series.loc["status_updated_by_user_id"]),
+            status_updated_by_user_id=cls._value_or_none(
+                series.loc["status_updated_by_user_id"]
+            ),
             status_update_reason=cls._value_or_none(series.loc["status_update_reason"]),
         )
