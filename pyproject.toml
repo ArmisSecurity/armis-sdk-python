@@ -21,6 +21,8 @@ force_single_line = "true"
 plugins = ['pydantic.mypy']
 
 [tool.poetry.dependencies]
+pandas = "*"
+pyarrow = "*"
 pydantic = "*"
 httpx = "*"
 httpx-retries = "*"
@@ -35,6 +37,7 @@ pytest-httpx = "*"
 black = "*"
 isort = "*"
 mypy = "*"
+pandas-stubs = "*"
 pylint = "*"
 python-dotenv = "*"
 setuptools = "*"
