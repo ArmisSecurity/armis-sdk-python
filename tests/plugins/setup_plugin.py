@@ -31,4 +31,5 @@ def authorized(httpx_mock: pytest_httpx.HTTPXMock):
             "token_type": "Bearer",
             "expires_in": datetime.timedelta(minutes=1).total_seconds(),
         },
+        is_optional=True,
     )

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from armis_sdk.clients.data_export_client import DataExportClient
 from armis_sdk.clients.sites_client import SitesClient
 from armis_sdk.core.armis_client import ArmisClient
 from armis_sdk.core.client_credentials import ClientCredentials
@@ -13,6 +14,7 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
 
     Attributes:
         client (ArmisClient): An instance of [ArmisClient][armis_sdk.core.armis_client.ArmisClient]
+        data_export (DataExportClient): An instance of [DataExportClient][armis_sdk.clients.data_export_client.DataExportClient]
         sites (SitesClient): An instance of [SitesClient][armis_sdk.clients.sites_client.SitesClient]
 
     Example:
@@ -33,4 +35,5 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
 
     def __init__(self, credentials: Optional[ClientCredentials] = None):
         self.client: ArmisClient = ArmisClient(credentials=credentials)
+        self.data_export: DataExportClient = DataExportClient(self.client)
         self.sites: SitesClient = SitesClient(self.client)

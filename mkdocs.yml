@@ -6,8 +6,14 @@ nav:
   - Getting started: index.md
   - Entities:
       - AsqRule: entities/AsqRule.md
+      - DataExport:
+        - Application: entities/data_export/Application.md
+        - DataExport: entities/data_export/DataExport.md
+        - RiskFactor: entities/data_export/RiskFactor.md
+        - Vulnerability: entities/data_export/Vulnerability.md
       - Site: entities/Site.md
   - Clients:
+      - DataExportClient: clients/DataExportClient.md
       - SitesClient: clients/SitesClient.md
   - Core:
       - ArmisClient: core/ArmisClient.md
