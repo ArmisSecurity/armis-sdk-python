@@ -1,0 +1,1 @@
+::: armis_sdk.clients.device_custom_properties_client.DeviceCustomPropertiesClient

@@ -100,8 +100,10 @@ class DataExportClient(BaseEntityClient):
             raise ArmisError("Only parquet files supported")
 
         for url in data_export.urls:
-            df: pandas.DataFrame = await asyncio.to_thread(pandas.read_parquet, url)
-            for _, row in df.iterrows():
+            data_frame: pandas.DataFrame = await asyncio.to_thread(
+                pandas.read_parquet, url
+            )
+            for _, row in data_frame.iterrows():
                 yield entity.series_to_model(row)
 
     async def get(self, entity: Type[BaseExportedEntity]) -> DataExport:
