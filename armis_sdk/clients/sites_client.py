@@ -22,7 +22,7 @@ class SitesClient(BaseEntityClient):
         """Create a `Site`.
 
         Args:
-            site: The site to delete.
+            site: The site to create.
 
         Returns:
             The same site as the input with the addition of id.
