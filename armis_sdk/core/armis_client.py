@@ -82,11 +82,12 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
             trust_env=True,
         )
 
-    async def list(self, url: str) -> AsyncIterator[dict]:
+    async def list(self, url: str, body: Optional[dict] = None) -> AsyncIterator[dict]:
         """List all items from a paginated endpoint.
 
         Args:
             url (str): The relative endpoint URL.
+            body (dict): Payload to send as POST request.
 
         Returns:
             An (async) iterator of `dict`s.
@@ -113,9 +114,12 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         """
         page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
         async with self.client() as client:
-            params = {"limit": page_size}
+            params = {"limit": page_size, **(body or {})}
             while True:
-                response = await client.get(url, params=params)
+                if body:
+                    response = await client.post(url, json=params)
+                else:
+                    response = await client.get(url, params=params)
                 data = response_utils.get_data_dict(response)
                 items = data["items"]
                 for item in items:
