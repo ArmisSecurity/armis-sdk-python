@@ -65,7 +65,7 @@ class RiskFactor(BaseExportedEntity):
     """
     The description of the risk factor
 
-    **Example**: `Device is accepting SMBv1 requests.`
+    **Example**: `Device Supports SMBv1`
     """
 
     score: int

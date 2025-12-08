@@ -5,15 +5,20 @@ repo_url: https://github.com/ArmisSecurity/armis-sdk-python
 nav:
   - Getting started: index.md
   - Entities:
+      - Asset: entities/Asset.md
       - AsqRule: entities/AsqRule.md
       - DataExport:
         - Application: entities/data_export/Application.md
         - DataExport: entities/data_export/DataExport.md
         - RiskFactor: entities/data_export/RiskFactor.md
         - Vulnerability: entities/data_export/Vulnerability.md
+      - Boundary: entities/Boundary.md
+      - Device: entities/Device.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
+      - NetworkInterface: entities/NetworkInterface.md
       - Site: entities/Site.md
   - Clients:
+      - AssetsClient: clients/AssetsClient.md
       - DataExportClient: clients/DataExportClient.md
       - DeviceCustomPropertiesClient: clients/DeviceCustomPropertiesClient.md
       - SitesClient: clients/SitesClient.md
