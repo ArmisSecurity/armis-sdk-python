@@ -1,7 +1,7 @@
-from enum import StrEnum
+from enum import Enum
 
 
-class CollectorImageType(StrEnum):
+class CollectorImageType(Enum):
     DARWIN_AMD64_BROKER = "DARWIN_AMD64_BROKER"
     """"""
 
