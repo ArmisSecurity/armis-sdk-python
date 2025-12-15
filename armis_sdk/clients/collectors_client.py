@@ -1,7 +1,7 @@
 import contextlib
+from typing import IO
 from typing import AsyncIterator
 from typing import Generator
-from typing import IO
 from typing import Union
 
 import httpx

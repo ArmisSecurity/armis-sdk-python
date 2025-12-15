@@ -1,8 +1,9 @@
 import datetime
 
+from pydantic import Field
+
 from armis_sdk.core.base_entity import BaseEntity
 from armis_sdk.enums.collector_image_type import CollectorImageType
-from pydantic import Field
 
 
 class CollectorImage(BaseEntity):
