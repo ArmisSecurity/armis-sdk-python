@@ -1,6 +1,7 @@
 from typing import Optional
 
 from armis_sdk.clients.assets_client import AssetsClient
+from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
 from armis_sdk.clients.device_custom_properties_client import (
     DeviceCustomPropertiesClient,
@@ -19,6 +20,7 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
     Attributes:
         client (ArmisClient): An instance of [ArmisClient][armis_sdk.core.armis_client.ArmisClient]
         assets (AssetsClient): An instance of [AssetsClient][armis_sdk.clients.assets_client.AssetsClient]
+        collectors (CollectorsClient): An instance of [CollectorsClient][armis_sdk.clients.collectors_client.CollectorsClient]
         data_export (DataExportClient): An instance of [DataExportClient][armis_sdk.clients.data_export_client.DataExportClient]
         device_custom_properties (DeviceCustomPropertiesClient): An instance of [DeviceCustomPropertiesClient][armis_sdk.clients.device_custom_properties_client.DeviceCustomPropertiesClient]
         sites (SitesClient): An instance of [SitesClient][armis_sdk.clients.sites_client.SitesClient]
@@ -42,6 +44,7 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
     def __init__(self, credentials: Optional[ClientCredentials] = None):
         self.client: ArmisClient = ArmisClient(credentials=credentials)
         self.assets: AssetsClient = AssetsClient(self.client)
+        self.collectors: CollectorsClient = CollectorsClient(self.client)
         self.data_export: DataExportClient = DataExportClient(self.client)
         self.device_custom_properties: DeviceCustomPropertiesClient = (
             DeviceCustomPropertiesClient(self.client)
