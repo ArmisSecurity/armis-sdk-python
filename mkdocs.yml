@@ -13,12 +13,15 @@ nav:
         - RiskFactor: entities/data_export/RiskFactor.md
         - Vulnerability: entities/data_export/Vulnerability.md
       - Boundary: entities/Boundary.md
+      - CollectorImage: entities/CollectorImage.md
       - Device: entities/Device.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
+      - DownloadProgress: entities/DownloadProgress.md
       - NetworkInterface: entities/NetworkInterface.md
       - Site: entities/Site.md
   - Clients:
       - AssetsClient: clients/AssetsClient.md
+      - CollectorsClient: clients/CollectorsClient.md
       - DataExportClient: clients/DataExportClient.md
       - DeviceCustomPropertiesClient: clients/DeviceCustomPropertiesClient.md
       - SitesClient: clients/SitesClient.md
@@ -26,6 +29,8 @@ nav:
       - ArmisClient: core/ArmisClient.md
       - ArmisSdk: core/ArmisSdk.md
       - Errors: core/errors.md
+  - Enums:
+      - CollectorImageType: enums/CollectorImageType.md
   - About Armis: about.md
 
 theme:
