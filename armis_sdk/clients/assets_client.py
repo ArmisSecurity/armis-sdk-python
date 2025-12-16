@@ -1,6 +1,5 @@
 import datetime
 from typing import AsyncIterator
-from typing import Literal
 from typing import Optional
 from typing import Type
 from typing import Union
@@ -15,14 +14,7 @@ from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.asset import Asset
 from armis_sdk.entities.asset import AssetT
 from armis_sdk.entities.device import Device
-
-AssetIdSource = Literal[
-    "ASSET_ID",
-    "IPV4_ADDRESS",
-    "IPV6_ADDRESS",
-    "MAC_ADDRESS",
-    "SERIAL_NUMBER",
-]
+from armis_sdk.types.asset_id_source import AssetIdSource
 
 
 @universalasync.wrap
