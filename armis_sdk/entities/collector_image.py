@@ -3,7 +3,7 @@ import datetime
 from pydantic import Field
 
 from armis_sdk.core.base_entity import BaseEntity
-from armis_sdk.enums.collector_image_type import CollectorImageType
+from armis_sdk.types.collector_image_type import CollectorImageType
 
 
 class CollectorImage(BaseEntity):
@@ -11,7 +11,7 @@ class CollectorImage(BaseEntity):
     An entity that represents the details required to download and run a collector image.
     """
 
-    image_type: CollectorImageType = Field(strict=False)
+    image_type: CollectorImageType
     """The type of the image."""
 
     image_password: str
