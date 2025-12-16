@@ -71,6 +71,7 @@ class CollectorsClient(BaseEntityClient):
             async with client.stream("GET", collector_image.url) as response:
                 response.raise_for_status()
                 total_size = int(response.headers.get("Content-Length", "0"))
+                # pylint: disable-next=contextmanager-generator-missing-cleanup
                 with self.open_file(destination) as file:
                     async for chunk in response.aiter_bytes():
                         file.write(chunk)
