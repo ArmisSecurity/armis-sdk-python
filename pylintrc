@@ -5,6 +5,7 @@ ignore-paths=
     .venv
 
 disable=
+    contextmanager-generator-missing-cleanup,
     duplicate-code,
     missing-class-docstring,
     missing-module-docstring,

@@ -38,7 +38,7 @@ black = "*"
 isort = "*"
 mypy = "*"
 pandas-stubs = "*"
-pylint = "2.17.7"
+pylint = "*"
 python-dotenv = "*"
 setuptools = "*"
 
