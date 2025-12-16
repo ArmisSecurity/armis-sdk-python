@@ -11,7 +11,7 @@ from armis_sdk.core import response_utils
 from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.collector_image import CollectorImage
 from armis_sdk.entities.download_progress import DownloadProgress
-from armis_sdk.enums.collector_image_type import CollectorImageType
+from armis_sdk.types.collector_image_type import CollectorImageType
 
 
 @universalasync.wrap
@@ -26,7 +26,7 @@ class CollectorsClient(BaseEntityClient):
     async def download_image(
         self,
         destination: Union[str, IO[bytes]],
-        image_type: CollectorImageType = CollectorImageType.OVA,
+        image_type: CollectorImageType = "OVA",
     ) -> AsyncIterator[DownloadProgress]:
         """Download a collector image to a specified destination path / file.
 
@@ -77,9 +77,7 @@ class CollectorsClient(BaseEntityClient):
                         file.write(chunk)
                         yield DownloadProgress(downloaded=file.tell(), total=total_size)
 
-    async def get_image(
-        self, image_type: CollectorImageType = CollectorImageType.OVA
-    ) -> CollectorImage:
+    async def get_image(self, image_type: CollectorImageType = "OVA") -> CollectorImage:
         """Get collector image information including download URL and credentials.
 
         Args:
@@ -108,7 +106,7 @@ class CollectorsClient(BaseEntityClient):
         """
         async with self._armis_client.client() as client:
             response = await client.get(
-                "/v3/collectors/_image", params={"image_type": image_type.value}
+                "/v3/collectors/_image", params={"image_type": image_type}
             )
             data = response_utils.get_data_dict(response)
             return CollectorImage.model_validate(data)

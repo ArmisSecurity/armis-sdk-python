@@ -5,23 +5,31 @@ repo_url: https://github.com/ArmisSecurity/armis-sdk-python
 nav:
   - Getting started: index.md
   - Entities:
-      - Asset: entities/Asset.md
-      - AsqRule: entities/AsqRule.md
+      - Asset:
+          - entities/asset/index.md
+          - Device:
+            - entities/asset/device/index.md
+            - entities/asset/device/Boundary.md
+            - entities/asset/device/NetworkInterface.md
       - DataExport:
+        - entities/data_export/index.md
         - Application: entities/data_export/Application.md
-        - DataExport: entities/data_export/DataExport.md
         - RiskFactor: entities/data_export/RiskFactor.md
         - Vulnerability: entities/data_export/Vulnerability.md
-      - Boundary: entities/Boundary.md
-      - CollectorImage: entities/CollectorImage.md
-      - Device: entities/Device.md
+      - CollectorImage:
+          - entities/collector_image/index.md
+          - entities/collector_image/CollectorImageType.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
-      - DownloadProgress: entities/DownloadProgress.md
-      - NetworkInterface: entities/NetworkInterface.md
-      - Site: entities/Site.md
+      - Site:
+        - entities/site/index.md
+        - entities/site/AsqRule.md
   - Clients:
-      - AssetsClient: clients/AssetsClient.md
-      - CollectorsClient: clients/CollectorsClient.md
+      - AssetsClient:
+        - clients/assets_client/index.md
+        - clients/assets_client/AssetIdSource.md
+      - CollectorsClient:
+          - clients/collectors_client/index.md
+          - clients/collectors_client/DownloadProgress.md
       - DataExportClient: clients/DataExportClient.md
       - DeviceCustomPropertiesClient: clients/DeviceCustomPropertiesClient.md
       - SitesClient: clients/SitesClient.md
@@ -29,8 +37,6 @@ nav:
       - ArmisClient: core/ArmisClient.md
       - ArmisSdk: core/ArmisSdk.md
       - Errors: core/errors.md
-  - Enums:
-      - CollectorImageType: enums/CollectorImageType.md
   - About Armis: about.md
 
 theme:
@@ -39,10 +45,10 @@ theme:
   logo: images/logo.png
   palette:
     primary: custom
-  theme:
-    features:
-      - content.code.annotate
-      - content.code.copy
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - navigation.indexes
 
 plugins:
   - mkdocstrings:

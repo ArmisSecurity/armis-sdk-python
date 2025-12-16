@@ -6,7 +6,6 @@ import pytest_httpx
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.entities.collector_image import CollectorImage
 from armis_sdk.entities.download_progress import DownloadProgress
-from armis_sdk.enums.collector_image_type import CollectorImageType
 
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
@@ -26,7 +25,7 @@ async def test_get_image(httpx_mock: pytest_httpx.HTTPXMock):
     collector_image = await collectors_client.get_image()
 
     assert collector_image == CollectorImage(
-        image_type=CollectorImageType.OVA,
+        image_type="OVA",
         image_password="test_password",
         url="https://example.com/collector.ova",
         url_expiration_date=datetime.datetime(2025, 12, 10),
@@ -45,12 +44,10 @@ async def test_get_with_explicit_image_type(httpx_mock: pytest_httpx.HTTPXMock):
     )
 
     collectors_client = CollectorsClient()
-    collector_image = await collectors_client.get_image(
-        image_type=CollectorImageType.QCOW2
-    )
+    collector_image = await collectors_client.get_image(image_type="QCOW2")
 
     assert collector_image == CollectorImage(
-        image_type=CollectorImageType.QCOW2,
+        image_type="QCOW2",
         image_password="test_password_qcow2",
         url="https://example.com/collector.qcow2",
         url_expiration_date=datetime.datetime(2025, 12, 11),
