@@ -1,4 +1,5 @@
 import asyncio
+from typing import Any
 from typing import AsyncIterator
 from typing import Type
 
@@ -62,11 +63,19 @@ class DataExportClient(BaseEntityClient):
         """
         await self.toggle(entity, True)
 
-    async def iterate(self, entity: Type[T]) -> AsyncIterator[T]:
+    async def iterate(self, entity: Type[T], **kwargs: Any) -> AsyncIterator[T]:
+        # pylint: disable=line-too-long
         """Iterate over the exported data.
+
+        Args:
+            entity: The entity type to iterate over (must be a subclass of BaseExportedEntity).
+            **kwargs: Additional keyword arguments to pass to [pandas.read_parquet()](https://pandas.pydata.org/docs/reference/api/pandas.read_parquet.html).
 
         Returns:
             An (async) iterator of the underlying entity.
+
+        Raises:
+            ArmisError: If data export is disabled for the entity or if the file format is not parquet.
 
         Example:
             ```python linenums="1" hl_lines="9"
@@ -89,6 +98,27 @@ class DataExportClient(BaseEntityClient):
             <class 'armis_sdk.entities.data_export.application.Application'>
             <class 'armis_sdk.entities.data_export.application.Application'>
             ```
+
+        Example:
+            You can also pass additional parquet kwargs to filter columns or apply other parquet-specific operations:
+            ```python linenums="1" hl_lines="9-13"
+            import asyncio
+
+            from armis_sdk.clients.data_export_client import DataExportClient
+            from armis_sdk.entities.data_export.application import Application
+
+
+            async def main():
+                data_export_client = DataExportClient()
+                async for row in data_export_client.iterate(
+                    Application,
+                    columns=["device_id", "vendor", "name", "version"],
+                    filters=[("vendor", "in", ["Google", "Microsoft"])]
+                ):
+                    print(row.device_id, row.vendor, row.name, row.version)
+
+            asyncio.run(main())
+            ```
         """
         data_export = await self.get(entity)
         if not data_export.enabled:
@@ -101,7 +131,7 @@ class DataExportClient(BaseEntityClient):
 
         for url in data_export.urls:
             data_frame: pandas.DataFrame = await asyncio.to_thread(
-                pandas.read_parquet, url
+                pandas.read_parquet, url, **kwargs
             )
             for _, row in data_frame.iterrows():
                 yield entity.series_to_model(row)
