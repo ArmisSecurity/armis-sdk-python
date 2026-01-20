@@ -7,6 +7,7 @@ from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.core.armis_error import BulkUpdateError
 from armis_sdk.entities.asset import Asset
+from armis_sdk.entities.asset_field_description import AssetFieldDescription
 from armis_sdk.entities.device import Device
 from tests.armis_sdk.clients import assets_test_data
 
@@ -403,3 +404,34 @@ async def test_update_with_validation_errors(assets, fields, expected_error):
 
     with pytest.raises(ArmisError, match=expected_error):
         await assets_client.update(assets, fields)
+
+
+async def test_list_fields(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/assets/_search/fields?asset_type=DEVICE",
+        method="GET",
+        json={
+            "items": [
+                {"name": "device_id", "type": "integer", "is_list": False},
+                {"name": "names", "type": "string", "is_list": True},
+                {"name": "custom.Size", "type": "enum", "is_list": False},
+                {
+                    "name": "integration.qualys_agent_id",
+                    "type": "string",
+                    "is_list": False,
+                },
+            ]
+        },
+    )
+
+    assets_client = AssetsClient()
+    fields = [field async for field in assets_client.list_fields(Device)]
+
+    assert fields == [
+        AssetFieldDescription(name="device_id", type="integer", is_list=False),
+        AssetFieldDescription(name="names", type="string", is_list=True),
+        AssetFieldDescription(name="custom.Size", type="enum", is_list=False),
+        AssetFieldDescription(
+            name="integration.qualys_agent_id", type="string", is_list=False
+        ),
+    ]

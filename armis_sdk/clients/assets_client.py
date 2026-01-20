@@ -13,6 +13,7 @@ from armis_sdk.core.armis_error import BulkUpdateItemError
 from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.asset import Asset
 from armis_sdk.entities.asset import AssetT
+from armis_sdk.entities.asset_field_description import AssetFieldDescription
 from armis_sdk.entities.device import Device
 from armis_sdk.types.asset_id_source import AssetIdSource
 
@@ -130,6 +131,42 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
         async for item in self._list_assets(asset_class, fields, filter_):
             yield item
+
+    async def list_fields(
+        self, asset_class: Type[AssetT]
+    ) -> AsyncIterator[AssetFieldDescription]:
+        """List all available fields for a given asset class.
+
+        Args:
+            asset_class: The asset class to list fields for. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
+
+        Yields:
+            Field descriptions including field name, type, and other metadata.
+
+        Example:
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.assets_client import AssetsClient
+            from armis_sdk.entities.device import Device
+
+            async def main():
+                assets_client = AssetsClient()
+
+                async for field in assets_client.list_fields(Device):
+                    print(f"{field.name}: {field.type}")
+
+            asyncio.run(main())
+            ```
+        """
+        async with self._armis_client.client() as client:
+            response = await client.get(
+                "/v3/assets/_search/fields",
+                params={"asset_type": asset_class.asset_type},
+            )
+            data = response_utils.get_data_dict(response)
+            for item in data["items"]:
+                yield AssetFieldDescription.model_validate(item)
 
     async def update(
         self,
@@ -281,6 +318,10 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
     def _is_custom_field(cls, field: str) -> bool:
         return field.startswith("custom.")
 
+    @classmethod
+    def _is_integration_field(cls, field: str) -> bool:
+        return field.startswith("integration.")
+
     async def _list_assets(
         self,
         asset_class: Type[AssetT],
@@ -320,6 +361,9 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
         all_fields = asset_class.all_fields()
         for field in fields:
             if cls._is_custom_field(field):
+                continue
+
+            if cls._is_integration_field(field):
                 continue
 
             if allow_model_members and field in all_fields:
