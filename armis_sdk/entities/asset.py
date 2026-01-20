@@ -22,6 +22,9 @@ class Asset(BaseEntity):
     custom: dict[str, Any] = Field(default_factory=dict)
     """Custom properties of the asset. Values can by anything."""
 
+    integration: dict[str, Any] = Field(default_factory=dict)
+    """Integration properties of the asset. Values can by anything."""
+
     @classmethod
     def from_search_result(cls: Type[AssetT], data: dict) -> AssetT:
         fields: DefaultDict[str, Any] = collections.defaultdict(dict)
@@ -38,4 +41,7 @@ class Asset(BaseEntity):
     def all_fields(cls) -> set[str]:
         # Pylint doesn't recognize that "cls.model_fields" is a dict and not a method
         # so it's complaining that the method doesn't have a "keys" attribute.
-        return set(cls.model_fields.keys()) - {"custom"}  # pylint: disable=no-member
+        return set(cls.model_fields.keys()) - {
+            "custom",
+            "integration",
+        }  # pylint: disable=no-member
