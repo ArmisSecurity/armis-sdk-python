@@ -17,9 +17,9 @@ RiskFactorNT = collections.namedtuple(
         "score",
         "status",
         "group",
-        "remidiation",
-        "remidiation_description",
-        "remoidiation_recommended_actions",
+        "remediation",
+        "remediation_description",
+        "remediation_recommended_actions",
         "first_seen",
         "last_seen",
         "status_update_time",
@@ -39,9 +39,9 @@ def test_series_to_model():
             "score": 2,
             "status": "OPEN",
             "group": "group1",
-            "remidiation": "remediation1",
-            "remidiation_description": "remediation_description1",
-            "remoidiation_recommended_actions": json.dumps(
+            "remediation": "remediation1",
+            "remediation_description": "remediation_description1",
+            "remediation_recommended_actions": json.dumps(
                 [
                     {
                         "id": 1,

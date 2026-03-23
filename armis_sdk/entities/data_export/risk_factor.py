@@ -133,11 +133,11 @@ class RiskFactor(BaseExportedEntity):
             score=series.loc["score"],
             status=series.loc["status"],
             group=series.loc["group"],
-            remediation_type=series.loc["remidiation"],
-            remediation_description=series.loc["remidiation_description"],
+            remediation_type=series.loc["remediation"],
+            remediation_description=series.loc["remediation_description"],
             remediation_recommended_actions=[
                 RiskFactorRecommendedAction(**item)
-                for item in json.loads(series.loc["remoidiation_recommended_actions"])
+                for item in json.loads(series.loc["remediation_recommended_actions"])
             ],
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series.loc["last_seen"].to_pydatetime(),
