@@ -1,7 +1,6 @@
 import asyncio
+from collections.abc import AsyncIterator
 from typing import Any
-from typing import AsyncIterator
-from typing import Type
 
 import pandas
 import universalasync
@@ -17,7 +16,7 @@ from armis_sdk.entities.data_export.data_export import DataExport
 @universalasync.wrap
 class DataExportClient(BaseEntityClient):
 
-    async def disable(self, entity: Type[BaseExportedEntity]):
+    async def disable(self, entity: type[BaseExportedEntity]):
         """Disable data export of the entity.
 
         Args:
@@ -40,7 +39,7 @@ class DataExportClient(BaseEntityClient):
         """
         await self.toggle(entity, False)
 
-    async def enable(self, entity: Type[BaseExportedEntity]):
+    async def enable(self, entity: type[BaseExportedEntity]):
         """Enable data export of the entity.
 
         Args:
@@ -63,7 +62,7 @@ class DataExportClient(BaseEntityClient):
         """
         await self.toggle(entity, True)
 
-    async def iterate(self, entity: Type[T], **kwargs: Any) -> AsyncIterator[T]:
+    async def iterate(self, entity: type[T], **kwargs: Any) -> AsyncIterator[T]:
         # pylint: disable=line-too-long
         """Iterate over the exported data.
 
@@ -136,7 +135,7 @@ class DataExportClient(BaseEntityClient):
             for _, row in data_frame.iterrows():
                 yield entity.series_to_model(row)
 
-    async def get(self, entity: Type[BaseExportedEntity]) -> DataExport:
+    async def get(self, entity: type[BaseExportedEntity]) -> DataExport:
         """Get the `DataExport` of the entity
 
         Args:
@@ -169,7 +168,7 @@ class DataExportClient(BaseEntityClient):
             data = response_utils.get_data_dict(response)
             return DataExport.model_validate(data)
 
-    async def toggle(self, entity: Type[BaseExportedEntity], enabled: bool):
+    async def toggle(self, entity: type[BaseExportedEntity], enabled: bool):
         """Enable / disable export of an entity.
 
         Args:

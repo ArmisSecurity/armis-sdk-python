@@ -1,5 +1,3 @@
-from typing import Optional
-
 from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
@@ -41,7 +39,7 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
         ```
     """
 
-    def __init__(self, credentials: Optional[ClientCredentials] = None):
+    def __init__(self, credentials: ClientCredentials | None = None):
         self.client: ArmisClient = ArmisClient(credentials=credentials)
         self.assets: AssetsClient = AssetsClient(self.client)
         self.collectors: CollectorsClient = CollectorsClient(self.client)

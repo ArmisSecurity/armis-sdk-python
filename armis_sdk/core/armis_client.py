@@ -1,8 +1,7 @@
 import importlib.metadata
 import os
 import platform
-from typing import AsyncIterator
-from typing import Optional
+from collections.abc import AsyncIterator
 from typing import TypeVar
 
 import httpx
@@ -48,7 +47,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
     4. Proxy configuration via HTTPS_PROXY and HTTP_PROXY environment variables.
     """
 
-    def __init__(self, credentials: Optional[ClientCredentials] = None):
+    def __init__(self, credentials: ClientCredentials | None = None):
         credentials = self._get_credentials(credentials)
         self._auth = ArmisAuth(API_BASE_URL, credentials)
         self._user_agent = " ".join(USER_AGENT_PARTS)
@@ -61,7 +60,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         except ValueError:
             self._default_backoff = 0
 
-    def client(self, retries: Optional[int] = None, backoff: Optional[float] = None):
+    def client(self, retries: int | None = None, backoff: float | None = None):
         retries = retries if retries is not None else self._default_retries
         backoff = backoff if backoff is not None else self._default_backoff
         retry = Retry(total=retries, backoff_factor=backoff)
@@ -82,7 +81,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
             trust_env=True,
         )
 
-    async def list(self, url: str, body: Optional[dict] = None) -> AsyncIterator[dict]:
+    async def list(self, url: str, body: dict | None = None) -> AsyncIterator[dict]:
         """List all items from a paginated endpoint.
 
         Args:
@@ -131,7 +130,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
 
     @classmethod
     def _get_credentials(
-        cls, credentials: Optional[ClientCredentials]
+        cls, credentials: ClientCredentials | None
     ) -> ClientCredentials:
         credentials = credentials or ClientCredentials()
         credentials.vendor_id = credentials.vendor_id or os.getenv(ARMIS_VENDOR_ID)

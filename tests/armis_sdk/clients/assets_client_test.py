@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 import pytest_httpx
+from tests.armis_sdk.clients import assets_test_data
 
 from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.core.armis_error import ArmisError
@@ -9,7 +10,6 @@ from armis_sdk.core.armis_error import BulkUpdateError
 from armis_sdk.entities.asset import Asset
 from armis_sdk.entities.asset_field_description import AssetFieldDescription
 from armis_sdk.entities.device import Device
-from tests.armis_sdk.clients import assets_test_data
 
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
@@ -374,10 +374,10 @@ async def test_update_with_failed_requests(httpx_mock: pytest_httpx.HTTPXMock):
     with pytest.raises(
         BulkUpdateError,
         match=(
-            "Failed to update item at index 2. "
-            'Request: {"asset_id": 2, "key": "custom.MyField1", '
-            '"operation": "SET", "value": "value3"}, '
-            'Response: {"status": 400, "error": "Bad Request"}'
+            r"Failed to update item at index 2\. "
+            r'Request: \{"asset_id": 2, "key": "custom\.MyField1", '
+            r'"operation": "SET", "value": "value3"\}, '
+            r'Response: \{"status": 400, "error": "Bad Request"\}'
         ),
     ):
         await assets_client.update(assets, fields)

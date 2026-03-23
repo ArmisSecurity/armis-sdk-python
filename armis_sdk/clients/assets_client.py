@@ -1,8 +1,5 @@
 import datetime
-from typing import AsyncIterator
-from typing import Optional
-from typing import Type
-from typing import Union
+from collections.abc import AsyncIterator
 
 import universalasync
 
@@ -31,10 +28,10 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
     async def list_by_asset_id(
         self,
-        asset_class: Type[AssetT],
-        asset_ids: Union[list[int], list[str]],
+        asset_class: type[AssetT],
+        asset_ids: list[int] | list[str],
         asset_id_source: AssetIdSource = "ASSET_ID",
-        fields: Optional[list[str]] = None,
+        fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets by asset ID or other identifiers.
 
@@ -81,9 +78,9 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
     async def list_by_last_seen(
         self,
-        asset_class: Type[AssetT],
-        last_seen: Union[datetime.datetime, datetime.timedelta],
-        fields: Optional[list[str]] = None,
+        asset_class: type[AssetT],
+        last_seen: datetime.datetime | datetime.timedelta,
+        fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets by last seen timestamp.
 
@@ -120,7 +117,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
             asyncio.run(main())
             ```
         """
-        filter_: dict[str, Union[str, int]] = {"filter_criteria": "LAST_SEEN"}
+        filter_: dict[str, str | int] = {"filter_criteria": "LAST_SEEN"}
 
         if isinstance(last_seen, datetime.datetime):
             filter_["last_seen_ge"] = last_seen.isoformat()
@@ -133,7 +130,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
             yield item
 
     async def list_fields(
-        self, asset_class: Type[AssetT]
+        self, asset_class: type[AssetT]
     ) -> AsyncIterator[AssetFieldDescription]:
         """List all available fields for a given asset class.
 
@@ -244,7 +241,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
     def _create_bulk_update_request(
         cls,
         asset: Asset,
-        asset_id: Union[str, int],
+        asset_id: str | int,
         field: str,
     ):
         request = {"asset_id": asset_id, "key": field}
@@ -266,7 +263,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
         asset: Asset,
         index: int,
         asset_id_source: AssetIdSource,
-    ) -> Union[str, int]:
+    ) -> str | int:
         if isinstance(asset, Device):
             return cls._get_device_asset_id(asset, index, asset_id_source)
 
@@ -324,8 +321,8 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
     async def _list_assets(
         self,
-        asset_class: Type[AssetT],
-        fields: Optional[list[str]],
+        asset_class: type[AssetT],
+        fields: list[str] | None,
         filter_: dict,
     ) -> AsyncIterator[AssetT]:
         fields = fields or sorted(asset_class.all_fields())
@@ -353,7 +350,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
     @classmethod
     def _validate_fields(
         cls,
-        asset_class: Type[AssetT],
+        asset_class: type[AssetT],
         fields: list[str],
         allow_model_members=True,
     ):

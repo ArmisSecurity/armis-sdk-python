@@ -1,8 +1,7 @@
+from collections.abc import AsyncIterator
+from collections.abc import Generator
 import contextlib
 from typing import IO
-from typing import AsyncIterator
-from typing import Generator
-from typing import Union
 
 import httpx
 import universalasync
@@ -25,7 +24,7 @@ class CollectorsClient(BaseEntityClient):
 
     async def download_image(
         self,
-        destination: Union[str, IO[bytes]],
+        destination: str | IO[bytes],
         image_type: CollectorImageType = "OVA",
     ) -> AsyncIterator[DownloadProgress]:
         """Download a collector image to a specified destination path / file.
@@ -48,12 +47,12 @@ class CollectorsClient(BaseEntityClient):
                 collectors_client = CollectorsClient()
 
                 # Download to a path
-                async for progress in armis_sdk.collectors.download_image("/tmp/collector.ova"):
+                async for progress in collectors_client.download_image("/tmp/collector.ova"):
                     print(progress.percent)
 
                 # Download to a file
                 with open("/tmp/collector.ova", "wb") as file:
-                    async for progress in armis_sdk.collectors.download_image(file):
+                    async for progress in collectors_client.download_image(file):
                         print(progress.percent)
 
             asyncio.run(main())
@@ -67,7 +66,7 @@ class CollectorsClient(BaseEntityClient):
             etc.
         """
         collector_image = await self.get_image(image_type=image_type)
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient() as client:  # noqa: SIM117
             async with client.stream("GET", collector_image.url) as response:
                 response.raise_for_status()
                 total_size = int(response.headers.get("Content-Length", "0"))
@@ -114,7 +113,7 @@ class CollectorsClient(BaseEntityClient):
     @classmethod
     @contextlib.contextmanager
     def open_file(
-        cls, destination: Union[str, IO[bytes]]
+        cls, destination: str | IO[bytes]
     ) -> Generator[IO[bytes], None, None]:
         if isinstance(destination, str):
             with open(destination, "wb") as file:

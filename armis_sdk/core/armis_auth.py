@@ -1,6 +1,5 @@
 import datetime
 import typing
-from typing import Optional
 
 import httpx
 
@@ -28,8 +27,8 @@ class ArmisAuth(httpx.Auth):
     def __init__(self, base_url: str, credentials: ClientCredentials):
         self._base_url = base_url
         self._credentials = credentials
-        self._access_token: Optional[str] = None
-        self._expires_at: Optional[datetime.datetime] = None
+        self._access_token: str | None = None
+        self._expires_at: datetime.datetime | None = None
 
     def auth_flow(
         self, request: httpx.Request

@@ -1,5 +1,4 @@
-from typing import AsyncIterator
-from typing import List
+from collections.abc import AsyncIterator
 
 import universalasync
 
@@ -129,7 +128,7 @@ class SitesClient(BaseEntityClient):
             data = response_utils.get_data_dict(response)
             return Site.model_validate(data)
 
-    async def hierarchy(self) -> List[Site]:
+    async def hierarchy(self) -> list[Site]:
         """Create a hierarchy of the tenant's sites, taking into account the parent-child relationships.
 
         Returns:

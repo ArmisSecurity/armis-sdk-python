@@ -1,7 +1,6 @@
 import datetime
 import json
 from typing import ClassVar
-from typing import Optional
 
 import pandas
 from pydantic import BaseModel
@@ -110,13 +109,13 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `OPEN`
     """
 
-    status_update_time: Optional[datetime.datetime]
+    status_update_time: datetime.datetime | None
     """When was the status last changed"""
 
-    status_updated_by_user_id: Optional[int]
+    status_updated_by_user_id: int | None
     """Which used id last changed the status"""
 
-    status_update_reason: Optional[str]
+    status_update_reason: str | None
     """
     The reason for the status change
 
@@ -133,11 +132,11 @@ class RiskFactor(BaseExportedEntity):
             score=series.loc["score"],
             status=series.loc["status"],
             group=series.loc["group"],
-            remediation_type=series.loc["remidiation"],
-            remediation_description=series.loc["remidiation_description"],
+            remediation_type=series.loc["remediation"],
+            remediation_description=series.loc["remediation_description"],
             remediation_recommended_actions=[
                 RiskFactorRecommendedAction(**item)
-                for item in json.loads(series.loc["remoidiation_recommended_actions"])
+                for item in json.loads(series.loc["remediation_recommended_actions"])
             ],
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series.loc["last_seen"].to_pydatetime(),

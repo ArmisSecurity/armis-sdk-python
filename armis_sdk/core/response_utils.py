@@ -1,6 +1,5 @@
 import json
 from json import JSONDecodeError
-from typing import Type
 from typing import TypeVar
 
 import httpx
@@ -18,7 +17,7 @@ DataTypeT = TypeVar("DataTypeT", dict, list)
 
 def get_data(
     response: httpx.Response,
-    data_type: Type[DataTypeT],
+    data_type: type[DataTypeT],
 ) -> DataTypeT:
     raise_for_status(response)
     data = parse_response(response, dict)
@@ -36,7 +35,7 @@ def get_data_dict(response: httpx.Response):
 
 def parse_response(
     response: httpx.Response,
-    data_type: Type[DataTypeT],
+    data_type: type[DataTypeT],
 ) -> DataTypeT:
     try:
         response_data = response.json()

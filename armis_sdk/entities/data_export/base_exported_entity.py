@@ -1,5 +1,4 @@
 import abc
-from typing import Type
 from typing import TypeVar
 
 import pandas
@@ -11,7 +10,7 @@ T = TypeVar("T", bound="BaseExportedEntity")
 class BaseExportedEntity(BaseModel, abc.ABC):
     @classmethod
     @abc.abstractmethod
-    def series_to_model(cls: Type[T], series: pandas.Series) -> T: ...
+    def series_to_model(cls: type[T], series: pandas.Series) -> T: ...
 
     @property
     @abc.abstractmethod

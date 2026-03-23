@@ -1,9 +1,7 @@
 import collections
 from typing import Any
 from typing import ClassVar
-from typing import DefaultDict
 from typing import Literal
-from typing import Type
 from typing import TypeVar
 
 from pydantic import Field
@@ -26,8 +24,8 @@ class Asset(BaseEntity):
     """Integration properties of the asset. Values can by anything."""
 
     @classmethod
-    def from_search_result(cls: Type[AssetT], data: dict) -> AssetT:
-        fields: DefaultDict[str, Any] = collections.defaultdict(dict)
+    def from_search_result(cls: type[AssetT], data: dict) -> AssetT:
+        fields: collections.defaultdict[str, Any] = collections.defaultdict(dict)
         for key, value in data["fields"].items():
             if len(parts := key.split(".", 1)) > 1:
                 part1, part2 = parts

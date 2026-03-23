@@ -1,8 +1,6 @@
 import json
 from typing import Annotated
 from typing import Any
-from typing import List
-from typing import Optional
 
 from pydantic import BeforeValidator
 from pydantic import Field
@@ -24,13 +22,13 @@ class Site(BaseEntity):
     The `Site` entity represents a physical location at the customer's environment.
     """
 
-    id: Optional[int] = Field(strict=False, default=None)
+    id: int | None = Field(strict=False, default=None)
     """The id of the site."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """The name of the site."""
 
-    lat: Optional[float] = Field(frozen=True, default=None)
+    lat: float | None = Field(frozen=True, default=None)
     """
     The latitude coordinate of the physical location of the site on earth.
 
@@ -41,7 +39,7 @@ class Site(BaseEntity):
 
     """
 
-    lng: Optional[float] = Field(frozen=True, default=None)
+    lng: float | None = Field(frozen=True, default=None)
     """
     The longitude coordinate of the physical location of the site on earth.
 
@@ -51,7 +49,7 @@ class Site(BaseEntity):
     Example: `-122.4007818`
     """
 
-    location: Optional[str] = None
+    location: str | None = None
     """
     The name of the location of the site, such as an address.
     
@@ -61,26 +59,26 @@ class Site(BaseEntity):
     [`lng`][armis_sdk.entities.site.Site.lng] are automatically derived from it.
     """
 
-    parent_id: Optional[int] = Field(strict=False, default=None)
+    parent_id: int | None = Field(strict=False, default=None)
     """The id of the parent site."""
 
-    tier: Optional[str] = None
+    tier: str | None = None
     """The tier of the site."""
 
-    asq_rule: Optional[AsqRule] = Field(default=None)
+    asq_rule: AsqRule | None = Field(default=None)
     """The ASQ rule of the site."""
 
     network_equipment_device_ids: Annotated[
-        Optional[List[int]], BeforeValidator(ensure_list_of_ints)
+        list[int] | None, BeforeValidator(ensure_list_of_ints)
     ] = None
     """The ids of network equipment devices associated with the site."""
 
     integration_ids: Annotated[
-        Optional[List[int]], BeforeValidator(ensure_list_of_ints)
+        list[int] | None, BeforeValidator(ensure_list_of_ints)
     ] = None
     """The ids of the integration associated with the site."""
 
-    children: List["Site"] = Field(default_factory=list)
+    children: list["Site"] = Field(default_factory=list)
     """The sub-sites that are directly under this site 
     (their `parent_id` will match this site's `id`)."""
 

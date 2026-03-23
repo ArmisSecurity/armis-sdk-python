@@ -1,6 +1,5 @@
 import datetime
 from typing import ClassVar
-from typing import Optional
 
 import pandas
 
@@ -38,7 +37,7 @@ class Application(BaseExportedEntity):
     **Example**: `30.0.1599.40`
     """
 
-    cpe: Optional[str]
+    cpe: str | None
     """
     The CPE (Common Platform Enumeration) of the application
 
