@@ -1,6 +1,6 @@
+import contextlib
 from collections.abc import AsyncIterator
 from collections.abc import Generator
-import contextlib
 from typing import IO
 
 import httpx
