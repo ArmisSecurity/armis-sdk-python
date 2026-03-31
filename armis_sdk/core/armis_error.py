@@ -4,7 +4,6 @@ while interacting with the SDK.
 """
 
 import json
-from typing import List
 from typing import Optional
 from typing import Union
 
@@ -26,7 +25,7 @@ class DetailItem(BaseModel):
 
 
 class ErrorBody(BaseModel):
-    detail: Union[str, List[DetailItem]]
+    detail: Union[str, list[DetailItem]]
 
 
 class ArmisError(Exception):
@@ -63,7 +62,7 @@ class ResponseError(ArmisError):
     def __init__(
         self,
         error_body: ErrorBody,
-        response_errors: Optional[List[HTTPStatusError]] = None,
+        response_errors: Optional[list[HTTPStatusError]] = None,
     ):
         super().__init__(self._get_message(error_body))
         self.response_errors = response_errors

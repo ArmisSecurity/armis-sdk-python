@@ -68,7 +68,7 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `Device Supports SMBv1`
     """
 
-    score: int
+    score: Optional[int]
     """The score of the risk factor"""
 
     group: str
@@ -78,14 +78,14 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `INSECURE_TRAFFIC_AND_BEHAVIOR`
     """
 
-    remediation_type: str
+    remediation_type: Optional[str]
     """
     The type of the remediation
 
     **Example**: `Disable SMBv1 Protocol`
     """
 
-    remediation_description: str
+    remediation_description: Optional[str]
     """
     The description of the remediation
 
@@ -130,15 +130,27 @@ class RiskFactor(BaseExportedEntity):
             category=series.loc["category"],
             type=series.loc["type"],
             description=series.loc["description"],
-            score=series.loc["score"],
+            score=(
+                int(score)
+                if (score := cls._value_or_none(series.loc["score"]))
+                else None
+            ),
             status=series.loc["status"],
             group=series.loc["group"],
-            remediation_type=series.loc["remediation"],
-            remediation_description=series.loc["remediation_description"],
-            remediation_recommended_actions=[
-                RiskFactorRecommendedAction(**item)
-                for item in json.loads(series.loc["remediation_recommended_actions"])
-            ],
+            remediation_type=cls._value_or_none(series.loc["remediation"]),
+            remediation_description=cls._value_or_none(
+                series.loc["remediation_description"]
+            ),
+            remediation_recommended_actions=(
+                [
+                    RiskFactorRecommendedAction(**item)
+                    for item in json.loads(
+                        series.loc["remediation_recommended_actions"]
+                    )
+                ]
+                if series.loc["remediation_recommended_actions"]
+                else []
+            ),
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series.loc["last_seen"].to_pydatetime(),
             status_update_time=cls._value_or_none(series.loc["status_update_time"]),
