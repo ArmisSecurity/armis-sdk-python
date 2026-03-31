@@ -1,7 +1,6 @@
 import json
 from typing import Annotated
 from typing import Any
-from typing import List
 from typing import Optional
 
 from pydantic import BeforeValidator
@@ -71,16 +70,16 @@ class Site(BaseEntity):
     """The ASQ rule of the site."""
 
     network_equipment_device_ids: Annotated[
-        Optional[List[int]], BeforeValidator(ensure_list_of_ints)
+        Optional[list[int]], BeforeValidator(ensure_list_of_ints)
     ] = None
     """The ids of network equipment devices associated with the site."""
 
     integration_ids: Annotated[
-        Optional[List[int]], BeforeValidator(ensure_list_of_ints)
+        Optional[list[int]], BeforeValidator(ensure_list_of_ints)
     ] = None
     """The ids of the integration associated with the site."""
 
-    children: List["Site"] = Field(default_factory=list)
+    children: list["Site"] = Field(default_factory=list)
     """The sub-sites that are directly under this site 
     (their `parent_id` will match this site's `id`)."""
 
