@@ -19,51 +19,51 @@ class Application(BaseExportedEntity):
 
     entity_name: ClassVar[str] = "applications"
 
-    device_id: int
+    device_id: int | None = None
     """The id of the device with the application"""
 
-    vendor: str
+    vendor: str | None = None
     """
     The vendor of the application
 
     **Example**: `Google`
     """
 
-    name: str
+    name: str | None = None
     """
     The name of the application
 
     **Example**: `Chrome`
     """
 
-    version: str
+    version: str | None = None
     """
     The version of the application
 
     **Example**: `30.0.1599.40`
     """
 
-    cpe: str | None
+    cpe: str | None = None
     """
     The CPE (Common Platform Enumeration) of the application
 
     **Example**: `cpe:2.3:a:google:chrome:30.0.1599.40:*:*:*:*:*:*:*`
     """
 
-    first_seen: datetime.datetime
+    first_seen: datetime.datetime | None = None
     """When the application was first seen on the device"""
 
-    last_seen: datetime.datetime
+    last_seen: datetime.datetime | None = None
     """When the application was last seen on the device"""
 
     @classmethod
     def series_to_model(cls, series: pandas.Series) -> Application:
         return Application(
-            device_id=series.loc["device_id"],
-            vendor=series.loc["vendor"],
-            name=series.loc["name"],
-            version=series.loc["version"],
-            cpe=cls._value_or_none(series.loc["cpe"] if "cpe" in series.index else None),
-            first_seen=series.loc["first_seen"].to_pydatetime(),
-            last_seen=series["last_seen"].to_pydatetime(),
+            device_id=cls._value_or_none(series.get("device_id")),
+            vendor=cls._value_or_none(series.get("vendor")),
+            name=cls._value_or_none(series.get("name")),
+            version=cls._value_or_none(series.get("version")),
+            cpe=cls._value_or_none(series.get("cpe")),
+            first_seen=cls._value_or_none(series.get("first_seen")),
+            last_seen=cls._value_or_none(series.get("last_seen")),
         )
