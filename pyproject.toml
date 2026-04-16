@@ -17,6 +17,7 @@ build-backend = "poetry.core.masonry.api"
 plugins = ['pydantic.mypy']
 
 [tool.poetry.dependencies]
+eval_type_backport = "*"
 pandas = "*"
 pyarrow = "*"
 pydantic = "*"
