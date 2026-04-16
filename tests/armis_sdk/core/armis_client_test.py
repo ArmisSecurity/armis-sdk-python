@@ -7,6 +7,7 @@ import pytest_httpx
 
 from armis_sdk.core.armis_client import ArmisClient
 
+
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 try:
@@ -19,9 +20,7 @@ async def test_request_headers(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         match_headers={
             "User-Agent": (
-                f"Python/{platform.python_version()} "
-                f"python-httpx/{httpx.__version__} "
-                f"ArmisPythonSDK/v{VERSION}"
+                f"Python/{platform.python_version()} python-httpx/{httpx.__version__} ArmisPythonSDK/v{VERSION}"
             ),
         },
         url="https://api.armis.com/mock/endpoint",
@@ -55,9 +54,7 @@ async def test_retries(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     assert response.status_code == httpx.codes.OK
 
 
-async def test_retries_with_eventual_failure(
-    monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
-):
+async def test_retries_with_eventual_failure(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
     httpx_mock.add_response(
         url="https://api.armis.com/mock/endpoint",
@@ -79,9 +76,7 @@ async def test_retries_with_eventual_failure(
     assert response.status_code == httpx.codes.GATEWAY_TIMEOUT
 
 
-async def test_retrie_with_writable_method(
-    monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
-):
+async def test_retrie_with_writable_method(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     monkeypatch.setenv("ARMIS_REQUEST_RETRIES", "2")
     httpx_mock.add_response(
         method="POST",
@@ -96,9 +91,7 @@ async def test_retrie_with_writable_method(
     assert response.status_code == httpx.codes.GATEWAY_TIMEOUT
 
 
-async def test_list_with_multiple_pages(
-    monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
-):
+async def test_list_with_multiple_pages(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     monkeypatch.setenv("ARMIS_PAGE_SIZE", "2")
     httpx_mock.add_response(
         url="https://api.armis.com/v3/settings/sites?limit=2",

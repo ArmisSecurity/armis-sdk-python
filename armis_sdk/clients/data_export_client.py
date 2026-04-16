@@ -1,7 +1,7 @@
 import asyncio
+from collections.abc import AsyncIterator
 from typing import Any
-from typing import AsyncIterator
-from typing import Type
+from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 
 import pandas
 import universalasync
@@ -16,8 +16,7 @@ from armis_sdk.entities.data_export.data_export import DataExport
 
 @universalasync.wrap
 class DataExportClient(BaseEntityClient):
-
-    async def disable(self, entity: Type[BaseExportedEntity]):
+    async def disable(self, entity: type[BaseExportedEntity]):
         """Disable data export of the entity.
 
         Args:
@@ -35,12 +34,13 @@ class DataExportClient(BaseEntityClient):
                 data_export_client = DataExportClient()
                 await data_export_client.disable(Application)
 
+
             asyncio.run(main())
             ```
         """
         await self.toggle(entity, False)
 
-    async def enable(self, entity: Type[BaseExportedEntity]):
+    async def enable(self, entity: type[BaseExportedEntity]):
         """Enable data export of the entity.
 
         Args:
@@ -58,13 +58,13 @@ class DataExportClient(BaseEntityClient):
                 data_export_client = DataExportClient()
                 await data_export_client.enable(Application)
 
+
             asyncio.run(main())
             ```
         """
         await self.toggle(entity, True)
 
-    async def iterate(self, entity: Type[T], **kwargs: Any) -> AsyncIterator[T]:
-        # pylint: disable=line-too-long
+    async def iterate(self, entity: type[T], **kwargs: Any) -> AsyncIterator[T]:
         """Iterate over the exported data.
 
         Args:
@@ -90,6 +90,7 @@ class DataExportClient(BaseEntityClient):
                 async for row in data_export_client.iterate(Application):
                     print(type(row))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -113,30 +114,27 @@ class DataExportClient(BaseEntityClient):
                 async for row in data_export_client.iterate(
                     Application,
                     columns=["device_id", "vendor", "name", "version"],
-                    filters=[("vendor", "in", ["Google", "Microsoft"])]
+                    filters=[("vendor", "in", ["Google", "Microsoft"])],
                 ):
                     print(row.device_id, row.vendor, row.name, row.version)
+
 
             asyncio.run(main())
             ```
         """
         data_export = await self.get(entity)
         if not data_export.enabled:
-            raise ArmisError(
-                "Data export is disabled for this entity, please enable it first."
-            )
+            raise ArmisError("Data export is disabled for this entity, please enable it first.")
 
         if data_export.file_format != "parquet":
             raise ArmisError("Only parquet files supported")
 
         for url in data_export.urls:
-            data_frame: pandas.DataFrame = await asyncio.to_thread(
-                pandas.read_parquet, url, **kwargs
-            )
+            data_frame: pandas.DataFrame = await asyncio.to_thread(pandas.read_parquet, url, **kwargs)
             for _, row in data_frame.iterrows():
                 yield entity.series_to_model(row)
 
-    async def get(self, entity: Type[BaseExportedEntity]) -> DataExport:
+    async def get(self, entity: type[BaseExportedEntity]) -> DataExport:
         """Get the `DataExport` of the entity
 
         Args:
@@ -157,6 +155,7 @@ class DataExportClient(BaseEntityClient):
                 data_export_client = DataExportClient()
                 print(await data_export_client.get(Application))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -169,7 +168,7 @@ class DataExportClient(BaseEntityClient):
             data = response_utils.get_data_dict(response)
             return DataExport.model_validate(data)
 
-    async def toggle(self, entity: Type[BaseExportedEntity], enabled: bool):
+    async def toggle(self, entity: type[BaseExportedEntity], enabled: bool):
         """Enable / disable export of an entity.
 
         Args:
@@ -191,12 +190,11 @@ class DataExportClient(BaseEntityClient):
                 data_export_client = DataExportClient()
                 await data_export_client.toggle(Application, True)
 
+
             asyncio.run(main())
             ```
         """
         data = {"enabled": enabled}
         async with self._armis_client.client() as client:
-            response = await client.patch(
-                f"/v3/data-export/{entity.entity_name}", json=data
-            )
+            response = await client.patch(f"/v3/data-export/{entity.entity_name}", json=data)
             response_utils.raise_for_status(response)

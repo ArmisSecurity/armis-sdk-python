@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import contextlib
 from typing import IO
-from typing import AsyncIterator
-from typing import Generator
+from typing import TYPE_CHECKING
 from typing import Union
 
 import httpx
@@ -14,9 +15,13 @@ from armis_sdk.entities.download_progress import DownloadProgress
 from armis_sdk.types.collector_image_type import CollectorImageType
 
 
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+    from collections.abc import Generator
+
+
 @universalasync.wrap
 class CollectorsClient(BaseEntityClient):
-    # pylint: disable=line-too-long
     """
     A client for interacting with Armis collectors.
 
@@ -25,7 +30,7 @@ class CollectorsClient(BaseEntityClient):
 
     async def download_image(
         self,
-        destination: Union[str, IO[bytes]],
+        destination: str | IO[bytes],
         image_type: CollectorImageType = "OVA",
     ) -> AsyncIterator[DownloadProgress]:
         """Download a collector image to a specified destination path / file.
@@ -56,6 +61,7 @@ class CollectorsClient(BaseEntityClient):
                     async for progress in armis_sdk.collectors.download_image(file):
                         print(progress.percent)
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -71,7 +77,6 @@ class CollectorsClient(BaseEntityClient):
             async with client.stream("GET", collector_image.url) as response:
                 response.raise_for_status()
                 total_size = int(response.headers.get("Content-Length", "0"))
-                # pylint: disable-next=contextmanager-generator-missing-cleanup
                 with self.open_file(destination) as file:
                     async for chunk in response.aiter_bytes():
                         file.write(chunk)
@@ -97,6 +102,7 @@ class CollectorsClient(BaseEntityClient):
                 collectors_client = CollectorsClient()
                 print(await collectors_client.get_image(image_type="OVA"))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -105,17 +111,13 @@ class CollectorsClient(BaseEntityClient):
             ```
         """
         async with self._armis_client.client() as client:
-            response = await client.get(
-                "/v3/collectors/_image", params={"image_type": image_type}
-            )
+            response = await client.get("/v3/collectors/_image", params={"image_type": image_type})
             data = response_utils.get_data_dict(response)
             return CollectorImage.model_validate(data)
 
     @classmethod
     @contextlib.contextmanager
-    def open_file(
-        cls, destination: Union[str, IO[bytes]]
-    ) -> Generator[IO[bytes], None, None]:
+    def open_file(cls, destination: str | IO[bytes]) -> Generator[IO[bytes], None, None]:
         if isinstance(destination, str):
             with open(destination, "wb") as file:
                 yield file

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 from typing import Union
 
@@ -40,22 +42,25 @@ class AsqRule(BaseEntity):
         ```
     """
 
-    and_: Optional[list[Union[str, "AsqRule"]]] = Field(alias="and", default=None)
+    and_: list[str | AsqRule] | None = Field(alias="and", default=None)
     """Rules that all must match."""
 
-    or_: Optional[list[Union[str, "AsqRule"]]] = Field(alias="or", default=None)
+    or_: list[str | AsqRule] | None = Field(alias="or", default=None)
     """Rules that at least one of them must match."""
 
     @classmethod
-    def from_asq(cls, asq: str) -> "AsqRule":
+    def from_asq(cls, asq: str) -> AsqRule:
         """
         Create a `AsqRule` object from a single ASQ string.
         """
         return AsqRule(or_=[asq])
 
     @model_validator(mode="after")
-    def validate_structure(self) -> "AsqRule":
+    def validate_structure(self) -> AsqRule:
         if (self.and_ is None) == (self.or_ is None):
             raise ValueError("Only one of 'and_' or 'or_' must be specified.")
 
         return self
+
+
+AsqRule.model_rebuild()

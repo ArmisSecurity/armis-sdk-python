@@ -1,8 +1,8 @@
 from typing import TypeVar
 
+from pydantic import alias_generators
 from pydantic import BaseModel
 from pydantic import ConfigDict
-from pydantic import alias_generators
 
 
 class BaseEntity(BaseModel):

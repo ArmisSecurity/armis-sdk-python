@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from typing import Annotated
 from typing import Any
@@ -23,64 +25,60 @@ class Site(BaseEntity):
     The `Site` entity represents a physical location at the customer's environment.
     """
 
-    id: Optional[int] = Field(strict=False, default=None)
+    id: int | None = Field(strict=False, default=None)
     """The id of the site."""
 
-    name: Optional[str] = None
+    name: str | None = None
     """The name of the site."""
 
-    lat: Optional[float] = Field(frozen=True, default=None)
+    lat: float | None = Field(frozen=True, default=None)
     """
     The latitude coordinate of the physical location of the site on earth.
 
-    This field is read-only and is automatically derived from the 
+    This field is read-only and is automatically derived from the
     [`location`][armis_sdk.entities.site.Site.location] field.
-    
+
     Example: `37.7900103`
 
     """
 
-    lng: Optional[float] = Field(frozen=True, default=None)
+    lng: float | None = Field(frozen=True, default=None)
     """
     The longitude coordinate of the physical location of the site on earth.
 
-    This field is read-only and is automatically derived from the 
+    This field is read-only and is automatically derived from the
     [`location`][armis_sdk.entities.site.Site.location] field.
-    
+
     Example: `-122.4007818`
     """
 
-    location: Optional[str] = None
+    location: str | None = None
     """
     The name of the location of the site, such as an address.
-    
+
     Example: `548 Market Street Suite 97439 San Francisco, CA 94104-5401`
-    
-    When this field is set, the [`lat`][armis_sdk.entities.site.Site.lat] and 
+
+    When this field is set, the [`lat`][armis_sdk.entities.site.Site.lat] and
     [`lng`][armis_sdk.entities.site.Site.lng] are automatically derived from it.
     """
 
-    parent_id: Optional[int] = Field(strict=False, default=None)
+    parent_id: int | None = Field(strict=False, default=None)
     """The id of the parent site."""
 
-    tier: Optional[str] = None
+    tier: str | None = None
     """The tier of the site."""
 
-    asq_rule: Optional[AsqRule] = Field(default=None)
+    asq_rule: AsqRule | None = Field(default=None)
     """The ASQ rule of the site."""
 
-    network_equipment_device_ids: Annotated[
-        Optional[list[int]], BeforeValidator(ensure_list_of_ints)
-    ] = None
+    network_equipment_device_ids: Annotated[list[int] | None, BeforeValidator(ensure_list_of_ints)] = None
     """The ids of network equipment devices associated with the site."""
 
-    integration_ids: Annotated[
-        Optional[list[int]], BeforeValidator(ensure_list_of_ints)
-    ] = None
+    integration_ids: Annotated[list[int] | None, BeforeValidator(ensure_list_of_ints)] = None
     """The ids of the integration associated with the site."""
 
-    children: list["Site"] = Field(default_factory=list)
-    """The sub-sites that are directly under this site 
+    children: list[Site] = Field(default_factory=list)
+    """The sub-sites that are directly under this site
     (their `parent_id` will match this site's `id`)."""
 
     @model_validator(mode="before")
@@ -91,3 +89,6 @@ class Site(BaseEntity):
         if "ruleAql" in data:
             data["asq_rule"] = json.loads(data.pop("ruleAql"))
         return data
+
+
+Site.model_rebuild()

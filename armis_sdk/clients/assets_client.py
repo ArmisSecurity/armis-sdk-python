@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import datetime
-from typing import AsyncIterator
 from typing import Optional
-from typing import Type
+from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
+from typing import TYPE_CHECKING
 from typing import Union
 
 import universalasync
@@ -18,9 +20,12 @@ from armis_sdk.entities.device import Device
 from armis_sdk.types.asset_id_source import AssetIdSource
 
 
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
+
 @universalasync.wrap
-class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
-    # pylint: disable=line-too-long
+class AssetsClient(BaseEntityClient):
     """
     A client for interacting with assets.
 
@@ -31,10 +36,10 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
     async def list_by_asset_id(
         self,
-        asset_class: Type[AssetT],
-        asset_ids: Union[list[int], list[str]],
+        asset_class: type[AssetT],
+        asset_ids: list[int] | list[str],
         asset_id_source: AssetIdSource = "ASSET_ID",
-        fields: Optional[list[str]] = None,
+        fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets by asset ID or other identifiers.
 
@@ -54,6 +59,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
             from armis_sdk.clients.assets_client import AssetsClient
             from armis_sdk.entities.device import Device
 
+
             async def main():
                 assets_client = AssetsClient()
 
@@ -68,6 +74,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
                 async for device in assets_client.list_by_asset_id(Device, ipv4_addresses, asset_id_source="IPV4_ADDRESS"):
                     print(device)
 
+
             asyncio.run(main())
             ```
         """
@@ -81,9 +88,9 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
     async def list_by_last_seen(
         self,
-        asset_class: Type[AssetT],
-        last_seen: Union[datetime.datetime, datetime.timedelta],
-        fields: Optional[list[str]] = None,
+        asset_class: type[AssetT],
+        last_seen: datetime.datetime | datetime.timedelta,
+        fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets by last seen timestamp.
 
@@ -106,6 +113,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
             from armis_sdk.clients.assets_client import AssetsClient
             from armis_sdk.entities.device import Device
 
+
             async def main():
                 assets_client = AssetsClient()
 
@@ -117,10 +125,11 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
                 async for device in assets_client.list_by_last_seen(Device, datetime.datetime(2025, 12, 8)):
                     print(device)
 
+
             asyncio.run(main())
             ```
         """
-        filter_: dict[str, Union[str, int]] = {"filter_criteria": "LAST_SEEN"}
+        filter_: dict[str, str | int] = {"filter_criteria": "LAST_SEEN"}
 
         if isinstance(last_seen, datetime.datetime):
             filter_["last_seen_ge"] = last_seen.isoformat()
@@ -132,9 +141,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
         async for item in self._list_assets(asset_class, fields, filter_):
             yield item
 
-    async def list_fields(
-        self, asset_class: Type[AssetT]
-    ) -> AsyncIterator[AssetFieldDescription]:
+    async def list_fields(self, asset_class: type[AssetT]) -> AsyncIterator[AssetFieldDescription]:
         """List all available fields for a given asset class.
 
         Args:
@@ -150,11 +157,13 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
             from armis_sdk.clients.assets_client import AssetsClient
             from armis_sdk.entities.device import Device
 
+
             async def main():
                 assets_client = AssetsClient()
 
                 async for field in assets_client.list_fields(Device):
                     print(f"{field.name}: {field.type}")
+
 
             asyncio.run(main())
             ```
@@ -174,7 +183,6 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
         fields: list[str],
         asset_id_source: AssetIdSource = "ASSET_ID",
     ) -> None:
-        # pylint: disable=line-too-long
         """Bulk update assets.
 
         Args:
@@ -203,6 +211,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
                 # Update based on the explicit source "IPV4_ADDRESS"
                 await assets_client.update([device], ["custom.MyField"], asset_id_source="IPV4_ADDRESS")
+
 
             asyncio.run(main())
             ```
@@ -244,7 +253,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
     def _create_bulk_update_request(
         cls,
         asset: Asset,
-        asset_id: Union[str, int],
+        asset_id: str | int,
         field: str,
     ):
         request = {"asset_id": asset_id, "key": field}
@@ -266,7 +275,7 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
         asset: Asset,
         index: int,
         asset_id_source: AssetIdSource,
-    ) -> Union[str, int]:
+    ) -> str | int:
         if isinstance(asset, Device):
             return cls._get_device_asset_id(asset, index, asset_id_source)
 
@@ -286,30 +295,22 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
         if asset_id_source == "MAC_ADDRESS":
             if device.mac_addresses is None or len(device.mac_addresses) != 1:
-                raise ArmisError(
-                    f"Device at index {index} doesn't have exactly one mac address"
-                )
+                raise ArmisError(f"Device at index {index} doesn't have exactly one mac address")
             return device.mac_addresses[0]
 
         if asset_id_source == "IPV4_ADDRESS":
             if device.ipv4_addresses is None or len(device.ipv4_addresses) != 1:
-                raise ArmisError(
-                    f"Device at index {index} doesn't have exactly one IPv4 address"
-                )
+                raise ArmisError(f"Device at index {index} doesn't have exactly one IPv4 address")
             return device.ipv4_addresses[0]
 
         if asset_id_source == "IPV6_ADDRESS":
             if device.ipv6_addresses is None or len(device.ipv6_addresses) != 1:
-                raise ArmisError(
-                    f"Device at index {index} doesn't have exactly one IPv6 address"
-                )
+                raise ArmisError(f"Device at index {index} doesn't have exactly one IPv6 address")
             return device.ipv6_addresses[0]
 
         if asset_id_source == "SERIAL_NUMBER":
             if device.serial_numbers is None or len(device.serial_numbers) != 1:
-                raise ArmisError(
-                    f"Device at index {index} doesn't have exactly one serial number"
-                )
+                raise ArmisError(f"Device at index {index} doesn't have exactly one serial number")
             return device.serial_numbers[0]
 
         raise ArmisError(f"Can't get {asset_id_source!r} of device at index {index}")
@@ -324,8 +325,8 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
     async def _list_assets(
         self,
-        asset_class: Type[AssetT],
-        fields: Optional[list[str]],
+        asset_class: type[AssetT],
+        fields: list[str] | None,
         filter_: dict,
     ) -> AsyncIterator[AssetT]:
         fields = fields or sorted(asset_class.all_fields())
@@ -345,15 +346,12 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
         asset_types = {type(asset) for asset in assets}
         if len(asset_types) > 1:
             asset_types_str = ", ".join(sorted(repr(at.__name__) for at in asset_types))
-            raise ArmisError(
-                "All assets must be of the same type, "
-                f"got {len(asset_types)} types: {asset_types_str}"
-            )
+            raise ArmisError(f"All assets must be of the same type, got {len(asset_types)} types: {asset_types_str}")
 
     @classmethod
     def _validate_fields(
         cls,
-        asset_class: Type[AssetT],
+        asset_class: type[AssetT],
         fields: list[str],
         allow_model_members=True,
     ):
@@ -373,6 +371,4 @@ class AssetsClient(BaseEntityClient):  # pylint: disable=too-few-public-methods
 
         if invalid_fields:
             fields_str = ", ".join(map(repr, invalid_fields))
-            raise ArmisError(
-                f"The following fields are not supported with this operation: {fields_str}"
-            )
+            raise ArmisError(f"The following fields are not supported with this operation: {fields_str}")

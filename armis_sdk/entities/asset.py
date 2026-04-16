@@ -1,14 +1,16 @@
 import collections
 from typing import Any
 from typing import ClassVar
-from typing import DefaultDict
+from typing import DefaultDict  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import Literal
-from typing import Type
+from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import TypeVar
 
 from pydantic import Field
+from typing_extensions import Self
 
 from armis_sdk.core.base_entity import BaseEntity
+
 
 AssetT = TypeVar("AssetT", bound="Asset")
 
@@ -26,8 +28,8 @@ class Asset(BaseEntity):
     """Integration properties of the asset. Values can by anything."""
 
     @classmethod
-    def from_search_result(cls: Type[AssetT], data: dict) -> AssetT:
-        fields: DefaultDict[str, Any] = collections.defaultdict(dict)
+    def from_search_result(cls, data: dict) -> Self:
+        fields: collections.defaultdict[str, Any] = collections.defaultdict(dict)
         for key, value in data["fields"].items():
             if len(parts := key.split(".", 1)) > 1:
                 part1, part2 = parts
@@ -44,4 +46,4 @@ class Asset(BaseEntity):
         return set(cls.model_fields.keys()) - {
             "custom",
             "integration",
-        }  # pylint: disable=no-member
+        }

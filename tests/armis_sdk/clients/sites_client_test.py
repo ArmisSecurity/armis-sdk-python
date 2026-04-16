@@ -6,6 +6,7 @@ from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.entities.asq_rule import AsqRule
 from armis_sdk.entities.site import Site
 
+
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 
@@ -76,9 +77,7 @@ async def test_create_without_name(httpx_mock: pytest_httpx.HTTPXMock):
 
 
 async def test_delete(httpx_mock: pytest_httpx.HTTPXMock):
-    httpx_mock.add_response(
-        url="https://api.armis.com/v3/settings/sites/1", method="DELETE"
-    )
+    httpx_mock.add_response(url="https://api.armis.com/v3/settings/sites/1", method="DELETE")
 
     site = Site(id=1)
     sites_client = SitesClient()
@@ -235,9 +234,7 @@ async def test_list_sites(from_response, expected, httpx_mock: pytest_httpx.HTTP
     assert sites == [expected]
 
 
-async def test_list_sites_with_multiple_pages(
-    monkeypatch, httpx_mock: pytest_httpx.HTTPXMock
-):
+async def test_list_sites_with_multiple_pages(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
     monkeypatch.setenv("ARMIS_PAGE_SIZE", "2")
     httpx_mock.add_response(
         url="https://api.armis.com/v3/settings/sites?limit=2",
@@ -310,9 +307,7 @@ async def test_update_simple_properties(httpx_mock: pytest_httpx.HTTPXMock):
     site = Site(id=1, name="new_name", location="new location", parent_id=2)
 
     updated_site = await sites_client.update(site)
-    assert updated_site == Site(
-        id=1, name="new_name", location="new location", parent_id=2
-    )
+    assert updated_site == Site(id=1, name="new_name", location="new location", parent_id=2)
 
 
 async def test_update_without_id(httpx_mock: pytest_httpx.HTTPXMock):

@@ -5,6 +5,7 @@ import pandas
 
 from armis_sdk.entities.data_export.application import Application
 
+
 ApplicationNT = collections.namedtuple(
     "ApplicationNT",
     ["device_id", "name", "vendor", "version", "cpe", "first_seen", "last_seen"],

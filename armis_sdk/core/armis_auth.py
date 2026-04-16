@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import typing
 from typing import Optional
@@ -7,6 +9,7 @@ import httpx
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.core.client_credentials import ClientCredentials
+
 
 AUTHORIZATION = "Authorization"
 
@@ -28,24 +31,16 @@ class ArmisAuth(httpx.Auth):
     def __init__(self, base_url: str, credentials: ClientCredentials):
         self._base_url = base_url
         self._credentials = credentials
-        self._access_token: Optional[str] = None
-        self._expires_at: Optional[datetime.datetime] = None
+        self._access_token: str | None = None
+        self._expires_at: datetime.datetime | None = None
 
-    def auth_flow(
-        self, request: httpx.Request
-    ) -> typing.Generator[httpx.Request, httpx.Response, None]:
-        if (
-            self._access_token is None
-            or self._expires_at is None
-            or self._expires_at < datetime.datetime.now()
-        ):
+    def auth_flow(self, request: httpx.Request) -> typing.Generator[httpx.Request, httpx.Response, None]:
+        if self._access_token is None or self._expires_at is None or self._expires_at < datetime.datetime.now():
             access_token_response = yield self._build_access_token_request()
             self._update_access_token(access_token_response)
 
         if self._access_token is None:
-            raise ArmisError(
-                "Something went wrong, there is no access token available."
-            )
+            raise ArmisError("Something went wrong, there is no access token available.")
 
         request.headers[AUTHORIZATION] = f"Bearer {self._access_token}"
         response = yield request
@@ -74,6 +69,4 @@ class ArmisAuth(httpx.Auth):
     def _update_access_token(self, response: httpx.Response):
         data = response_utils.get_data_dict(response)
         self._access_token = data["access_token"]
-        self._expires_at = datetime.datetime.now() + datetime.timedelta(
-            seconds=data["expires_in"]
-        )
+        self._expires_at = datetime.datetime.now() + datetime.timedelta(seconds=data["expires_in"])

@@ -3,11 +3,10 @@ import datetime
 import pytest
 import pytest_httpx
 
-from armis_sdk.clients.device_custom_properties_client import (
-    DeviceCustomPropertiesClient,
-)
+from armis_sdk.clients.device_custom_properties_client import DeviceCustomPropertiesClient
 from armis_sdk.core.armis_error import ArmisError
 from armis_sdk.entities.device_custom_property import DeviceCustomProperty
+
 
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
@@ -165,9 +164,7 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
         ),
     ],
 )
-async def test_list_properties(
-    from_response, expected, httpx_mock: pytest_httpx.HTTPXMock
-):
+async def test_list_properties(from_response, expected, httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://api.armis.com/v3/settings/device-custom-properties",
         method="GET",
@@ -194,9 +191,7 @@ async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
     )
 
     client = DeviceCustomPropertiesClient()
-    property_ = DeviceCustomProperty(
-        id=1, name="mock_name", type="string", description="new_description"
-    )
+    property_ = DeviceCustomProperty(id=1, name="mock_name", type="string", description="new_description")
 
     updated_property = await client.update(property_)
     assert updated_property == DeviceCustomProperty(
