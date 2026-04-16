@@ -1,10 +1,15 @@
+from __future__ import annotations
+
 import datetime
 from typing import ClassVar
 from typing import Optional
-
-import pandas
+from typing import TYPE_CHECKING
 
 from armis_sdk.entities.data_export.base_exported_entity import BaseExportedEntity
+
+
+if TYPE_CHECKING:
+    import pandas
 
 
 class Application(BaseExportedEntity):
@@ -38,7 +43,7 @@ class Application(BaseExportedEntity):
     **Example**: `30.0.1599.40`
     """
 
-    cpe: Optional[str]
+    cpe: str | None
     """
     The CPE (Common Platform Enumeration) of the application
 
@@ -52,15 +57,13 @@ class Application(BaseExportedEntity):
     """When the application was last seen on the device"""
 
     @classmethod
-    def series_to_model(cls, series: pandas.Series) -> "Application":
+    def series_to_model(cls, series: pandas.Series) -> Application:
         return Application(
             device_id=series.loc["device_id"],
             vendor=series.loc["vendor"],
             name=series.loc["name"],
             version=series.loc["version"],
-            cpe=cls._value_or_none(
-                series.loc["cpe"] if "cpe" in series.index else None
-            ),
+            cpe=cls._value_or_none(series.loc["cpe"] if "cpe" in series.index else None),
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series["last_seen"].to_pydatetime(),
         )

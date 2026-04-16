@@ -1,18 +1,25 @@
+from __future__ import annotations
+
 import importlib.metadata
 import os
 import platform
-from typing import AsyncIterator
 from typing import Optional
+from typing import TYPE_CHECKING
 from typing import TypeVar
 
 import httpx
-import universalasync
 from httpx_retries import Retry
 from httpx_retries import RetryTransport
+import universalasync
 
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
 from armis_sdk.core.client_credentials import ClientCredentials
+
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
 
 API_BASE_URL = "https://api.armis.com"
 ARMIS_CLIENT_ID = "ARMIS_CLIENT_ID"
@@ -38,7 +45,7 @@ DataTypeT = TypeVar("DataTypeT", dict, list)
 
 
 @universalasync.wrap
-class ArmisClient:  # pylint: disable=too-few-public-methods
+class ArmisClient:
     """
     A class that provides easy access to the Armis API, taking care of:
 
@@ -48,7 +55,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
     4. Proxy configuration via HTTPS_PROXY and HTTP_PROXY environment variables.
     """
 
-    def __init__(self, credentials: Optional[ClientCredentials] = None):
+    def __init__(self, credentials: ClientCredentials | None = None):
         credentials = self._get_credentials(credentials)
         self._auth = ArmisAuth(API_BASE_URL, credentials)
         self._user_agent = " ".join(USER_AGENT_PARTS)
@@ -61,7 +68,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
         except ValueError:
             self._default_backoff = 0
 
-    def client(self, retries: Optional[int] = None, backoff: Optional[float] = None):
+    def client(self, retries: int | None = None, backoff: float | None = None):
         retries = retries if retries is not None else self._default_retries
         backoff = backoff if backoff is not None else self._default_backoff
         retry = Retry(total=retries, backoff_factor=backoff)
@@ -82,7 +89,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
             trust_env=True,
         )
 
-    async def list(self, url: str, body: Optional[dict] = None) -> AsyncIterator[dict]:
+    async def list(self, url: str, body: dict | None = None) -> AsyncIterator[dict]:
         """List all items from a paginated endpoint.
 
         Args:
@@ -103,6 +110,7 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                 armis_client = ArmisClient()
                 async for item in armis_client.list("/v3/settings/sites"):
                     print(item)
+
 
             asyncio.run(main())
             ```
@@ -130,20 +138,14 @@ class ArmisClient:  # pylint: disable=too-few-public-methods
                     break
 
     @classmethod
-    def _get_credentials(
-        cls, credentials: Optional[ClientCredentials]
-    ) -> ClientCredentials:
+    def _get_credentials(cls, credentials: ClientCredentials | None) -> ClientCredentials:
         credentials = credentials or ClientCredentials()
         credentials.vendor_id = credentials.vendor_id or os.getenv(ARMIS_VENDOR_ID)
         credentials.audience = credentials.audience or os.getenv(ARMIS_AUDIENCE)
         credentials.client_id = credentials.client_id or os.getenv(ARMIS_CLIENT_ID)
-        credentials.client_secret = credentials.client_secret or os.getenv(
-            ARMIS_CLIENT_SECRET
-        )
+        credentials.client_secret = credentials.client_secret or os.getenv(ARMIS_CLIENT_SECRET)
         env_scopes = os.getenv(ARMIS_SCOPES)
-        credentials.scopes = credentials.scopes or (
-            env_scopes.split(",") if env_scopes else []
-        )
+        credentials.scopes = credentials.scopes or (env_scopes.split(",") if env_scopes else [])
 
         if not credentials.audience:
             raise ValueError(

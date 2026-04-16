@@ -7,6 +7,7 @@ import pandas
 from armis_sdk.entities.data_export.risk_factor import RiskFactor
 from armis_sdk.entities.data_export.risk_factor import RiskFactorRecommendedAction
 
+
 RiskFactorNT = collections.namedtuple(
     "RiskFactorNT",
     [

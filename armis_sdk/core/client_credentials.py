@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 import dataclasses
 from typing import Optional
 
 
 @dataclasses.dataclass
 class ClientCredentials:
-    audience: Optional[str] = None
-    client_id: Optional[str] = None
-    client_secret: Optional[str] = None
-    vendor_id: Optional[str] = None
-    scopes: Optional[list[str]] = None
+    audience: str | None = None
+    client_id: str | None = None
+    client_secret: str | None = None
+    vendor_id: str | None = None
+    scopes: list[str] | None = None

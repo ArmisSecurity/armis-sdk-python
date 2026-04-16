@@ -7,6 +7,7 @@ from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.entities.collector_image import CollectorImage
 from armis_sdk.entities.download_progress import DownloadProgress
 
+
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 
@@ -72,9 +73,7 @@ async def test_download_image_to_path(httpx_mock: pytest_httpx.HTTPXMock):
 
     collectors_client = CollectorsClient()
     with tempfile.NamedTemporaryFile() as temp_file:
-        progress_items = [
-            site async for site in collectors_client.download_image(temp_file.name)
-        ]
+        progress_items = [site async for site in collectors_client.download_image(temp_file.name)]
 
         assert progress_items == [
             DownloadProgress(downloaded=16384, total=49151),
@@ -103,9 +102,7 @@ async def test_download_image_to_file(httpx_mock: pytest_httpx.HTTPXMock):
 
     collectors_client = CollectorsClient()
     with tempfile.NamedTemporaryFile() as temp_file:
-        progress_items = [
-            site async for site in collectors_client.download_image(temp_file)
-        ]
+        progress_items = [site async for site in collectors_client.download_image(temp_file)]
 
         assert progress_items == [
             DownloadProgress(downloaded=16384, total=49151),

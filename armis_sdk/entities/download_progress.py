@@ -11,4 +11,4 @@ class DownloadProgress(BaseEntity):
     @property
     def percent(self) -> str:
         """Percentage of progress."""
-        return f"{self.downloaded/self.total:.4%}"
+        return f"{self.downloaded / self.total:.4%}"

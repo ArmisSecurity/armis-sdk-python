@@ -1,12 +1,18 @@
+from __future__ import annotations
+
 import datetime
 import json
 from typing import ClassVar
 from typing import Optional
+from typing import TYPE_CHECKING
 
-import pandas
 from pydantic import BaseModel
 
 from armis_sdk.entities.data_export.base_exported_entity import BaseExportedEntity
+
+
+if TYPE_CHECKING:
+    import pandas
 
 
 class RiskFactorRecommendedAction(BaseModel):
@@ -68,7 +74,7 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `Device Supports SMBv1`
     """
 
-    score: Optional[int]
+    score: int | None
     """The score of the risk factor"""
 
     group: str
@@ -78,14 +84,14 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `INSECURE_TRAFFIC_AND_BEHAVIOR`
     """
 
-    remediation_type: Optional[str]
+    remediation_type: str | None
     """
     The type of the remediation
 
     **Example**: `Disable SMBv1 Protocol`
     """
 
-    remediation_description: Optional[str]
+    remediation_description: str | None
     """
     The description of the remediation
 
@@ -110,13 +116,13 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `OPEN`
     """
 
-    status_update_time: Optional[datetime.datetime]
+    status_update_time: datetime.datetime | None
     """When was the status last changed"""
 
-    status_updated_by_user_id: Optional[int]
+    status_updated_by_user_id: int | None
     """Which used id last changed the status"""
 
-    status_update_reason: Optional[str]
+    status_update_reason: str | None
     """
     The reason for the status change
 
@@ -124,29 +130,21 @@ class RiskFactor(BaseExportedEntity):
     """
 
     @classmethod
-    def series_to_model(cls, series: pandas.Series) -> "RiskFactor":
+    def series_to_model(cls, series: pandas.Series) -> RiskFactor:
         return RiskFactor(
             device_id=series.loc["device_id"],
             category=series.loc["category"],
             type=series.loc["type"],
             description=series.loc["description"],
-            score=(
-                int(score)
-                if (score := cls._value_or_none(series.loc["score"]))
-                else None
-            ),
+            score=(int(score) if (score := cls._value_or_none(series.loc["score"])) else None),
             status=series.loc["status"],
             group=series.loc["group"],
             remediation_type=cls._value_or_none(series.loc["remediation"]),
-            remediation_description=cls._value_or_none(
-                series.loc["remediation_description"]
-            ),
+            remediation_description=cls._value_or_none(series.loc["remediation_description"]),
             remediation_recommended_actions=(
                 [
                     RiskFactorRecommendedAction(**item)
-                    for item in json.loads(
-                        series.loc["remediation_recommended_actions"]
-                    )
+                    for item in json.loads(series.loc["remediation_recommended_actions"])
                 ]
                 if series.loc["remediation_recommended_actions"]
                 else []
@@ -154,8 +152,6 @@ class RiskFactor(BaseExportedEntity):
             first_seen=series.loc["first_seen"].to_pydatetime(),
             last_seen=series.loc["last_seen"].to_pydatetime(),
             status_update_time=cls._value_or_none(series.loc["status_update_time"]),
-            status_updated_by_user_id=cls._value_or_none(
-                series.loc["status_updated_by_user_id"]
-            ),
+            status_updated_by_user_id=cls._value_or_none(series.loc["status_updated_by_user_id"]),
             status_update_reason=cls._value_or_none(series.loc["status_update_reason"]),
         )

@@ -5,6 +5,7 @@ from armis_sdk.entities.device import Device
 from armis_sdk.entities.network_interface import NetworkInterface
 from armis_sdk.entities.site import Site
 
+
 ALL_DEVICE_FIELDS = [
     "boundaries",
     "brand",

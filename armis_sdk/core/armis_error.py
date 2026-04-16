@@ -3,29 +3,31 @@ This module contains the various classes of errors that you may encounter
 while interacting with the SDK.
 """
 
+from __future__ import annotations
+
 import json
 from typing import Optional
+from typing import TYPE_CHECKING
 from typing import Union
 
-from httpx import HTTPStatusError
 from pydantic import BaseModel
 
 
+if TYPE_CHECKING:
+    from httpx import HTTPStatusError
+
+
 class DetailItem(BaseModel):
-    loc: list[Union[str, int]]
+    loc: list[str | int]
     msg: str
     type: str
 
     def __str__(self):
-        return (
-            f"Type: {self.type}\n"
-            f"Message: {self.msg}\n"
-            f"Location: {json.dumps(self.loc)}"
-        )
+        return f"Type: {self.type}\nMessage: {self.msg}\nLocation: {json.dumps(self.loc)}"
 
 
 class ErrorBody(BaseModel):
-    detail: Union[str, list[DetailItem]]
+    detail: str | list[DetailItem]
 
 
 class ArmisError(Exception):
@@ -53,7 +55,6 @@ class BulkUpdateError(ArmisError):
 
 
 class ResponseError(ArmisError):
-    # pylint: disable=line-too-long
     """
     A class for all errors raised following a non-successful response from the Armis API.
     For example, if the server returns 400 for invalid input, an instance of this class will be raised.
@@ -62,7 +63,7 @@ class ResponseError(ArmisError):
     def __init__(
         self,
         error_body: ErrorBody,
-        response_errors: Optional[list[HTTPStatusError]] = None,
+        response_errors: list[HTTPStatusError] | None = None,
     ):
         super().__init__(self._get_message(error_body))
         self.response_errors = response_errors

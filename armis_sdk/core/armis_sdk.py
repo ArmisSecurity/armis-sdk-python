@@ -1,18 +1,17 @@
+from __future__ import annotations
+
 from typing import Optional
 
 from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
-from armis_sdk.clients.device_custom_properties_client import (
-    DeviceCustomPropertiesClient,
-)
+from armis_sdk.clients.device_custom_properties_client import DeviceCustomPropertiesClient
 from armis_sdk.clients.sites_client import SitesClient
 from armis_sdk.core.armis_client import ArmisClient
 from armis_sdk.core.client_credentials import ClientCredentials
 
 
-class ArmisSdk:  # pylint: disable=too-few-public-methods
-    # pylint: disable=line-too-long
+class ArmisSdk:
     """
     The `ArmisSdk` class provides access to the Armis API, while conveniently wraps
     common actions like authentication, pagination, parsing etc.
@@ -33,20 +32,20 @@ class ArmisSdk:  # pylint: disable=too-few-public-methods
 
         armis_sdk = ArmisSdk()
 
+
         async def main():
             async for site in armis_sdk.sites.list():
                 print(site)
+
 
         asyncio.run(main())
         ```
     """
 
-    def __init__(self, credentials: Optional[ClientCredentials] = None):
+    def __init__(self, credentials: ClientCredentials | None = None):
         self.client: ArmisClient = ArmisClient(credentials=credentials)
         self.assets: AssetsClient = AssetsClient(self.client)
         self.collectors: CollectorsClient = CollectorsClient(self.client)
         self.data_export: DataExportClient = DataExportClient(self.client)
-        self.device_custom_properties: DeviceCustomPropertiesClient = (
-            DeviceCustomPropertiesClient(self.client)
-        )
+        self.device_custom_properties: DeviceCustomPropertiesClient = DeviceCustomPropertiesClient(self.client)
         self.sites: SitesClient = SitesClient(self.client)

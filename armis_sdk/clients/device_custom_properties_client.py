@@ -1,4 +1,4 @@
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 import universalasync
 
@@ -18,7 +18,6 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
     """
 
     async def create(self, property_: DeviceCustomProperty) -> DeviceCustomProperty:
-        # pylint: disable=line-too-long
         """Create a `DeviceCustomProperty`.
 
         Args:
@@ -41,6 +40,7 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
                 property_ = DeviceCustomProperty(name="MyConfig", type="string")
                 print(await client.create(property_))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -50,8 +50,7 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
         """
         if property_.id is not None:
             raise ArmisError(
-                "Can't create a property that already has an id. "
-                "Did you mean to call `.update(property_)`?",
+                "Can't create a property that already has an id. Did you mean to call `.update(property_)`?",
             )
 
         if not property_.name:
@@ -63,14 +62,11 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
         payload = property_.model_dump(exclude_none=True)
 
         async with self._armis_client.client() as client:
-            response = await client.post(
-                "/v3/settings/device-custom-properties", json=payload
-            )
+            response = await client.post("/v3/settings/device-custom-properties", json=payload)
             data = response_utils.get_data_dict(response)
             return DeviceCustomProperty.model_validate(data)
 
     async def delete(self, property_: DeviceCustomProperty):
-        # pylint: disable=line-too-long
         """Delete a `DeviceCustomProperty`.
 
         Args:
@@ -90,6 +86,7 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
                 property_ = DeviceCustomProperty(id=1, name="MyConfig", type="string")
                 await client.delete(property_)
 
+
             asyncio.run(main())
             ```
         """
@@ -97,13 +94,10 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
             raise ArmisError("Can't delete a property without an id.")
 
         async with self._armis_client.client() as client:
-            response = await client.delete(
-                f"/v3/settings/device-custom-properties/{property_.id}"
-            )
+            response = await client.delete(f"/v3/settings/device-custom-properties/{property_.id}")
             response_utils.raise_for_status(response)
 
     async def get(self, property_id: int) -> DeviceCustomProperty:
-        # pylint: disable=line-too-long
         """Get a `DeviceCustomProperty` by its ID.
 
         Args:
@@ -124,6 +118,7 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
                 client = DeviceCustomPropertiesClient()
                 print(await client.get(1))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -132,14 +127,11 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
             ```
         """
         async with self._armis_client.client() as client:
-            response = await client.get(
-                f"/v3/settings/device-custom-properties/{property_id}"
-            )
+            response = await client.get(f"/v3/settings/device-custom-properties/{property_id}")
             data = response_utils.get_data_dict(response)
             return DeviceCustomProperty.model_validate(data)
 
     async def list(self) -> AsyncIterator[DeviceCustomProperty]:
-        # pylint: disable=line-too-long
         """List all the tenant's `DeviceCustomProperty`s.
         This method takes care of pagination, so you don't have to deal with it.
 
@@ -175,7 +167,6 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
                 yield DeviceCustomProperty.model_validate(item)
 
     async def update(self, property_: DeviceCustomProperty) -> DeviceCustomProperty:
-        # pylint: disable=line-too-long
         """Update a `DeviceCustomProperty`.
         Only `description` and `allowed_values` are updatable.
 
@@ -203,13 +194,13 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
                 )
                 await client.update(property_)
 
+
             asyncio.run(main())
             ```
         """
         if property_.id is None:
             raise ArmisError(
-                "Can't update a property without an id. "
-                "Did you mean to call `.create(property_)`?",
+                "Can't update a property without an id. Did you mean to call `.create(property_)`?",
             )
 
         data = property_.model_dump(

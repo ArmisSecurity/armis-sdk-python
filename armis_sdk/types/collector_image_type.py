@@ -1,5 +1,6 @@
 from typing import Literal
 
+
 CollectorImageType = Literal[
     "DARWIN_AMD64_BROKER",
     "DARWIN_ARM64_BROKER",

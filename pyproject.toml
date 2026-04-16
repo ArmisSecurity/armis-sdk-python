@@ -13,14 +13,11 @@ requires-python = ">=3.9"
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-force_single_line = "true"
-
 [tool.mypy]
 plugins = ['pydantic.mypy']
 
 [tool.poetry.dependencies]
+eval_type_backport = "*"
 pandas = "*"
 pyarrow = "*"
 pydantic = "*"
@@ -34,12 +31,10 @@ pytest-asyncio = "*"
 pytest-httpx = "*"
 
 [tool.poetry.group.dev.dependencies]
-black = "*"
-isort = "*"
 mypy = "*"
 pandas-stubs = "*"
-pylint = "*"
 python-dotenv = "*"
+ruff = "*"
 setuptools = "*"
 
 [tool.poetry.group.docs.dependencies]

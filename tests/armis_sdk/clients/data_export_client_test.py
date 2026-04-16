@@ -10,6 +10,7 @@ from armis_sdk.clients.data_export_client import DataExportClient
 from armis_sdk.entities.data_export.base_exported_entity import BaseExportedEntity
 from armis_sdk.entities.data_export.data_export import DataExport
 
+
 pytest_plugins = ["tests.plugins.auto_setup_plugin"]
 
 
@@ -21,9 +22,7 @@ class MockEntity(BaseExportedEntity):
 
     @classmethod
     def series_to_model(cls, series: pandas.Series) -> "MockEntity":
-        return MockEntity(
-            name=series.loc["name"], description=series.loc["description"]
-        )
+        return MockEntity(name=series.loc["name"], description=series.loc["description"])
 
 
 async def test_disable(httpx_mock: pytest_httpx.HTTPXMock):
@@ -83,9 +82,7 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
 
 
 @mock.patch.object(pandas, "read_parquet")
-async def test_export(
-    mock_read_parquet: mock.MagicMock, httpx_mock: pytest_httpx.HTTPXMock
-):
+async def test_export(mock_read_parquet: mock.MagicMock, httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://api.armis.com/v3/data-export/mock-entity",
         json={
@@ -96,9 +93,7 @@ async def test_export(
         },
     )
     mock_read_parquet.side_effect = [
-        pandas.DataFrame(
-            {"name": ["table", "chair"], "description": ["round", "high"]}
-        ),
+        pandas.DataFrame({"name": ["table", "chair"], "description": ["round", "high"]}),
         pandas.DataFrame({"name": ["book"], "description": ["hardcover"]}),
     ]
 

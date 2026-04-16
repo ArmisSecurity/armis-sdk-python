@@ -16,8 +16,4 @@ jobs:
     - uses: ./.github/workflows/install_deps
 
     - name: Run formatter
-      run: poetry run black --check --diff .
-
-    - name: Run isort
-      run: poetry run isort --check-only --diff .
-
+      run: poetry run ruff format --check .

@@ -1,0 +1,347 @@
+line-length = 120
+target-version = "py39"
+
+[lint]
+
+select = [
+  "F",     # Pyflakes
+  "E",     # pycodestyle errors
+  "W",     # pycodestyle warnings
+  "C90",   # mccabe complexity
+  "I",     # isort
+  "N",     # pep8-naming
+  "D",     # pydocstyle
+  "UP",    # pyupgrade
+  "YTT",   # flake8-2020
+  "ANN",   # flake8-annotations
+  "ASYNC", # flake8-async
+  "S",     # flake8-bandit
+  "BLE",   # flake8-blind-except
+  "FBT",   # flake8-boolean-trap
+  "B",     # flake8-bugbear
+  "A",     # flake8-builtins
+  "COM",   # flake8-commas
+  "C4",    # flake8-comprehensions
+  "DTZ",   # flake8-datetimez
+  "T10",   # flake8-debugger
+  "EM",    # flake8-errmsg
+  "EXE",   # flake8-executable
+  "FA",    # flake8-future-annotations
+  "ISC",   # flake8-implicit-str-concat
+  "ICN",   # flake8-import-conventions
+  "LOG",   # flake8-logging
+  "G",     # flake8-logging-format
+  "INP",   # flake8-no-pep420
+  "PIE",   # flake8-pie
+  "T20",   # flake8-print
+  "PYI",   # flake8-pyi
+  "PT",    # flake8-pytest-style
+  "Q",     # flake8-quotes
+  "RSE",   # flake8-raise
+  "RET",   # flake8-return
+  "SLF",   # flake8-self
+  "SLOT",  # flake8-slots
+  "SIM",   # flake8-simplify
+  "TID",   # flake8-tidy-imports
+  "TCH",   # flake8-type-checking
+  "ARG",   # flake8-unused-arguments
+  "PTH",   # flake8-use-pathlib
+  "TD",    # flake8-todos
+  "FIX",   # flake8-fixme
+  "ERA",   # eradicate (commented-out code)
+  "PD",    # pandas-vet
+  "PGH",   # pygrep-hooks
+  "PL",    # Pylint (PLC, PLE, PLR, PLW)
+  "TRY",   # tryceratops
+  "FLY",   # flynt
+  "NPY",   # NumPy-specific rules
+  "PERF",  # Perflint
+  "FURB",  # refurb
+  "RUF",   # Ruff-specific rules
+]
+
+ignore = [
+  "D",      # Disable all docstring rules
+  "ANN001", # Missing type annotation for function argument
+  "ANN002", # Missing type annotation for *args
+  "ANN003", # Missing type annotation for **kwargs
+  "ANN201", # Missing return type annotation for public function
+  "ANN202", # Missing return type annotation for private function
+  "ANN204", # Missing return type annotation for special method
+  "ANN205", # Missing return type annotation for staticmethod
+  "ANN206", # Missing return type annotation for classmethod
+  "ANN401", # Dynamically typed expressions (Any) are disallowed
+  "TD002",  # Missing author in TODO
+  "TD003",  # Missing issue link on the line following TODO
+  "TD004",  # Missing colon in TODO
+  "TD005",  # Missing issue description after TODO
+  "FIX001", # Line contains FIXME
+  "FIX002", # Line contains TODO
+  "FIX003", # Line contains XXX
+  "FIX004", # Line contains HACK
+
+  "E711",   # none-comparison
+  "B904",   # Raise without from
+  "SIM108", # Use ternary operator
+  "TRY003", # Avoid specifying long messages outside exception class
+  "EM101",  # Exception must not use a string literal
+  "EM102",  # Exception must not use an f-string literal
+
+  "FBT001", # Boolean positional arg in function definition
+  "FBT002", # Boolean default value in function definition
+  "FBT003", # Boolean positional value in function call
+
+  "PLR0904", # Too many public methods
+  "PLR0911", # Too many return statements
+  "PLR0912", # Too many branches
+  "PLR0913", # Too many arguments
+  "PLR0914", # Too many local variables
+  "PLR0915", # Too many statements
+  "PLR0916", # Too many boolean expressions
+  "PLR0917", # Too many positional arguments
+  "PLR2004", # Magic value used in comparison
+
+  "BLE001", # Do not catch blind exception: Exception
+  "TRY002", # Create your own exception
+  "TRY300", # try-consider-else
+  "TRY400", # Use logging.exception instead of logging.error
+  "TRY201", # verbose-raise
+
+  "S101", # Use of assert detected
+  "S104", # Possible binding to all interfaces
+  "S105", # Possible hardcoded password
+  "S106", # Possible hardcoded password assigned to argument
+  "S107", # Possible hardcoded password assigned to argument
+  "S108", # Probable insecure usage of temp file/directory
+  "S311", # Standard pseudo-random generators
+  "S324", # Probable use of insecure hash function
+  "S603", # subprocess call
+  "S607", # Starting a process with a partial executable path
+  "S608", # hardcoded-sql-expression
+  "S113", # request-without-timeout
+  "S501", # request-with-no-cert-validation
+  "S110", # try-except-pass
+  "S112", # try-except-continue
+
+  "N",    # Disable all pep8-naming rules
+
+  "RET504", # Unnecessary variable assignment before return
+  "RET505", # Unnecessary else after return
+  "RET506", # Unnecessary else after raise
+  "RET507", # Unnecessary else after continue
+  "RET508", # Unnecessary else after break
+  "RET503", # implicit-return
+
+  "SIM102", # Use a single if statement instead of nested if
+  "SIM105", # Use contextlib.suppress instead of try-except-pass
+  "SIM114", # Combine if branches using logical or
+  "SIM115", # open-file-with-context-handler
+  "SIM117", # Use a single with statement
+  "SIM118", # in-dict-keys
+  "SIM103", # needless-bool
+
+  "ARG001", # Unused function argument
+  "ARG002", # Unused method argument
+  "ARG003", # Unused class method argument
+  "ARG005", # Unused lambda argument
+
+  "PTH100", # os.path.abspath
+  "PTH103", # os.makedirs
+  "PTH107", # os.remove
+  "PTH109", # os.getcwd
+  "PTH110", # os.path.exists
+  "PTH111", # os.path.expanduser
+  "PTH112", # os.path.isdir
+  "PTH113", # os.path.isfile
+  "PTH118", # os.path.join
+  "PTH119", # os.path.basename
+  "PTH120", # os.path.dirname
+  "PTH122", # os.path.splitext
+  "PTH123", # open()
+
+  "ISC001", # Implicitly concatenated string literals
+  "ISC002", # Implicitly concatenated string literals over multiple lines
+  "COM812", # Trailing comma missing
+  "COM819", # Trailing comma prohibited
+
+  "INP001",   # Implicit namespace package
+  "E501",     # Line too long
+  "ERA001",   # Commented-out code
+  "W291",     # trailing-whitespace
+  "F405",     # Undefined from star import
+  "F401",     # unused-import
+  "W293",     # blank-line-with-whitespace
+  "E402",     # module-import-not-at-top
+  "DTZ005",   # datetime.now() without tz
+  "DTZ901",   # datetime.min/max without tz
+  "DTZ004",   # call-datetime-utcfromtimestamp
+  "DTZ011",   # call-date-today
+  "DTZ002",   # call-datetime-today
+  "UP031",    # printf-string-formatting
+  "DTZ003",   # datetime.utcnow()
+  "PT006",    # Wrong parametrize names type
+  "DTZ001",   # datetime() without tz
+  "C408",     # Unnecessary collection call
+  "RUF013",   # Implicit optional
+  "PT009",    # pytest unittest assertion
+  "B905",     # zip-without-explicit-strict
+  "PLC0415",  # import-outside-top-level
+  "PERF401",  # manual-list-comprehension
+  "RUF012",   # mutable-class-default
+  "RUF005",   # collection-literal-concatenation
+  "PYI024",   # collections-named-tuple
+  "F403",     # undefined-local-with-import-star
+  "RUF015",   # unnecessary-iterable-allocation-for-first-element
+  "PT019",    # pytest-fixture-param-without-value
+  "PT007",    # pytest-parametrize-values-wrong-type
+  "DTZ006",   # call-datetime-fromtimestamp
+  "PT011",    # pytest-raises-too-broad
+  "RUF059",   # unused-unpacked-variable
+  "E701",     # multiple-statements-on-one-line-colon
+  "B007",     # unused-loop-control-variable
+  "LOG015",   # root-logger-call
+  "PT012",    # pytest-raises-with-multiple-statements
+  "G004",     # logging-f-string
+  "A001",     # builtin-variable-shadowing
+  "DTZ007",   # call-datetime-strptime-without-zone
+  "RUF001",   # ambiguous-unicode-character-string
+  "C401",     # unnecessary-generator-set
+  "C405",     # unnecessary-literal-set
+  "TC001",    # typing-only-first-party-import
+  "C416",     # unnecessary-comprehension
+  "A002",     # builtin-argument-shadowing
+  "ICN001",   # unconventional-import-alias
+  "EM103",    # dot-format-in-exception
+  "FLY002",   # static-join-to-f-string
+  "TRY301",   # raise-within-try
+  "EXE001",   # shebang-not-executable
+  "PLR1714",  # repeated-equality-comparison
+  "E721",     # type-comparison
+  "E741",     # ambiguous-variable-name
+  "B008",     # function-call-in-default-argument
+  "PT018",    # pytest-composite-assertion
+  "PERF102",  # incorrect-dict-iterator
+  "ARG004",   # unused-static-method-argument
+  "E731",     # lambda-assignment
+  "EXE002",   # shebang-missing-executable-file
+  "UP008",    # super-call-with-parameters
+  "SIM201",   # negate-equal-op
+  "ASYNC230", # blocking-open-call-in-async-function
+  "ASYNC109", # async-function-with-timeout
+  "C417",     # unnecessary-map
+  "UP030",    # format-literals
+  "UP028",    # yield-in-for-loop
+  "UP022",    # replace-stdout-stderr
+  "UP036",    # outdated-version-block
+  "W292",     # missing-newline-at-end-of-file
+  "E101",     # mixed-spaces-and-tabs
+  "COM818",   # trailing-comma-on-bare-tuple
+  "B026",     # star-arg-unpacking-after-keyword-arg
+  "B017",     # assert-raises-exception
+  "B023",     # function-uses-loop-variable
+  "B019",     # cached-instance-method
+  "B024",     # abstract-base-class-without-abstract-method
+  "B027",     # empty-method-without-abstract-decorator
+  "W191",     # tab-indentation
+
+  "PERF203", # try-except within a loop
+  "C901",    # Function is too complex
+  "E712",    # Comparison to True/False
+
+  "RUF003",  # Ambiguous Unicode in comments
+  "SIM401",  # if-else vs dict.get
+  "C419",    # Unnecessary comprehension in call
+  "C414",    # Unnecessary double cast or process
+  "PLC0206", # dict-index-missing-items
+  "C403",    # unnecessary-list-comprehension-set
+  "TRY004",  # type-check-without-type-error
+  "SIM112",  # Uncapitalized environment variables
+  "PIE796",  # non-unique-enums
+  "FURB116", # f-string-number-format
+  "SIM212",  # if-expr-with-twisted-arms
+  "PIE810",  # multiple-starts-ends-with
+  "FURB162", # fromisoformat-replace-z
+  "SIM211",  # if-expr-with-false-true
+  "SIM101",  # duplicate-isinstance-call
+  "FURB163", # redundant-log-base
+]
+
+fixable = ["ALL"]
+unfixable = []
+
+dummy-variable-rgx = "^(_+|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|dummy|ignored_.*|unused_.*)$"
+
+[lint.per-file-ignores]
+
+"{**/tests/**/*.py,**/test_*.py,**/*_test.py}" = [
+  "S101",
+  "B011",
+  "PT015",
+  "PT027",
+  "PLR2004",
+  "PLR0913",
+  "PLR0915",
+  "D",
+  "B008",
+  "PT008",
+  "PT011",
+  "SLF001",
+  "F811",
+  "F841",
+]
+
+[lint.mccabe]
+max-complexity = 10
+
+[lint.pylint]
+max-args = 8
+max-branches = 12
+max-returns = 6
+max-statements = 50
+max-public-methods = 20
+max-locals = 20
+max-nested-blocks = 5
+max-bool-expr = 5
+
+[lint.isort]
+force-single-line = true
+force-sort-within-sections = true
+order-by-type = false
+known-local-folder = ["armis_sdk"]
+lines-after-imports = 2
+combine-as-imports = false
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.flake8-quotes]
+inline-quotes = "double"
+docstring-quotes = "double"
+multiline-quotes = "double"
+avoid-escape = true
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+parametrize-names-type = "tuple"
+parametrize-values-type = "list"
+parametrize-values-row-type = "tuple"
+
+[lint.pycodestyle]
+max-line-length = 120
+ignore-overlong-task-comments = true
+
+[lint.flake8-type-checking]
+strict = false
+runtime-evaluated-base-classes = [
+  "pydantic.BaseModel",
+  "armis_sdk.entities.data_export.base_exported_entity.BaseExportedEntity",
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = 120

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from typing import Literal
 from typing import Optional
@@ -24,5 +26,5 @@ class DataExport(BaseModel):
     urls: list[str]
     """URLs to the files that contain the exported data."""
 
-    urls_creation_time: Optional[datetime.datetime] = Field(strict=False)
+    urls_creation_time: datetime.datetime | None = Field(strict=False)
     """The creation time of the URLs."""

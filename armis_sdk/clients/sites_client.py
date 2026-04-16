@@ -1,4 +1,4 @@
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 import universalasync
 
@@ -10,7 +10,6 @@ from armis_sdk.entities.site import Site
 
 @universalasync.wrap
 class SitesClient(BaseEntityClient):
-    # pylint: disable=line-too-long
     """
     A client for interacting with sites.
 
@@ -40,6 +39,7 @@ class SitesClient(BaseEntityClient):
                 site_to_create = Site(name="my site")
                 print(await sites_client.create(site_to_create))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -48,10 +48,7 @@ class SitesClient(BaseEntityClient):
             ```
         """
         if site.id is not None:
-            raise ArmisError(
-                "Can't create a site that already has an id. "
-                "Did you mean to call `.update(site)`?"
-            )
+            raise ArmisError("Can't create a site that already has an id. Did you mean to call `.update(site)`?")
 
         if not site.name:
             raise ArmisError("Can't create a site without a name.")
@@ -85,6 +82,7 @@ class SitesClient(BaseEntityClient):
                 site = Site(id=1)
                 await sites_client.delete(site)
 
+
             asyncio.run(main())
             ```
         """
@@ -116,6 +114,7 @@ class SitesClient(BaseEntityClient):
                 sites_client = SitesClient()
                 print(await sites_client.get("1"))
 
+
             asyncio.run(main())
             ```
             Will output:
@@ -145,6 +144,7 @@ class SitesClient(BaseEntityClient):
             async def main():
                 sites_client = SitesClient()
                 print(await sites_client.hierarchy())
+
 
             asyncio.run(main())
             ```
@@ -223,14 +223,12 @@ class SitesClient(BaseEntityClient):
                 site = Site(id=1, location="new location")
                 await sites_client.update(site)
 
+
             asyncio.run(main())
             ```
         """
         if site.id is None:
-            raise ArmisError(
-                "Can't update a site without an id. "
-                "Did you mean to call `.create(site)`?"
-            )
+            raise ArmisError("Can't update a site without an id. Did you mean to call `.create(site)`?")
 
         data = site.model_dump(
             exclude={"children", "id"},
