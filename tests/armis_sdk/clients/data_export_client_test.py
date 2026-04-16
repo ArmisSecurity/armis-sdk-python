@@ -82,7 +82,7 @@ async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
 
 
 @mock.patch.object(pandas, "read_parquet")
-async def test_export(mock_read_parquet: mock.MagicMock, httpx_mock: pytest_httpx.HTTPXMock):
+async def test_iterate(mock_read_parquet: mock.MagicMock, httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://api.armis.com/v3/data-export/mock-entity",
         json={
