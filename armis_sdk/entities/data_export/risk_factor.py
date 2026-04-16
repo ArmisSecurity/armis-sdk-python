@@ -143,10 +143,7 @@ class RiskFactor(BaseExportedEntity):
             remediation_type=cls._value_or_none(series.get("remediation")),
             remediation_description=cls._value_or_none(series.get("remediation_description")),
             remediation_recommended_actions=(
-                [
-                    RiskFactorRecommendedAction(**item)
-                    for item in json.loads(remediation_recommended_actions)
-                ]
+                [RiskFactorRecommendedAction(**item) for item in json.loads(remediation_recommended_actions)]
                 if isinstance(remediation_recommended_actions, str)
                 else None
             ),
