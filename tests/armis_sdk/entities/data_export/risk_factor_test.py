@@ -1,4 +1,3 @@
-import collections
 import datetime
 import json
 
@@ -6,28 +5,6 @@ import pandas
 
 from armis_sdk.entities.data_export.risk_factor import RiskFactor
 from armis_sdk.entities.data_export.risk_factor import RiskFactorRecommendedAction
-
-
-RiskFactorNT = collections.namedtuple(
-    "RiskFactorNT",
-    [
-        "device_id",
-        "category",
-        "type",
-        "description",
-        "score",
-        "status",
-        "group",
-        "remediation",
-        "remediation_description",
-        "remediation_recommended_actions",
-        "first_seen",
-        "last_seen",
-        "status_update_time",
-        "status_updated_by_user_id",
-        "status_update_reason",
-    ],
-)
 
 
 def test_series_to_model():
@@ -83,4 +60,26 @@ def test_series_to_model():
         status_update_time=datetime.datetime(2025, 11, 3),
         status_updated_by_user_id=3,
         status_update_reason="reason1",
+    )
+
+
+def test_series_to_model_empty():
+    series = pandas.Series()
+
+    assert RiskFactor.series_to_model(series) == RiskFactor(
+        device_id=None,
+        category=None,
+        type=None,
+        description=None,
+        score=None,
+        status=None,
+        group=None,
+        remediation_type=None,
+        remediation_description=None,
+        remediation_recommended_actions=None,
+        first_seen=None,
+        last_seen=None,
+        status_update_time=None,
+        status_updated_by_user_id=None,
+        status_update_reason=None,
     )

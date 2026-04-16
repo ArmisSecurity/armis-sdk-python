@@ -1,15 +1,8 @@
-import collections
 import datetime
 
 import pandas
 
 from armis_sdk.entities.data_export.application import Application
-
-
-ApplicationNT = collections.namedtuple(
-    "ApplicationNT",
-    ["device_id", "name", "vendor", "version", "cpe", "first_seen", "last_seen"],
-)
 
 
 def test_series_to_model():
@@ -33,4 +26,18 @@ def test_series_to_model():
         cpe="cpe1",
         first_seen=datetime.datetime(2025, 11, 1),
         last_seen=datetime.datetime(2025, 11, 4),
+    )
+
+
+def test_series_to_model_empty():
+    series = pandas.Series()
+
+    assert Application.series_to_model(series) == Application(
+        device_id=None,
+        vendor=None,
+        name=None,
+        version=None,
+        cpe=None,
+        first_seen=None,
+        last_seen=None,
     )
