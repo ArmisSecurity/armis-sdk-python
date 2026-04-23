@@ -53,7 +53,7 @@ class AssetsClient(BaseEntityClient):
             Assets of the specified class matching the provided identifiers.
 
         Example:
-            ```python linenums="1" hl_lines="13 17"
+            ```python linenums="1" hl_lines="14 18"
             import asyncio
 
             from armis_sdk.clients.assets_client import AssetsClient
@@ -78,11 +78,51 @@ class AssetsClient(BaseEntityClient):
             asyncio.run(main())
             ```
         """
+        if not asset_ids:
+            raise ArmisError("asset_ids must not be empty")
         filter_ = {
             "filter_criteria": "ASSET_ID",
             "asset_ids": asset_ids,
             "asset_id_source": asset_id_source,
         }
+        async for item in self._list_assets(asset_class, fields, filter_):
+            yield item
+
+    async def list_by_boundary_id(
+        self,
+        asset_class: type[AssetT],
+        boundary_ids: list[int],
+        fields: list[str] | None = None,
+    ) -> AsyncIterator[AssetT]:
+        """List assets by boundary ID.
+
+        Args:
+            asset_class: The asset class to list. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
+            boundary_ids: A list of boundary IDs to filter by.
+            fields: Optional list of fields to retrieve. If None, all non-custom fields are retrieved.
+
+        Yields:
+            Assets of the specified class belonging to any of the provided boundaries.
+
+        Example:
+            ```python linenums="1" hl_lines="10"
+            import asyncio
+
+            from armis_sdk.clients.assets_client import AssetsClient
+            from armis_sdk.entities.device import Device
+
+
+            async def main():
+                assets_client = AssetsClient()
+
+                async for device in assets_client.list_by_boundary_id(Device, [1, 2, 3]):
+                    print(device)
+
+
+            asyncio.run(main())
+            ```
+        """
+        filter_ = self._build_boundary_id_filter(boundary_ids)
         async for item in self._list_assets(asset_class, fields, filter_):
             yield item
 
@@ -106,7 +146,7 @@ class AssetsClient(BaseEntityClient):
             ArmisError: If last_seen is neither datetime nor timedelta.
 
         Example:
-            ```python linenums="1" hl_lines="11 15"
+            ```python linenums="1" hl_lines="12 16"
             import asyncio
             import datetime
 
@@ -129,15 +169,115 @@ class AssetsClient(BaseEntityClient):
             asyncio.run(main())
             ```
         """
-        filter_: dict[str, str | int] = {"filter_criteria": "LAST_SEEN"}
+        filter_ = self._build_last_seen_filter(last_seen)
+        async for item in self._list_assets(asset_class, fields, filter_):
+            yield item
 
-        if isinstance(last_seen, datetime.datetime):
-            filter_["last_seen_ge"] = last_seen.isoformat()
-        elif isinstance(last_seen, datetime.timedelta):
-            filter_["last_seen_seconds"] = int(last_seen.total_seconds())
-        else:
-            raise ArmisError(f"Invalid 'last_seen' type {type(last_seen)}")
+    async def list_by_multiple(
+        self,
+        asset_class: type[AssetT],
+        last_seen: datetime.datetime | datetime.timedelta | None = None,
+        site_ids: list[int] | None = None,
+        boundary_ids: list[int] | None = None,
+        fields: list[str] | None = None,
+    ) -> AsyncIterator[AssetT]:
+        """List assets matching multiple filter criteria simultaneously (AND logic).
 
+        At least one of `last_seen`, `site_ids`, or `boundary_ids` must be provided.
+        Each criterion that is provided is applied as an AND condition.
+
+        Args:
+            asset_class: The asset class to list. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
+            last_seen: Either a datetime (assets seen on or after this time) or timedelta (assets seen within this duration).
+            site_ids: A list of site IDs to filter by.
+            boundary_ids: A list of boundary IDs to filter by.
+            fields: Optional list of fields to retrieve. If None, all non-custom fields are retrieved.
+
+        Yields:
+            Assets of the specified class matching all provided criteria.
+
+        Raises:
+            ArmisError: If no filter criteria are provided, or if last_seen is an invalid type.
+
+        Example:
+            ```python linenums="1" hl_lines="11-15"
+            import asyncio
+            import datetime
+
+            from armis_sdk.clients.assets_client import AssetsClient
+            from armis_sdk.entities.device import Device
+
+
+            async def main():
+                assets_client = AssetsClient()
+
+                async for device in assets_client.list_by_multiple(
+                    Device,
+                    site_ids=[1, 2],
+                    last_seen=datetime.timedelta(hours=1),
+                ):
+                    print(device)
+
+
+            asyncio.run(main())
+            ```
+        """
+        filters = []
+
+        if last_seen is not None:
+            filters.append(self._build_last_seen_filter(last_seen))
+
+        if site_ids is not None:
+            filters.append(self._build_site_id_filter(site_ids))
+
+        if boundary_ids is not None:
+            filters.append(self._build_boundary_id_filter(boundary_ids))
+
+        if not filters:
+            raise ArmisError("At least one of filter must be provided")
+
+        filter_ = {
+            "filter_criteria": "MULTIPLE",
+            "filters": filters,
+        }
+        async for item in self._list_assets(asset_class, fields, filter_):
+            yield item
+
+    async def list_by_site_id(
+        self,
+        asset_class: type[AssetT],
+        site_ids: list[int],
+        fields: list[str] | None = None,
+    ) -> AsyncIterator[AssetT]:
+        """List assets by site ID.
+
+        Args:
+            asset_class: The asset class to list. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
+            site_ids: A list of site IDs to filter by.
+            fields: Optional list of fields to retrieve. If None, all non-custom fields are retrieved.
+
+        Yields:
+            Assets of the specified class belonging to any of the provided sites.
+
+        Example:
+            ```python linenums="1" hl_lines="10"
+            import asyncio
+
+            from armis_sdk.clients.assets_client import AssetsClient
+            from armis_sdk.entities.device import Device
+
+
+            async def main():
+                assets_client = AssetsClient()
+
+                async for device in assets_client.list_by_site_id(Device, [1, 2, 3]):
+                    print(device)
+
+
+            asyncio.run(main())
+            ```
+        """
+        filter_ = self._build_site_id_filter(site_ids)
         async for item in self._list_assets(asset_class, fields, filter_):
             yield item
 
@@ -151,7 +291,7 @@ class AssetsClient(BaseEntityClient):
             Field descriptions including field name, type, and other metadata.
 
         Example:
-            ```python linenums="1" hl_lines="9"
+            ```python linenums="1" hl_lines="10"
             import asyncio
 
             from armis_sdk.clients.assets_client import AssetsClient
@@ -248,6 +388,29 @@ class AssetsClient(BaseEntityClient):
             ]
             if errors:
                 raise BulkUpdateError(errors)
+
+    @staticmethod
+    def _build_boundary_id_filter(boundary_ids: list[int]) -> dict:
+        if not boundary_ids:
+            raise ArmisError("boundary_ids must not be empty")
+        return {"filter_criteria": "BOUNDARY_ID", "boundary_ids": boundary_ids}
+
+    @staticmethod
+    def _build_last_seen_filter(last_seen: datetime.datetime | datetime.timedelta) -> dict:
+        filter_: dict[str, str | int] = {"filter_criteria": "LAST_SEEN"}
+        if isinstance(last_seen, datetime.datetime):
+            filter_["last_seen_ge"] = last_seen.isoformat()
+        elif isinstance(last_seen, datetime.timedelta):
+            filter_["last_seen_seconds"] = int(last_seen.total_seconds())
+        else:
+            raise ArmisError(f"Invalid 'last_seen' type {type(last_seen)}")
+        return filter_
+
+    @staticmethod
+    def _build_site_id_filter(site_ids: list[int]) -> dict:
+        if not site_ids:
+            raise ArmisError("site_ids must not be empty")
+        return {"filter_criteria": "SITE_ID", "site_ids": site_ids}
 
     @classmethod
     def _create_bulk_update_request(
