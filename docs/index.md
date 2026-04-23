@@ -9,7 +9,7 @@ pip install armis_sdk
 ```
 ## Usage
 
-All interaction with the SDK happens through the [ArmisSdk][armis_sdk.core.armis_sdk.ArmisSdk] class. 
+All interaction with the SDK happens through the [ArmisSdk][armis_sdk.core.armis_sdk.ArmisSdk] class.
 You'll need five things:
 
 1. **Audience**: The url of the tenant you want to interact with, including trailing slash (e.g. `https://acme.armis.com/`).

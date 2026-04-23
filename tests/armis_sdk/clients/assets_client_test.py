@@ -200,6 +200,133 @@ async def test_list_by_asset_id_invalid_fields():
             pass
 
 
+async def test_list_by_boundary_id(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/assets/_search",
+        method="POST",
+        match_json={
+            "limit": 100,
+            "asset_type": "DEVICE",
+            "fields": assets_test_data.ALL_DEVICE_FIELDS,
+            "filter": {"filter_criteria": "BOUNDARY_ID", "boundary_ids": [1, 2, 3]},
+        },
+        json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
+    )
+
+    assets_client = AssetsClient()
+    devices = [device async for device in assets_client.list_by_boundary_id(Device, [1, 2, 3])]
+
+    assert devices == [assets_test_data.MOCK_DEVICE_FULL]
+
+
+@pytest.mark.parametrize(
+    ["kwargs", "expected_filters"],
+    [
+        (
+            {"boundary_ids": [1, 2, 3]},
+            [{"filter_criteria": "BOUNDARY_ID", "boundary_ids": [1, 2, 3]}],
+        ),
+        (
+            {"site_ids": [1, 2, 3]},
+            [{"filter_criteria": "SITE_ID", "site_ids": [1, 2, 3]}],
+        ),
+        (
+            {"last_seen": datetime.datetime(2025, 12, 3)},
+            [{"filter_criteria": "LAST_SEEN", "last_seen_ge": "2025-12-03T00:00:00"}],
+        ),
+        (
+            {"last_seen": datetime.timedelta(hours=1)},
+            [{"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600}],
+        ),
+        (
+            {"last_seen": datetime.timedelta(hours=1), "site_ids": [1, 2], "boundary_ids": [3, 4]},
+            [
+                {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600},
+                {"filter_criteria": "SITE_ID", "site_ids": [1, 2]},
+                {"filter_criteria": "BOUNDARY_ID", "boundary_ids": [3, 4]},
+            ],
+        ),
+    ],
+)
+async def test_list_by_multiple(httpx_mock: pytest_httpx.HTTPXMock, kwargs, expected_filters):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/assets/_search",
+        method="POST",
+        match_json={
+            "limit": 100,
+            "asset_type": "DEVICE",
+            "fields": assets_test_data.ALL_DEVICE_FIELDS,
+            "filter": {"filter_criteria": "MULTIPLE", "filters": expected_filters},
+        },
+        json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
+    )
+
+    assets_client = AssetsClient()
+    devices = [device async for device in assets_client.list_by_multiple(Device, **kwargs)]
+
+    assert devices == [assets_test_data.MOCK_DEVICE_FULL]
+
+
+async def test_list_by_multiple_no_filters():
+    assets_client = AssetsClient()
+
+    with pytest.raises(ArmisError, match="At least one of"):
+        async for _ in assets_client.list_by_multiple(Device):
+            pass
+
+
+@pytest.mark.parametrize(
+    ["kwargs", "expected_error"],
+    [
+        (
+            {"last_seen": "2025-12-03"},
+            r"Invalid 'last_seen' type",
+        ),
+        (
+            {"last_seen": 3600},
+            r"Invalid 'last_seen' type",
+        ),
+        (
+            {"boundary_ids": []},
+            "boundary_ids must not be empty",
+        ),
+        (
+            {"site_ids": []},
+            "site_ids must not be empty",
+        ),
+        (
+            {"site_ids": [1, 2], "fields": ["device_id", "foo", "bar"]},
+            "The following fields are not supported with this operation: 'foo', 'bar'",
+        ),
+    ],
+)
+async def test_list_by_multiple_invalid_input(kwargs, expected_error):
+    assets_client = AssetsClient()
+
+    with pytest.raises(ArmisError, match=expected_error):
+        async for _ in assets_client.list_by_multiple(Device, **kwargs):
+            pass
+
+
+async def test_list_by_site_id(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/assets/_search",
+        method="POST",
+        match_json={
+            "limit": 100,
+            "asset_type": "DEVICE",
+            "fields": assets_test_data.ALL_DEVICE_FIELDS,
+            "filter": {"filter_criteria": "SITE_ID", "site_ids": [1, 2, 3]},
+        },
+        json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
+    )
+
+    assets_client = AssetsClient()
+    devices = [device async for device in assets_client.list_by_site_id(Device, [1, 2, 3])]
+
+    assert devices == [assets_test_data.MOCK_DEVICE_FULL]
+
+
 async def test_update(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://api.armis.com/v3/assets/_bulk",
