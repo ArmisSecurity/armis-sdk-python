@@ -89,12 +89,13 @@ class ArmisClient:
             trust_env=True,
         )
 
-    async def list(self, url: str, body: dict | None = None) -> AsyncIterator[dict]:
+    async def list(self, url: str, body: dict | None = None, after_location: str | None = None) -> AsyncIterator[dict]:
         """List all items from a paginated endpoint.
 
         Args:
             url (str): The relative endpoint URL.
             body (dict): Payload to send as POST request.
+            after_location (str): The nested object location to use for pagination.
 
         Returns:
             An (async) iterator of `dict`s.
@@ -133,7 +134,10 @@ class ArmisClient:
                 for item in items:
                     yield item
                 if next_ := data.get("next"):
-                    params["after"] = next_
+                    if after_location:
+                        params[after_location]["after"] = next_
+                    else:
+                        params["after"] = next_
                 else:
                     break
 

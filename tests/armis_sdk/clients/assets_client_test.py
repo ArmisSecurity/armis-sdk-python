@@ -493,6 +493,37 @@ async def test_update_with_validation_errors(assets, fields, expected_error):
         await assets_client.update(assets, fields)
 
 
+async def test_list_assets_pagination(monkeypatch, httpx_mock: pytest_httpx.HTTPXMock):
+    monkeypatch.setenv("ARMIS_PAGE_SIZE", "1")
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/assets/_search",
+        method="POST",
+        match_json={
+            "limit": 1,
+            "asset_type": "DEVICE",
+            "fields": assets_test_data.ALL_DEVICE_FIELDS,
+            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600},
+        },
+        json={"next": 2, "items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
+    )
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/assets/_search",
+        method="POST",
+        match_json={
+            "limit": 1,
+            "asset_type": "DEVICE",
+            "fields": assets_test_data.ALL_DEVICE_FIELDS,
+            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600, "after": 2},
+        },
+        json={"next": None, "items": [{"asset_id": 2, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
+    )
+
+    assets_client = AssetsClient()
+    devices = [device async for device in assets_client.list_by_last_seen(Device, datetime.timedelta(hours=1))]
+
+    assert len(devices) == 2
+
+
 async def test_list_fields(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://api.armis.com/v3/assets/_search/fields?asset_type=DEVICE",
