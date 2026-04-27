@@ -501,7 +501,7 @@ class AssetsClient(BaseEntityClient):
             "fields": fields,
             "filter": filter_,
         }
-        async for item in self._armis_client.list("/v3/assets/_search", body=body, after_location="filter"):
+        async for item in self._armis_client.list("/v3/assets/_search", body=body, pagination_location="filter"):
             yield asset_class.from_search_result(item)
 
     @classmethod

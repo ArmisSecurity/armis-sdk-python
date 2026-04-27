@@ -89,13 +89,18 @@ class ArmisClient:
             trust_env=True,
         )
 
-    async def list(self, url: str, body: dict | None = None, after_location: str | None = None) -> AsyncIterator[dict]:
+    async def list(
+        self,
+        url: str,
+        body: dict | None = None,
+        pagination_location: str | None = None,
+    ) -> AsyncIterator[dict]:
         """List all items from a paginated endpoint.
 
         Args:
             url (str): The relative endpoint URL.
             body (dict): Payload to send as POST request.
-            after_location (str): The nested object location to use for pagination.
+            pagination_location (str): The nested object location to use for pagination.
 
         Returns:
             An (async) iterator of `dict`s.
@@ -123,7 +128,11 @@ class ArmisClient:
         """
         page_size = int(os.getenv(ARMIS_PAGE_SIZE, str(DEFAULT_PAGE_LENGTH)))
         async with self.client() as client:
-            params = {"limit": page_size, **(body or {})}
+            params = {**(body or {})}
+            if pagination_location:
+                params[pagination_location]["limit"] = page_size
+            else:
+                params["limit"] = page_size
             while True:
                 if body:
                     response = await client.post(url, json=params)
@@ -134,8 +143,8 @@ class ArmisClient:
                 for item in items:
                     yield item
                 if next_ := data.get("next"):
-                    if after_location:
-                        params[after_location]["after"] = next_
+                    if pagination_location:
+                        params[pagination_location]["after"] = next_
                     else:
                         params["after"] = next_
                 else:
