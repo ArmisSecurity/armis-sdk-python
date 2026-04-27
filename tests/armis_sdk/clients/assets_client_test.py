@@ -25,12 +25,12 @@ async def test_list_by_last_seen_datetime(httpx_mock: pytest_httpx.HTTPXMock):
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
             "filter": {
                 "filter_criteria": "LAST_SEEN",
                 "last_seen_ge": "2025-12-03T00:00:00",
+                "limit": 100,
             },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
@@ -50,12 +50,12 @@ async def test_list_by_last_seen_datetime_explicit_fields(
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": ["brand", "custom.MyField1", "custom.MyField2", "purdue_level"],
             "filter": {
                 "filter_criteria": "LAST_SEEN",
                 "last_seen_ge": "2025-12-03T00:00:00",
+                "limit": 100,
             },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_PARTIAL_RAW_DATA}]},
@@ -74,10 +74,13 @@ async def test_list_by_last_seen_timedelta(httpx_mock: pytest_httpx.HTTPXMock):
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
-            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600},
+            "filter": {
+                "filter_criteria": "LAST_SEEN",
+                "last_seen_seconds": 3600,
+                "limit": 100,
+            },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
     )
@@ -96,10 +99,13 @@ async def test_list_by_last_seen_timedelta_explicit_fields(
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": ["brand", "custom.MyField1", "custom.MyField2", "purdue_level"],
-            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600},
+            "filter": {
+                "filter_criteria": "LAST_SEEN",
+                "last_seen_seconds": 3600,
+                "limit": 100,
+            },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_PARTIAL_RAW_DATA}]},
     )
@@ -130,13 +136,13 @@ async def test_list_by_asset_id(httpx_mock: pytest_httpx.HTTPXMock):
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
             "filter": {
                 "filter_criteria": "ASSET_ID",
                 "asset_id_source": "IPV4_ADDRESS",
                 "asset_ids": ["1.1.1.1"],
+                "limit": 100,
             },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
@@ -161,13 +167,13 @@ async def test_list_by_asset_id_explicit_fields(httpx_mock: pytest_httpx.HTTPXMo
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": ["brand", "custom.MyField1", "custom.MyField2", "purdue_level"],
             "filter": {
                 "filter_criteria": "ASSET_ID",
                 "asset_id_source": "IPV4_ADDRESS",
                 "asset_ids": ["1.1.1.1"],
+                "limit": 100,
             },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_PARTIAL_RAW_DATA}]},
@@ -205,10 +211,13 @@ async def test_list_by_boundary_id(httpx_mock: pytest_httpx.HTTPXMock):
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
-            "filter": {"filter_criteria": "BOUNDARY_ID", "boundary_ids": [1, 2, 3]},
+            "filter": {
+                "filter_criteria": "BOUNDARY_ID",
+                "boundary_ids": [1, 2, 3],
+                "limit": 100,
+            },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
     )
@@ -253,10 +262,13 @@ async def test_list_by_multiple(httpx_mock: pytest_httpx.HTTPXMock, kwargs, expe
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
-            "filter": {"filter_criteria": "MULTIPLE", "filters": expected_filters},
+            "filter": {
+                "filter_criteria": "MULTIPLE",
+                "filters": expected_filters,
+                "limit": 100,
+            },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
     )
@@ -313,10 +325,13 @@ async def test_list_by_site_id(httpx_mock: pytest_httpx.HTTPXMock):
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 100,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
-            "filter": {"filter_criteria": "SITE_ID", "site_ids": [1, 2, 3]},
+            "filter": {
+                "filter_criteria": "SITE_ID",
+                "site_ids": [1, 2, 3],
+                "limit": 100,
+            },
         },
         json={"items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
     )
@@ -499,10 +514,13 @@ async def test_list_assets_pagination(monkeypatch, httpx_mock: pytest_httpx.HTTP
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 1,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
-            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600},
+            "filter": {
+                "filter_criteria": "LAST_SEEN",
+                "last_seen_seconds": 3600,
+                "limit": 1,
+            },
         },
         json={"next": 2, "items": [{"asset_id": 1, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
     )
@@ -510,10 +528,9 @@ async def test_list_assets_pagination(monkeypatch, httpx_mock: pytest_httpx.HTTP
         url="https://api.armis.com/v3/assets/_search",
         method="POST",
         match_json={
-            "limit": 1,
             "asset_type": "DEVICE",
             "fields": assets_test_data.ALL_DEVICE_FIELDS,
-            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600, "after": 2},
+            "filter": {"filter_criteria": "LAST_SEEN", "last_seen_seconds": 3600, "limit": 1, "after": 2},
         },
         json={"next": None, "items": [{"asset_id": 2, "fields": assets_test_data.MOCK_DEVICE_FULL_RAW_DATA}]},
     )
