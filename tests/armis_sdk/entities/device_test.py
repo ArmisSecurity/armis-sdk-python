@@ -19,6 +19,5 @@ def test_device_model_json_schema_includes_datetime_fields():
     """datetime.datetime fields must appear in the JSON schema (regression: TYPE_CHECKING import drops them)."""
     schema = Device.model_json_schema()
     props = schema.get("properties", {})
-    # Fields use camelCase aliases per BaseEntity's alias_generator
-    assert "firstSeen" in props, f"firstSeen missing from schema properties: {sorted(props.keys())}"
-    assert "lastSeen" in props, f"lastSeen missing from schema properties: {sorted(props.keys())}"
+    assert "first_seen" in props, f"first_seen missing from schema properties: {sorted(props.keys())}"
+    assert "last_seen" in props, f"last_seen missing from schema properties: {sorted(props.keys())}"

@@ -1,6 +1,6 @@
 [project]
 name = "armis_sdk"
-version = "1.2.2"
+version = "1.2.3"
 description = "The Armis SDK is a package that encapsulates common use-cases for interacting with the Armis platform."
 authors = [
     { name = "Shai Lachmanovich", email = "shai@armis.com" },
@@ -20,7 +20,7 @@ plugins = ['pydantic.mypy']
 eval_type_backport = "*"
 pandas = "*"
 pyarrow = "*"
-pydantic = "*"
+pydantic = ">=2.11"
 httpx = "*"
 httpx-retries = "*"
 universalasync = "*"

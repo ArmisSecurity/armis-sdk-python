@@ -20,6 +20,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
             "parent_id": 2,
             "network_equipment_device_ids": [1, 2, 3],
             "integration_ids": [4, 5, 6],
+            "asq_rule": {"or": ["asq1", "asq2"]},
         },
         json={
             "id": "1",
@@ -28,6 +29,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
             "parent_id": 2,
             "network_equipment_device_ids": [1, 2, 3],
             "integration_ids": [4, 5, 6],
+            "asq_rule": {"or": ["asq1", "asq2"]},
         },
     )
 
@@ -37,6 +39,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
         parent_id=2,
         network_equipment_device_ids=[1, 2, 3],
         integration_ids=[4, 5, 6],
+        asq_rule=AsqRule(or_=["asq1", "asq2"]),
     )
 
     sites_client = SitesClient()
@@ -49,6 +52,7 @@ async def test_create(httpx_mock: pytest_httpx.HTTPXMock):
         parent_id=2,
         network_equipment_device_ids=[1, 2, 3],
         integration_ids=[4, 5, 6],
+        asq_rule=AsqRule(or_=["asq1", "asq2"]),
     )
 
 
@@ -294,20 +298,38 @@ async def test_update_simple_properties(httpx_mock: pytest_httpx.HTTPXMock):
     httpx_mock.add_response(
         url="https://api.armis.com/v3/settings/sites/1",
         method="PATCH",
-        match_json={"name": "new_name", "location": "new location", "parent_id": 2},
+        match_json={
+            "name": "new_name",
+            "location": "new location",
+            "parent_id": 2,
+            "asq_rule": {"or": ["asq1", "asq2"]},
+        },
         json={
             "id": 1,
             "name": "new_name",
             "location": "new location",
             "parent_id": 2,
+            "asq_rule": {"or": ["asq1", "asq2"]},
         },
     )
 
     sites_client = SitesClient()
-    site = Site(id=1, name="new_name", location="new location", parent_id=2)
+    site = Site(
+        id=1,
+        name="new_name",
+        location="new location",
+        parent_id=2,
+        asq_rule=AsqRule(or_=["asq1", "asq2"]),
+    )
 
     updated_site = await sites_client.update(site)
-    assert updated_site == Site(id=1, name="new_name", location="new location", parent_id=2)
+    assert updated_site == Site(
+        id=1,
+        name="new_name",
+        location="new location",
+        parent_id=2,
+        asq_rule=AsqRule(or_=["asq1", "asq2"]),
+    )
 
 
 async def test_update_without_id(httpx_mock: pytest_httpx.HTTPXMock):
