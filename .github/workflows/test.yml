@@ -16,7 +16,7 @@ jobs:
       - uses: ./.github/workflows/install_deps
 
       - name: Run tests
-        run: poetry run pytest -vv
+        run: uv run pytest -vv
   mypy:
     runs-on: ubuntu-latest
 
@@ -26,4 +26,4 @@ jobs:
       - uses: ./.github/workflows/install_deps
 
       - name: Run mypy
-        run: poetry run mypy .
+        run: uv run mypy .

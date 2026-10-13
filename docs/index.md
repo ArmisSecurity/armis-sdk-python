@@ -73,9 +73,11 @@ from armis_sdk.entities.site import Site
 
 armis_sdk = ArmisSdk()
 
+
 async def main():
     site = Site(id=1, location="new location")
     await armis_sdk.sites.update(site)
+
 
 asyncio.run(main())
 ```

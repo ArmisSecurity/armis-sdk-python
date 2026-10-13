@@ -1,6 +1,6 @@
 [project]
 name = "armis_sdk"
-version = "1.3.0"
+version = "1.3.1"
 description = "The Armis SDK is a package that encapsulates common use-cases for interacting with the Armis platform."
 authors = [
     { name = "Shai Lachmanovich", email = "shai@armis.com" },
@@ -8,36 +8,88 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.9"
+dependencies = [
+    "eval_type_backport",
+    "pandas",
+    "pyarrow",
+    "pydantic>=2.11",
+    "httpx",
+    "httpx-retries",
+    "universalasync",
+]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
 
 [tool.mypy]
 plugins = ['pydantic.mypy']
 
-[tool.poetry.dependencies]
-eval_type_backport = "*"
-pandas = "*"
-pyarrow = "*"
-pydantic = ">=2.11"
-httpx = "*"
-httpx-retries = "*"
-universalasync = "*"
+[tool.uv]
+default-groups = ["build", "dev", "docs"]
+# Pins every package that's also resolved by the Bazel-side `//thirdparty/pip:armis_sdk_requirements`
+# lock (armis/thirdparty/pip/armis_sdk_requirements-lock.*.txt) to the exact version already frozen
+# there, so `uv lock`'s otherwise-unbounded resolution doesn't drift away from it. Bazel's pip-compile
+# lock preserves its existing pins by default (it only advances a package when explicitly asked to via
+# `-P <package>`), so without this, a plain `uv lock` picks up today's latest instead and permanently
+# desyncs the two sides that `dependencies_test` (armis/public_sdks/python/dependencies_test.py)
+# cross-checks. This is a stopgap: whoever next intentionally bumps these dependencies needs to update
+# both this list and the Bazel lock (via `acli deps lock-pip -P <package> ...`) together, and drop the
+# corresponding entries here once they're bumped.
+constraint-dependencies = [
+    "annotated-types==0.7.0",
+    "anyio==4.9.0",
+    "certifi==2025.4.26",
+    "h11==0.16.0",
+    "httpcore==1.0.9",
+    "httpx-retries==0.4.0",
+    "httpx==0.28.1",
+    "idna==3.10",
+    "iniconfig==2.1.0",
+    "mypy-extensions==1.1.0",
+    "mypy==1.16.0",
+    "numpy==2.0.2",
+    "packaging==25.0",
+    "pandas-stubs==2.2.2.240807",
+    "pandas==2.3.3",
+    "pathspec==0.12.1",
+    "pluggy==1.6.0",
+    "pyarrow==21.0.0",
+    "pydantic-core==2.33.2",
+    "pydantic==2.11.5",
+    "pygments==2.19.1",
+    "pytest-asyncio==1.0.0",
+    "pytest-httpx==0.35.0",
+    "pytest==8.4.0",
+    "python-dateutil==2.9.0.post0",
+    "pytz==2025.2",
+    "six==1.17.0",
+    "sniffio==1.3.1",
+    "types-pytz==2025.2.0.20250809",
+    "typing-extensions==4.14.0",
+    "typing-inspection==0.4.1",
+    "tzdata==2025.2",
+    "universalasync==0.4.0.1",
+]
 
-[tool.poetry.group.build.dependencies]
-pytest = "*"
-pytest-asyncio = "*"
-pytest-httpx = "*"
-
-[tool.poetry.group.dev.dependencies]
-mypy = "*"
-pandas-stubs = "*"
-python-dotenv = "*"
-ruff = "*"
-setuptools = "*"
-
-[tool.poetry.group.docs.dependencies]
-mkdocs = "*"
-mkdocstrings-python = "*"
-mkdocs-material = "*"
+[dependency-groups]
+build = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-httpx",
+]
+dev = [
+    "mypy",
+    "pandas-stubs",
+    "python-dotenv",
+    "ruff",
+    "setuptools",
+]
+docs = [
+    "mkdocs",
+    "mkdocstrings-python",
+    "mkdocs-material",
+]

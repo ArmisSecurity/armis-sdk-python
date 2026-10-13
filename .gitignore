@@ -2,6 +2,7 @@
 .env
 .idea
 __pycache__
+.venv
 dist
 local
 site
