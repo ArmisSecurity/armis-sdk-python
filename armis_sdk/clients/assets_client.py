@@ -91,14 +91,14 @@ class AssetsClient(BaseEntityClient):
     async def list_by_boundary_id(
         self,
         asset_class: type[AssetT],
-        boundary_ids: list[int],
+        boundary_ids: list[int | None],
         fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets by boundary ID.
 
         Args:
             asset_class: The asset class to list. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
-            boundary_ids: A list of boundary IDs to filter by.
+            boundary_ids: A list of boundary IDs to filter by. Use `[None]` to match assets not assigned to any boundary.
             fields: Optional list of fields to retrieve. If None, all non-custom fields are retrieved.
 
         Yields:
@@ -177,8 +177,8 @@ class AssetsClient(BaseEntityClient):
         self,
         asset_class: type[AssetT],
         last_seen: datetime.datetime | datetime.timedelta | None = None,
-        site_ids: list[int] | None = None,
-        boundary_ids: list[int] | None = None,
+        site_ids: list[int | None] | None = None,
+        boundary_ids: list[int | None] | None = None,
         fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets matching multiple filter criteria simultaneously (AND logic).
@@ -189,8 +189,8 @@ class AssetsClient(BaseEntityClient):
         Args:
             asset_class: The asset class to list. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
             last_seen: Either a datetime (assets seen on or after this time) or timedelta (assets seen within this duration).
-            site_ids: A list of site IDs to filter by.
-            boundary_ids: A list of boundary IDs to filter by.
+            site_ids: A list of site IDs to filter by. Use `[None]` to match assets not assigned to any site.
+            boundary_ids: A list of boundary IDs to filter by. Use `[None]` to match assets not assigned to any boundary.
             fields: Optional list of fields to retrieve. If None, all non-custom fields are retrieved.
 
         Yields:
@@ -246,14 +246,14 @@ class AssetsClient(BaseEntityClient):
     async def list_by_site_id(
         self,
         asset_class: type[AssetT],
-        site_ids: list[int],
+        site_ids: list[int | None],
         fields: list[str] | None = None,
     ) -> AsyncIterator[AssetT]:
         """List assets by site ID.
 
         Args:
             asset_class: The asset class to list. Must inherit from [Asset][armis_sdk.entities.asset.Asset].
-            site_ids: A list of site IDs to filter by.
+            site_ids: A list of site IDs to filter by. Use `[None]` to match assets not assigned to any site.
             fields: Optional list of fields to retrieve. If None, all non-custom fields are retrieved.
 
         Yields:
@@ -390,7 +390,7 @@ class AssetsClient(BaseEntityClient):
                 raise BulkUpdateError(errors)
 
     @staticmethod
-    def _build_boundary_id_filter(boundary_ids: list[int]) -> dict:
+    def _build_boundary_id_filter(boundary_ids: list[int | None]) -> dict:
         if not boundary_ids:
             raise ArmisError("boundary_ids must not be empty")
         return {"filter_criteria": "BOUNDARY_ID", "boundary_ids": boundary_ids}
@@ -407,7 +407,7 @@ class AssetsClient(BaseEntityClient):
         return filter_
 
     @staticmethod
-    def _build_site_id_filter(site_ids: list[int]) -> dict:
+    def _build_site_id_filter(site_ids: list[int | None]) -> dict:
         if not site_ids:
             raise ArmisError("site_ids must not be empty")
         return {"filter_criteria": "SITE_ID", "site_ids": site_ids}

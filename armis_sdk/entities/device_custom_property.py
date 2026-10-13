@@ -52,7 +52,7 @@ class DeviceCustomProperty(BaseEntity):
     Example: `["s", "m", "l"]`
     """
 
-    created_by: str | None = Field(max_length=50, default=None)
+    created_by: str | None = Field(max_length=128, default=None)
     """Who / what created the property."""
 
     creation_time: datetime.datetime | None = Field(strict=False, default=None)

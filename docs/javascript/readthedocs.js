@@ -1,17 +1,15 @@
 // Based on https://docs.readthedocs.io/en/stable/intro/mkdocs.html
 
-document.addEventListener("DOMContentLoaded", function (event) {
-// Trigger Read the Docs' search addon instead of Material MkDocs default
-  document.querySelector(".md-search__input").addEventListener("focus", (e) => {
-    const event = new CustomEvent("readthedocs-search-show");
-    document.dispatchEvent(event);
-  });
+document.addEventListener('DOMContentLoaded', function (_event) {
+    // Trigger Read the Docs' search addon instead of Material MkDocs default
+    document.querySelector('.md-search__input').addEventListener('focus', (_e) => {
+        const event = new CustomEvent('readthedocs-search-show');
+        document.dispatchEvent(event);
+    });
 });
 
 // Use CustomEvent to generate the version selector
-document.addEventListener(
-  "readthedocs-addons-data-ready",
-  function (event) {
+document.addEventListener('readthedocs-addons-data-ready', function (event) {
     const config = event.detail.data();
     const versioning = `
 <div class="md-version">
@@ -20,14 +18,17 @@ document.addEventListener(
 </button>
 
 <ul class="md-version__list">
-${config.versions.active.map(
-      (version) => `
+${config.versions.active
+    .map(
+        (version) => `
     <li class="md-version__item">
     <a href="${version.urls.documentation}" class="md-version__link">
         ${version.slug}
     </a>
-            </li>`).join("\n")}
+            </li>`
+    )
+    .join('\n')}
 </ul>
 </div>`;
-    document.querySelector(".md-header__topic").insertAdjacentHTML("beforeend", versioning);
-  });
+    document.querySelector('.md-header__topic').insertAdjacentHTML('beforeend', versioning);
+});
