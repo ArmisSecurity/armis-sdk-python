@@ -8,25 +8,25 @@ nav:
       - Asset:
           - entities/asset/index.md
           - Device:
-            - entities/asset/device/index.md
-            - entities/asset/device/Boundary.md
-            - entities/asset/device/NetworkInterface.md
+              - entities/asset/device/index.md
+              - entities/asset/device/Boundary.md
+              - entities/asset/device/NetworkInterface.md
       - DataExport:
-        - entities/data_export/index.md
-        - Application: entities/data_export/Application.md
-        - RiskFactor: entities/data_export/RiskFactor.md
-        - Vulnerability: entities/data_export/Vulnerability.md
+          - entities/data_export/index.md
+          - Application: entities/data_export/Application.md
+          - RiskFactor: entities/data_export/RiskFactor.md
+          - Vulnerability: entities/data_export/Vulnerability.md
       - CollectorImage:
           - entities/collector_image/index.md
           - entities/collector_image/CollectorImageType.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
       - Site:
-        - entities/site/index.md
-        - entities/site/AsqRule.md
+          - entities/site/index.md
+          - entities/site/AsqRule.md
   - Clients:
       - AssetsClient:
-        - clients/assets_client/index.md
-        - clients/assets_client/AssetIdSource.md
+          - clients/assets_client/index.md
+          - clients/assets_client/AssetIdSource.md
       - CollectorsClient:
           - clients/collectors_client/index.md
           - clients/collectors_client/DownloadProgress.md
@@ -55,7 +55,7 @@ plugins:
       default_handler: python
       handlers:
         python:
-          paths: [ . ]
+          paths: [.]
           options:
             members_order: source
             show_bases: true
@@ -85,4 +85,4 @@ extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
-    - javascript/readthedocs.js
+  - javascript/readthedocs.js

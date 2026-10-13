@@ -11,20 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: ./.github/workflows/install_deps
+      - uses: ./.github/workflows/install_deps
 
-    - name: Run tests
-      run: poetry run pytest -vv
+      - name: Run tests
+        run: uv run pytest -vv
   mypy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: ./.github/workflows/install_deps
+      - uses: ./.github/workflows/install_deps
 
-    - name: Run mypy
-      run: poetry run mypy .
-
+      - name: Run mypy
+        run: uv run mypy .
