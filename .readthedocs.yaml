@@ -6,8 +6,8 @@ build:
     python: '3.9'
   jobs:
     post_install:
-      - pip install poetry
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with docs
+      - pip install uv
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --locked --active
 
 mkdocs:
   configuration: mkdocs.yml
