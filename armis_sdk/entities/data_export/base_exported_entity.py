@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import abc
 from collections.abc import Iterable
-from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import TypeVar
 
 import pandas

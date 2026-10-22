@@ -1,6 +1,5 @@
 import json
 from json import JSONDecodeError
-from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import TypeVar
 
 import httpx

@@ -3,7 +3,6 @@ from __future__ import annotations
 import contextlib
 from typing import IO
 from typing import TYPE_CHECKING
-from typing import Union
 
 import httpx
 import universalasync

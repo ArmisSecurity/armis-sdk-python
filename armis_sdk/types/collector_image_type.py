@@ -12,5 +12,6 @@ CollectorImageType = Literal[
     "RPM",
     "VHD",
     "VHDX",
+    "WINDOWS7_BROKER",
     "WINDOWS_BROKER",
 ]

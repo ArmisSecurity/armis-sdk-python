@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 from typing import ClassVar
-from typing import Optional
 from typing import TYPE_CHECKING
 
 from armis_sdk.entities.data_export.base_exported_entity import BaseExportedEntity

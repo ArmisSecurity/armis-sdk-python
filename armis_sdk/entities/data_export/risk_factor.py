@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import json
 from typing import ClassVar
-from typing import Optional
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel

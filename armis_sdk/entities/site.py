@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from typing import Annotated
 from typing import Any
-from typing import Optional
 
 from pydantic import BeforeValidator
 from pydantic import Field

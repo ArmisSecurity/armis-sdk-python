@@ -6,9 +6,7 @@ while interacting with the SDK.
 from __future__ import annotations
 
 import json
-from typing import Optional
 from typing import TYPE_CHECKING
-from typing import Union
 
 from pydantic import BaseModel
 

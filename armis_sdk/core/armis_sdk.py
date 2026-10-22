@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
