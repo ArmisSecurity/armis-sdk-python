@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import TYPE_CHECKING
 
 import universalasync

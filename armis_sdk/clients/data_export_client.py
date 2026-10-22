@@ -1,7 +1,6 @@
 import asyncio
 from collections.abc import AsyncIterator
 from typing import Any
-from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 
 import pandas
 import universalasync

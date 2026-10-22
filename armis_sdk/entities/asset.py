@@ -1,9 +1,7 @@
 import collections
 from typing import Any
 from typing import ClassVar
-from typing import DefaultDict  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import Literal
-from typing import Type  # noqa: UP035  # TODO: fix UP035 (deprecated import, use updated module)
 from typing import TypeVar
 
 from pydantic import Field

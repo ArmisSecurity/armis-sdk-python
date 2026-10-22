@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from armis_sdk.core.base_entity import BaseEntity
 
 

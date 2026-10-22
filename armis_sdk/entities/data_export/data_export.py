@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 from typing import Literal
-from typing import Optional
 
 from pydantic import BaseModel
 from pydantic import Field

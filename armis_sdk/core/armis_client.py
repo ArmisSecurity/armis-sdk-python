@@ -3,7 +3,6 @@ from __future__ import annotations
 import importlib.metadata
 import os
 import platform
-from typing import Optional
 from typing import TYPE_CHECKING
 from typing import TypeVar
 

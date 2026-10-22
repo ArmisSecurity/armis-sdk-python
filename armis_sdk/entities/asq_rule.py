@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-from typing import Union
-
 from pydantic import Field
 from pydantic import model_validator
 
