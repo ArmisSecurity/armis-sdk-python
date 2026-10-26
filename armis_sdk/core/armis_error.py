@@ -3,16 +3,10 @@ This module contains the various classes of errors that you may encounter
 while interacting with the SDK.
 """
 
-from __future__ import annotations
-
 import json
-from typing import TYPE_CHECKING
 
+from httpx import HTTPStatusError
 from pydantic import BaseModel
-
-
-if TYPE_CHECKING:
-    from httpx import HTTPStatusError
 
 
 class DetailItem(BaseModel):

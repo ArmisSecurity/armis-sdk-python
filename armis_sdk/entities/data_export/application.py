@@ -1,14 +1,10 @@
-from __future__ import annotations
-
 import datetime
 from typing import ClassVar
-from typing import TYPE_CHECKING
+from typing import Self
+
+import pandas
 
 from armis_sdk.entities.data_export.base_exported_entity import BaseExportedEntity
-
-
-if TYPE_CHECKING:
-    import pandas
 
 
 class Application(BaseExportedEntity):
@@ -56,8 +52,8 @@ class Application(BaseExportedEntity):
     """When the application was last seen on the device"""
 
     @classmethod
-    def series_to_model(cls, series: pandas.Series) -> Application:
-        return Application(
+    def series_to_model(cls, series: pandas.Series) -> Self:
+        return cls(
             device_id=cls._value_or_none(series.get("device_id")),
             vendor=cls._value_or_none(series.get("vendor")),
             name=cls._value_or_none(series.get("name")),

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import json
 from typing import Annotated
 from typing import Any
@@ -76,7 +74,7 @@ class Site(BaseEntity):
     integration_ids: Annotated[list[int] | None, BeforeValidator(ensure_list_of_ints)] = None
     """The ids of the integration associated with the site."""
 
-    children: list[Site] = Field(default_factory=list)
+    children: list["Site"] = Field(default_factory=list)
     """The sub-sites that are directly under this site
     (their `parent_id` will match this site's `id`)."""
 

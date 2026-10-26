@@ -1,7 +1,6 @@
-from __future__ import annotations
-
 import abc
 from collections.abc import Iterable
+from typing import Self
 from typing import TypeVar
 
 import pandas
@@ -14,7 +13,7 @@ T = TypeVar("T", bound="BaseExportedEntity")
 class BaseExportedEntity(BaseModel, abc.ABC):
     @classmethod
     @abc.abstractmethod
-    def series_to_model(cls: type[T], series: pandas.Series) -> T: ...
+    def series_to_model(cls, series: pandas.Series) -> Self: ...
 
     @property
     @abc.abstractmethod

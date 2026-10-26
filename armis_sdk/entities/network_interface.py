@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from armis_sdk.core.base_entity import BaseEntity
 
 

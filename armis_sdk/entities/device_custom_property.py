@@ -1,15 +1,9 @@
-from __future__ import annotations
-
+import datetime
 from typing import Literal
-from typing import TYPE_CHECKING
 
 from pydantic import Field
 
 from armis_sdk.core.base_entity import BaseEntity
-
-
-if TYPE_CHECKING:
-    import datetime
 
 
 class DeviceCustomProperty(BaseEntity):
