@@ -2,10 +2,10 @@ import collections
 from typing import Any
 from typing import ClassVar
 from typing import Literal
+from typing import Self
 from typing import TypeVar
 
 from pydantic import Field
-from typing_extensions import Self
 
 from armis_sdk.core.base_entity import BaseEntity
 

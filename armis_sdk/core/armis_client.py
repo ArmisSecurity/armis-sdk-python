@@ -1,10 +1,7 @@
-from __future__ import annotations
-
+from collections.abc import AsyncIterator
 import importlib.metadata
 import os
 import platform
-from typing import TYPE_CHECKING
-from typing import TypeVar
 
 import httpx
 from httpx_retries import Retry
@@ -14,10 +11,6 @@ import universalasync
 from armis_sdk.core import response_utils
 from armis_sdk.core.armis_auth import ArmisAuth
 from armis_sdk.core.client_credentials import ClientCredentials
-
-
-if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
 
 
 API_BASE_URL = "https://api.armis.com"
@@ -40,7 +33,6 @@ USER_AGENT_PARTS = [
     httpx.Client().headers.get("User-Agent"),
     f"ArmisPythonSDK/v{VERSION}",
 ]
-DataTypeT = TypeVar("DataTypeT", dict, list)
 
 
 @universalasync.wrap

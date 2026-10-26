@@ -1,17 +1,12 @@
-from __future__ import annotations
-
 import datetime
 import json
 from typing import ClassVar
-from typing import TYPE_CHECKING
+from typing import Self
 
+import pandas
 from pydantic import BaseModel
 
 from armis_sdk.entities.data_export.base_exported_entity import BaseExportedEntity
-
-
-if TYPE_CHECKING:
-    import pandas
 
 
 class RiskFactorRecommendedAction(BaseModel):
@@ -129,9 +124,9 @@ class RiskFactor(BaseExportedEntity):
     """
 
     @classmethod
-    def series_to_model(cls, series: pandas.Series) -> RiskFactor:
+    def series_to_model(cls, series: pandas.Series) -> Self:
         remediation_recommended_actions = series.get("remediation_recommended_actions")
-        return RiskFactor(
+        return cls(
             device_id=cls._value_or_none(series.get("device_id")),
             category=cls._value_or_none(series.get("category")),
             type=cls._value_or_none(series.get("type")),

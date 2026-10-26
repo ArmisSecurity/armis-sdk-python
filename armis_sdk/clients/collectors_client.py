@@ -1,8 +1,7 @@
-from __future__ import annotations
-
+from collections.abc import AsyncIterator
+from collections.abc import Generator
 import contextlib
 from typing import IO
-from typing import TYPE_CHECKING
 
 import httpx
 import universalasync
@@ -12,11 +11,6 @@ from armis_sdk.core.base_entity_client import BaseEntityClient
 from armis_sdk.entities.collector_image import CollectorImage
 from armis_sdk.entities.download_progress import DownloadProgress
 from armis_sdk.types.collector_image_type import CollectorImageType
-
-
-if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
-    from collections.abc import Generator
 
 
 @universalasync.wrap

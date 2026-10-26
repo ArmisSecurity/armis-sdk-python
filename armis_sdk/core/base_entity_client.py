@@ -1,15 +1,9 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from collections.abc import AsyncIterator
 
 import universalasync
 
 from armis_sdk.core.armis_client import ArmisClient
 from armis_sdk.core.base_entity import BaseEntityT
-
-
-if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
 
 
 class BaseEntityClient:

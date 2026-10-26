@@ -1,7 +1,5 @@
-from __future__ import annotations
-
+from collections.abc import AsyncIterator
 import datetime
-from typing import TYPE_CHECKING
 
 import universalasync
 
@@ -15,10 +13,6 @@ from armis_sdk.entities.asset import AssetT
 from armis_sdk.entities.asset_field_description import AssetFieldDescription
 from armis_sdk.entities.device import Device
 from armis_sdk.types.asset_id_source import AssetIdSource
-
-
-if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
 
 
 @universalasync.wrap
