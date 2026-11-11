@@ -123,6 +123,9 @@ class RiskFactor(BaseExportedEntity):
     **Example**: `Matching criteria met again`
     """
 
+    source: str | None = None
+    """The source of the risk factor"""
+
     @classmethod
     def series_to_model(cls, series: pandas.Series) -> Self:
         remediation_recommended_actions = series.get("remediation_recommended_actions")
@@ -146,4 +149,5 @@ class RiskFactor(BaseExportedEntity):
             status_update_time=cls._value_or_none(series.get("status_update_time")),
             status_updated_by_user_id=cls._value_or_none(series.get("status_updated_by_user_id")),
             status_update_reason=cls._value_or_none(series.get("status_update_reason")),
+            source=cls._value_or_none(series.get("source")),
         )

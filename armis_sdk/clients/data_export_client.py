@@ -15,11 +15,13 @@ from armis_sdk.entities.data_export.data_export import DataExport
 
 @universalasync.wrap
 class DataExportClient(BaseEntityClient):
-    async def disable(self, entity: type[BaseExportedEntity]):
+    async def disable(self, entity: type[BaseExportedEntity], time_frame_days: int | None = None):
         """Disable data export of the entity.
 
         Args:
             entity: The entity to disable exporting for.
+            time_frame_days: The size of the exported time window, in days. Omit to use the entity's default.
+                Each value is exported separately. See the API docs for the supported values per entity.
 
         Example:
             ```python linenums="1" hl_lines="9"
@@ -36,14 +38,33 @@ class DataExportClient(BaseEntityClient):
 
             asyncio.run(main())
             ```
-        """
-        await self.toggle(entity, False)
 
-    async def enable(self, entity: type[BaseExportedEntity]):
+        Example:
+            Each `time_frame_days` value is exported separately, so use the same value you passed to `enable()`:
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.data_export_client import DataExportClient
+            from armis_sdk.entities.data_export.application import Application
+
+
+            async def main():
+                data_export_client = DataExportClient()
+                await data_export_client.disable(Application, time_frame_days=7)
+
+
+            asyncio.run(main())
+            ```
+        """
+        await self.toggle(entity, False, time_frame_days)
+
+    async def enable(self, entity: type[BaseExportedEntity], time_frame_days: int | None = None):
         """Enable data export of the entity.
 
         Args:
             entity: The entity to enable exporting for.
+            time_frame_days: The size of the exported time window, in days. Omit to use the entity's default.
+                Each value is exported separately. See the API docs for the supported values per entity.
 
         Example:
             ```python linenums="1" hl_lines="9"
@@ -60,14 +81,33 @@ class DataExportClient(BaseEntityClient):
 
             asyncio.run(main())
             ```
-        """
-        await self.toggle(entity, True)
 
-    async def iterate(self, entity: type[T], **kwargs: Any) -> AsyncIterator[T]:
+        Example:
+            Each `time_frame_days` value is exported separately, so a 7 days export is enabled (and later read) independently from a 30 days one:
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.data_export_client import DataExportClient
+            from armis_sdk.entities.data_export.application import Application
+
+
+            async def main():
+                data_export_client = DataExportClient()
+                await data_export_client.enable(Application, time_frame_days=7)
+
+
+            asyncio.run(main())
+            ```
+        """
+        await self.toggle(entity, True, time_frame_days)
+
+    async def iterate(self, entity: type[T], time_frame_days: int | None = None, **kwargs: Any) -> AsyncIterator[T]:
         """Iterate over the exported data.
 
         Args:
             entity: The entity type to iterate over (must be a subclass of BaseExportedEntity).
+            time_frame_days: The size of the time window to iterate over, in days. Omit to use the entity's default.
+                Each value is exported separately. See the API docs for the supported values per entity.
             **kwargs: Additional keyword arguments to pass to [pandas.read_parquet()](https://pandas.pydata.org/docs/reference/api/pandas.read_parquet.html).
 
         Returns:
@@ -120,8 +160,26 @@ class DataExportClient(BaseEntityClient):
 
             asyncio.run(main())
             ```
+
+        Example:
+            To iterate over the export of a specific time window (it must have been enabled with the same value):
+            ```python linenums="1" hl_lines="9-10"
+            import asyncio
+
+            from armis_sdk.clients.data_export_client import DataExportClient
+            from armis_sdk.entities.data_export.application import Application
+
+
+            async def main():
+                data_export_client = DataExportClient()
+                async for row in data_export_client.iterate(Application, time_frame_days=7):
+                    print(row.device_id)
+
+
+            asyncio.run(main())
+            ```
         """
-        data_export = await self.get(entity)
+        data_export = await self.get(entity, time_frame_days)
         if not data_export.enabled:
             raise ArmisError("Data export is disabled for this entity, please enable it first.")
 
@@ -133,11 +191,13 @@ class DataExportClient(BaseEntityClient):
             for _, row in data_frame.iterrows():
                 yield entity.series_to_model(row)
 
-    async def get(self, entity: type[BaseExportedEntity]) -> DataExport:
+    async def get(self, entity: type[BaseExportedEntity], time_frame_days: int | None = None) -> DataExport:
         """Get the `DataExport` of the entity
 
         Args:
             entity: The entity to get the data for.
+            time_frame_days: The size of the exported time window, in days. Omit to use the entity's default.
+                Each value is exported separately. See the API docs for the supported values per entity.
 
         Returns:
             A `DataExport` object.
@@ -161,18 +221,42 @@ class DataExportClient(BaseEntityClient):
             ```python linenums="1"
             DataExport(...)
             ```
+
+        Example:
+            To get the export of a specific time window:
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.data_export_client import DataExportClient
+            from armis_sdk.entities.data_export.application import Application
+
+
+            async def main():
+                data_export_client = DataExportClient()
+                print(await data_export_client.get(Application, time_frame_days=7))
+
+
+            asyncio.run(main())
+            ```
+            Will output:
+            ```python linenums="1"
+            DataExport(...)
+            ```
         """
         async with self._armis_client.client() as client:
-            response = await client.get(f"/v3/data-export/{entity.entity_name}")
+            params = {"time_frame_days": time_frame_days} if time_frame_days is not None else None
+            response = await client.get(f"/v3/data-export/{entity.entity_name}", params=params)
             data = response_utils.get_data_dict(response)
             return DataExport.model_validate(data)
 
-    async def toggle(self, entity: type[BaseExportedEntity], enabled: bool):
+    async def toggle(self, entity: type[BaseExportedEntity], enabled: bool, time_frame_days: int | None = None):
         """Enable / disable export of an entity.
 
         Args:
             entity: The entity to enable/disable exporting for.
             enabled: The new value to set.
+            time_frame_days: The size of the exported time window, in days. Omit to use the entity's default.
+                Each value is exported separately. See the API docs for the supported values per entity.
 
         Raises:
             ResponseError: If an error occurs while communicating with the API.
@@ -192,8 +276,27 @@ class DataExportClient(BaseEntityClient):
 
             asyncio.run(main())
             ```
+
+        Example:
+            To toggle the export of a specific time window:
+            ```python linenums="1" hl_lines="9"
+            import asyncio
+
+            from armis_sdk.clients.data_export_client import DataExportClient
+            from armis_sdk.entities.data_export.application import Application
+
+
+            async def main():
+                data_export_client = DataExportClient()
+                await data_export_client.toggle(Application, True, time_frame_days=7)
+
+
+            asyncio.run(main())
+            ```
         """
-        data = {"enabled": enabled}
+        data: dict[str, Any] = {"enabled": enabled}
+        if time_frame_days is not None:
+            data["time_frame_days"] = time_frame_days
         async with self._armis_client.client() as client:
             response = await client.patch(f"/v3/data-export/{entity.entity_name}", json=data)
             response_utils.raise_for_status(response)

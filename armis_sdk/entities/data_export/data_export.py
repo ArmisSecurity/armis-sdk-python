@@ -25,3 +25,11 @@ class DataExport(BaseModel):
 
     urls_creation_time: datetime.datetime | None = Field(strict=False)
     """The creation time of the URLs."""
+
+    source_data_timestamp: datetime.datetime | None = Field(strict=False, default=None)
+    """
+    When the exported data was last refreshed at the source.
+
+    Differs from [`urls_creation_time`][armis_sdk.entities.data_export.data_export.DataExport.urls_creation_time],
+    which is when the export files themselves were produced.
+    """

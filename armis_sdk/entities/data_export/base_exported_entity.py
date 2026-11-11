@@ -25,7 +25,7 @@ class BaseExportedEntity(BaseModel, abc.ABC):
 
     @classmethod
     def _value_or_none(cls, value):
-        if not value or pandas.isna(value) or value == "N/A":
+        if value is None or value in ("", "N/A") or pandas.isna(value):
             return None
 
         if isinstance(value, pandas.Timestamp):

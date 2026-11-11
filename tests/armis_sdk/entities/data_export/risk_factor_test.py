@@ -34,6 +34,7 @@ def test_series_to_model():
             "status_update_time": pandas.Timestamp.fromisoformat("2025-11-03"),
             "status_updated_by_user_id": 3,
             "status_update_reason": "reason1",
+            "source": "source1",
         },
     )
 
@@ -60,6 +61,7 @@ def test_series_to_model():
         status_update_time=datetime.datetime(2025, 11, 3),
         status_updated_by_user_id=3,
         status_update_reason="reason1",
+        source="source1",
     )
 
 
@@ -82,4 +84,5 @@ def test_series_to_model_empty():
         status_update_time=None,
         status_updated_by_user_id=None,
         status_update_reason=None,
+        source=None,
     )
