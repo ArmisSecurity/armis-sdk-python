@@ -5,6 +5,7 @@ repo_url: https://github.com/ArmisSecurity/armis-sdk-python
 nav:
   - Getting started: index.md
   - Entities:
+      - ArpUploadResult: entities/ArpUploadResult.md
       - Asset:
           - entities/asset/index.md
           - Device:
@@ -24,6 +25,7 @@ nav:
           - entities/site/index.md
           - entities/site/AsqRule.md
   - Clients:
+      - ArpsClient: clients/ArpsClient.md
       - AssetsClient:
           - clients/assets_client/index.md
           - clients/assets_client/AssetIdSource.md
