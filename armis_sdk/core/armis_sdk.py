@@ -3,6 +3,7 @@ from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
 from armis_sdk.clients.device_custom_properties_client import DeviceCustomPropertiesClient
+from armis_sdk.clients.policies_client import PoliciesClient
 from armis_sdk.clients.sites_client import SitesClient
 from armis_sdk.core.armis_client import ArmisClient
 from armis_sdk.core.client_credentials import ClientCredentials
@@ -20,6 +21,7 @@ class ArmisSdk:
         collectors (CollectorsClient): An instance of [CollectorsClient][armis_sdk.clients.collectors_client.CollectorsClient]
         data_export (DataExportClient): An instance of [DataExportClient][armis_sdk.clients.data_export_client.DataExportClient]
         device_custom_properties (DeviceCustomPropertiesClient): An instance of [DeviceCustomPropertiesClient][armis_sdk.clients.device_custom_properties_client.DeviceCustomPropertiesClient]
+        policies (PoliciesClient): An instance of [PoliciesClient][armis_sdk.clients.policies_client.PoliciesClient]
         sites (SitesClient): An instance of [SitesClient][armis_sdk.clients.sites_client.SitesClient]
 
     Example:
@@ -47,4 +49,5 @@ class ArmisSdk:
         self.collectors: CollectorsClient = CollectorsClient(self.client)
         self.data_export: DataExportClient = DataExportClient(self.client)
         self.device_custom_properties: DeviceCustomPropertiesClient = DeviceCustomPropertiesClient(self.client)
+        self.policies: PoliciesClient = PoliciesClient(self.client)
         self.sites: SitesClient = SitesClient(self.client)
