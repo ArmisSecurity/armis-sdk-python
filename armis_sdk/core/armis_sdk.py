@@ -1,3 +1,4 @@
+from armis_sdk.clients.alerts_client import AlertsClient
 from armis_sdk.clients.arps_client import ArpsClient
 from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.clients.collectors_client import CollectorsClient
@@ -16,6 +17,7 @@ class ArmisSdk:
 
     Attributes:
         client (ArmisClient): An instance of [ArmisClient][armis_sdk.core.armis_client.ArmisClient]
+        alerts (AlertsClient): An instance of [AlertsClient][armis_sdk.clients.alerts_client.AlertsClient]
         arps (ArpsClient): An instance of [ArpsClient][armis_sdk.clients.arps_client.ArpsClient]
         assets (AssetsClient): An instance of [AssetsClient][armis_sdk.clients.assets_client.AssetsClient]
         collectors (CollectorsClient): An instance of [CollectorsClient][armis_sdk.clients.collectors_client.CollectorsClient]
@@ -44,6 +46,7 @@ class ArmisSdk:
 
     def __init__(self, credentials: ClientCredentials | None = None):
         self.client: ArmisClient = ArmisClient(credentials=credentials)
+        self.alerts: AlertsClient = AlertsClient(self.client)
         self.arps: ArpsClient = ArpsClient(self.client)
         self.assets: AssetsClient = AssetsClient(self.client)
         self.collectors: CollectorsClient = CollectorsClient(self.client)
