@@ -15,6 +15,9 @@ nav:
       - DataExport:
           - entities/data_export/index.md
           - Application: entities/data_export/Application.md
+          - DeviceDeleteEvent: entities/data_export/DeviceDeleteEvent.md
+          - DeviceMergeEvent: entities/data_export/DeviceMergeEvent.md
+          - IpConnection: entities/data_export/IpConnection.md
           - RiskFactor: entities/data_export/RiskFactor.md
           - Vulnerability: entities/data_export/Vulnerability.md
       - CollectorImage:

@@ -115,3 +115,52 @@ async def test_iterate(mock_read_parquet: mock.MagicMock, httpx_mock: pytest_htt
         ],
         any_order=False,
     )
+
+
+async def test_enable_with_time_frame_days(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/data-export/mock-entity",
+        method="PATCH",
+        match_json={"enabled": True, "time_frame_days": 7},
+    )
+
+    await DataExportClient().enable(MockEntity, time_frame_days=7)
+
+
+async def test_disable_with_time_frame_days(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/data-export/mock-entity",
+        method="PATCH",
+        match_json={"enabled": False, "time_frame_days": 7},
+    )
+
+    await DataExportClient().disable(MockEntity, time_frame_days=7)
+
+
+async def test_get_with_time_frame_days(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/data-export/mock-entity?time_frame_days=7",
+        json={
+            "enabled": True,
+            "urls": ["url1"],
+            "urls_creation_time": "2025-09-08T00:00:00",
+            "source_data_timestamp": "2025-09-07T00:00:00",
+        },
+    )
+
+    result = await DataExportClient().get(MockEntity, time_frame_days=7)
+
+    assert result.source_data_timestamp == datetime.datetime(2025, 9, 7)
+
+
+@mock.patch.object(pandas, "read_parquet")
+async def test_iterate_with_time_frame_days(mock_read_parquet: mock.MagicMock, httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/data-export/mock-entity?time_frame_days=7",
+        json={"enabled": True, "urls": ["url1"], "urls_creation_time": "2025-09-08T00:00:00"},
+    )
+    mock_read_parquet.return_value = pandas.DataFrame([{"name": "a", "description": "b"}])
+
+    rows = [row async for row in DataExportClient().iterate(MockEntity, time_frame_days=7)]
+
+    assert rows == [MockEntity(name="a", description="b")]
