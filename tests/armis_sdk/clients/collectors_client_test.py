@@ -1,9 +1,11 @@
 import datetime
+import ipaddress
 import tempfile
 
 import pytest_httpx
 
 from armis_sdk.clients.collectors_client import CollectorsClient
+from armis_sdk.entities.collector import Collector
 from armis_sdk.entities.collector_image import CollectorImage
 from armis_sdk.entities.download_progress import DownloadProgress
 
@@ -111,3 +113,43 @@ async def test_download_image_to_file(httpx_mock: pytest_httpx.HTTPXMock):
         ]
         temp_file.seek(0)
         assert temp_file.read() == b"a" * 16384 + b"b" * 16384 + b"c" * 16383
+
+
+async def test_get(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/collectors/1",
+        json={
+            "collector_number": 1,
+            "name": "mock_collector",
+            "status": "Active",
+            "type": "Virtual",
+            "ip_address": "10.0.0.1",
+            "subnet": "10.0.0.5/24",
+            "default_gateway": "10.0.0.254",
+            "last_seen": "2025-12-10T00:00:00",
+        },
+    )
+
+    collector = await CollectorsClient().get(1)
+
+    assert collector == Collector(
+        collector_number=1,
+        name="mock_collector",
+        status="Active",
+        type="Virtual",
+        ip_address=ipaddress.IPv4Address("10.0.0.1"),
+        subnet=ipaddress.IPv4Network("10.0.0.0/24"),
+        default_gateway=ipaddress.IPv4Address("10.0.0.254"),
+        last_seen=datetime.datetime(2025, 12, 10),
+    )
+
+
+async def test_list(httpx_mock: pytest_httpx.HTTPXMock):
+    httpx_mock.add_response(
+        url="https://api.armis.com/v3/collectors?limit=100",
+        json={"items": [{"collector_number": 1, "name": "a"}, {"collector_number": 2, "name": "b"}], "next": None},
+    )
+
+    collectors = [collector async for collector in CollectorsClient().list()]
+
+    assert collectors == [Collector(collector_number=1, name="a"), Collector(collector_number=2, name="b")]
