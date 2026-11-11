@@ -23,6 +23,7 @@ nav:
       - CollectorImage:
           - entities/collector_image/index.md
           - entities/collector_image/CollectorImageType.md
+      - Collector: entities/Collector.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
       - Policy:
           - entities/policy/index.md

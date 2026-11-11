@@ -8,6 +8,7 @@ import universalasync
 
 from armis_sdk.core import response_utils
 from armis_sdk.core.base_entity_client import BaseEntityClient
+from armis_sdk.entities.collector import Collector
 from armis_sdk.entities.collector_image import CollectorImage
 from armis_sdk.entities.download_progress import DownloadProgress
 from armis_sdk.types.collector_image_type import CollectorImageType
@@ -18,7 +19,8 @@ class CollectorsClient(BaseEntityClient):
     """
     A client for interacting with Armis collectors.
 
-    The primary entity for this client is [CollectorImage][armis_sdk.entities.collector_image.CollectorImage].
+    The primary entities for this client are [Collector][armis_sdk.entities.collector.Collector] and
+    [CollectorImage][armis_sdk.entities.collector_image.CollectorImage].
     """
 
     async def download_image(
@@ -75,6 +77,39 @@ class CollectorsClient(BaseEntityClient):
                         file.write(chunk)
                         yield DownloadProgress(downloaded=file.tell(), total=total_size)
 
+    async def get(self, collector_number: int) -> Collector:
+        """Get a `Collector` by its number.
+
+        Args:
+            collector_number: The number of the collector to get.
+
+        Returns:
+            A `Collector` object.
+
+        Example:
+            ```python linenums="1" hl_lines="8"
+            import asyncio
+
+            from armis_sdk.clients.collectors_client import CollectorsClient
+
+
+            async def main():
+                collectors_client = CollectorsClient()
+                print(await collectors_client.get(1))
+
+
+            asyncio.run(main())
+            ```
+            Will output:
+            ```python linenums="1"
+            Collector(collector_number=1, name="...", ...)
+            ```
+        """
+        async with self._armis_client.client() as client:
+            response = await client.get(f"/v3/collectors/{collector_number}")
+            data = response_utils.get_data_dict(response)
+            return Collector.model_validate(data)
+
     async def get_image(self, image_type: CollectorImageType = "OVA") -> CollectorImage:
         """Get collector image information including download URL and credentials.
 
@@ -107,6 +142,37 @@ class CollectorsClient(BaseEntityClient):
             response = await client.get("/v3/collectors/_image", params={"image_type": image_type})
             data = response_utils.get_data_dict(response)
             return CollectorImage.model_validate(data)
+
+    async def list(self) -> AsyncIterator[Collector]:
+        """List all the tenant's collectors.
+        This method takes care of pagination, so you don't have to deal with it.
+
+        Returns:
+            An (async) iterator of `Collector` object.
+
+        Example:
+            ```python linenums="1" hl_lines="8"
+            import asyncio
+
+            from armis_sdk.clients.collectors_client import CollectorsClient
+
+
+            async def main():
+                collectors_client = CollectorsClient()
+                async for collector in collectors_client.list():
+                    print(collector)
+
+
+            asyncio.run(main())
+            ```
+            Will output:
+            ```python linenums="1"
+            Collector(collector_number=1, name="...", ...)
+            Collector(collector_number=2, name="...", ...)
+            ```
+        """
+        async for item in self._list("/v3/collectors", Collector):
+            yield item
 
     @classmethod
     @contextlib.contextmanager
