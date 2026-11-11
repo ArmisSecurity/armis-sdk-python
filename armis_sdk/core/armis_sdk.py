@@ -1,3 +1,4 @@
+from armis_sdk.clients.arps_client import ArpsClient
 from armis_sdk.clients.assets_client import AssetsClient
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
@@ -14,6 +15,7 @@ class ArmisSdk:
 
     Attributes:
         client (ArmisClient): An instance of [ArmisClient][armis_sdk.core.armis_client.ArmisClient]
+        arps (ArpsClient): An instance of [ArpsClient][armis_sdk.clients.arps_client.ArpsClient]
         assets (AssetsClient): An instance of [AssetsClient][armis_sdk.clients.assets_client.AssetsClient]
         collectors (CollectorsClient): An instance of [CollectorsClient][armis_sdk.clients.collectors_client.CollectorsClient]
         data_export (DataExportClient): An instance of [DataExportClient][armis_sdk.clients.data_export_client.DataExportClient]
@@ -40,6 +42,7 @@ class ArmisSdk:
 
     def __init__(self, credentials: ClientCredentials | None = None):
         self.client: ArmisClient = ArmisClient(credentials=credentials)
+        self.arps: ArpsClient = ArpsClient(self.client)
         self.assets: AssetsClient = AssetsClient(self.client)
         self.collectors: CollectorsClient = CollectorsClient(self.client)
         self.data_export: DataExportClient = DataExportClient(self.client)
