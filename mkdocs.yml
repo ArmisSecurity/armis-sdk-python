@@ -24,6 +24,9 @@ nav:
           - entities/collector_image/index.md
           - entities/collector_image/CollectorImageType.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
+      - Policy:
+          - entities/policy/index.md
+          - entities/policy/PolicyAction.md
       - Site:
           - entities/site/index.md
           - entities/site/AsqRule.md
@@ -37,6 +40,7 @@ nav:
           - clients/collectors_client/DownloadProgress.md
       - DataExportClient: clients/DataExportClient.md
       - DeviceCustomPropertiesClient: clients/DeviceCustomPropertiesClient.md
+      - PoliciesClient: clients/PoliciesClient.md
       - SitesClient: clients/SitesClient.md
   - Core:
       - ArmisClient: core/ArmisClient.md
