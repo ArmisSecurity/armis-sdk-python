@@ -7,6 +7,8 @@ from armis_sdk.core.base_entity import BaseEntityT
 
 
 class BaseEntityClient:
+    """A base class for clients that manage a specific entity, sharing one `ArmisClient`."""
+
     def __init__(self, armis_client: ArmisClient | None = None) -> None:
         self._armis_client = armis_client or ArmisClient()
 

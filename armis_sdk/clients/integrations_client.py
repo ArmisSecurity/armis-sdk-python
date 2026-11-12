@@ -28,7 +28,7 @@ class IntegrationsClient(BaseEntityClient):
             integration: The integration to create.
 
         Returns:
-            The created integration, including its id.
+            The created integration, including its ID.
 
         Example:
             ```python linenums="1" hl_lines="14"
@@ -143,7 +143,7 @@ class IntegrationsClient(BaseEntityClient):
         This method takes care of pagination, so you don't have to deal with it.
 
         Returns:
-            An (async) iterator of `Integration` object.
+            An (async) iterator of `Integration` objects.
 
         Example:
             ```python linenums="1" hl_lines="8"
@@ -188,10 +188,10 @@ class IntegrationsClient(BaseEntityClient):
             broker_ids: Only include integrations associated with these broker IDs.
 
         Returns:
-            An (async) iterator of `Integration` object.
+            An (async) iterator of `Integration` objects.
 
         Raises:
-            ArmisError: If no criteria was given.
+            ArmisError: If no criteria were given.
 
         Example:
             ```python linenums="1" hl_lines="8"

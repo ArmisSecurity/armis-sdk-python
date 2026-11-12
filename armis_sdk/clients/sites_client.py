@@ -23,10 +23,9 @@ class SitesClient(BaseEntityClient):
             site: The site to create.
 
         Returns:
-            The same site as the input with the addition of id.
+            The created `Site`, as returned by the API, including its ID.
 
         Example:
-            Example:
             ```python linenums="1" hl_lines="10"
             import asyncio
 
@@ -69,7 +68,6 @@ class SitesClient(BaseEntityClient):
             site: The site to delete.
 
         Example:
-            Example:
             ```python linenums="1" hl_lines="10"
             import asyncio
 
@@ -103,7 +101,6 @@ class SitesClient(BaseEntityClient):
             A `Site` object.
 
         Example:
-            Example:
             ```python linenums="1" hl_lines="8"
             import asyncio
 
@@ -112,7 +109,7 @@ class SitesClient(BaseEntityClient):
 
             async def main():
                 sites_client = SitesClient()
-                print(await sites_client.get("1"))
+                print(await sites_client.get(1))
 
 
             asyncio.run(main())
@@ -131,7 +128,7 @@ class SitesClient(BaseEntityClient):
         """Create a hierarchy of the tenant's sites, taking into account the parent-child relationships.
 
         Returns:
-            A list of `Site` objects, that are themselves not children of any other site.
+            A list of `Site` objects that are not children of any other site.
             Each site has a `.children` property that includes its direct children.
 
         Example:
@@ -176,7 +173,7 @@ class SitesClient(BaseEntityClient):
         This method takes care of pagination, so you don't have to deal with it.
 
         Returns:
-            An (async) iterator of `Site` object.
+            An (async) iterator of `Site` objects.
 
         Example:
             ```python linenums="1" hl_lines="8"
@@ -187,8 +184,9 @@ class SitesClient(BaseEntityClient):
 
             async def main():
                 sites_client = SitesClient()
-                async for site in sites_client.list()
+                async for site in sites_client.list():
                     print(site)
+
 
             asyncio.run(main())
             ```
@@ -206,6 +204,9 @@ class SitesClient(BaseEntityClient):
 
         Args:
             site: The site to update.
+
+        Returns:
+            The updated `Site`. If the input has nothing to update, it is returned unchanged.
 
         Raises:
             ResponseError: If an error occurs while communicating with the API.

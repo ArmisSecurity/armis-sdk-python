@@ -23,7 +23,7 @@ class ArpsClient(BaseEntityClient):
         expiration: datetime.datetime,
         network_id: str,
     ) -> ArpUploadResult:
-        """Upload a CSV of IP / MAC matches as user ARP records.
+        """Upload a CSV of IP/MAC matches as user ARP records.
 
         Args:
             file: The path to (or a file-like object of) a CSV file with the columns `ip,mac`.

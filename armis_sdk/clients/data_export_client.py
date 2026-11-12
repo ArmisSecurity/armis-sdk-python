@@ -83,7 +83,7 @@ class DataExportClient(BaseEntityClient):
             ```
 
         Example:
-            Each `time_frame_days` value is exported separately, so a 7 days export is enabled (and later read) independently from a 30 days one:
+            Each `time_frame_days` value is exported separately, so a 7-day export is enabled (and later read) independently from a 30-day one:
             ```python linenums="1" hl_lines="9"
             import asyncio
 
@@ -192,7 +192,7 @@ class DataExportClient(BaseEntityClient):
                 yield entity.series_to_model(row)
 
     async def get(self, entity: type[BaseExportedEntity], time_frame_days: int | None = None) -> DataExport:
-        """Get the `DataExport` of the entity
+        """Get the `DataExport` of the entity.
 
         Args:
             entity: The entity to get the data for.
@@ -250,10 +250,10 @@ class DataExportClient(BaseEntityClient):
             return DataExport.model_validate(data)
 
     async def toggle(self, entity: type[BaseExportedEntity], enabled: bool, time_frame_days: int | None = None):
-        """Enable / disable export of an entity.
+        """Enable or disable export of an entity.
 
         Args:
-            entity: The entity to enable/disable exporting for.
+            entity: The entity to enable or disable exporting for.
             enabled: The new value to set.
             time_frame_days: The size of the exported time window, in days. Omit to use the entity's default.
                 Each value is exported separately. See the API docs for the supported values per entity.

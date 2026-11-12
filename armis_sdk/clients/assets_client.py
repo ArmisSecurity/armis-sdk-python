@@ -318,8 +318,8 @@ class AssetsClient(BaseEntityClient):
 
         Args:
             assets: A list of assets. Items must inherit from [Asset][armis_sdk.entities.asset.Asset].
-            fields: A list of fields to update. Currently only custom properties are supported (i.e.  `custom.MyField`).
-            asset_id_source: From where on the asset to take the unique identifier.
+            fields: A list of fields to update. Currently only custom properties are supported (e.g. `custom.MyField`).
+            asset_id_source: Which identifier on the asset to use as its unique identifier.
 
         Raises:
             BulkUpdateError: If an error occurs while trying to update any of the assets.

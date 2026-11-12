@@ -19,7 +19,7 @@ class PoliciesClient(BaseEntityClient):
         This method takes care of pagination, so you don't have to deal with it.
 
         Returns:
-            An (async) iterator of `Policy` object.
+            An (async) iterator of `Policy` objects.
 
         Example:
             ```python linenums="1" hl_lines="8"
