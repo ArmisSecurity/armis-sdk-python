@@ -68,7 +68,7 @@ wheels = [
 
 [[package]]
 name = "armis-sdk"
-version = "2.0.0"
+version = "2.1.0"
 source = { editable = "." }
 default-groups = ["build", "dev", "docs"]
 dependencies = [
