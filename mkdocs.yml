@@ -31,6 +31,10 @@ nav:
           - entities/collector_image/CollectorImageType.md
       - Collector: entities/Collector.md
       - DeviceCustomProperty: entities/DeviceCustomProperty.md
+      - Integration:
+          - entities/integration/index.md
+          - entities/integration/IntegrationCycleStatistics.md
+          - entities/integration/IntegrationStatistics.md
       - Policy:
           - entities/policy/index.md
           - entities/policy/PolicyAction.md
@@ -49,6 +53,7 @@ nav:
           - clients/collectors_client/DownloadProgress.md
       - DataExportClient: clients/DataExportClient.md
       - DeviceCustomPropertiesClient: clients/DeviceCustomPropertiesClient.md
+      - IntegrationsClient: clients/IntegrationsClient.md
       - PoliciesClient: clients/PoliciesClient.md
       - SitesClient: clients/SitesClient.md
   - Core:
