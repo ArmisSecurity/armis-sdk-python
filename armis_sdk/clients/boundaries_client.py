@@ -23,7 +23,7 @@ class BoundariesClient(BaseEntityClient):
             boundary: The boundary to create.
 
         Returns:
-            The created boundary, including its id.
+            The created boundary, including its ID.
 
         Example:
             ```python linenums="1" hl_lines="11"
@@ -129,7 +129,7 @@ class BoundariesClient(BaseEntityClient):
         This method takes care of pagination, so you don't have to deal with it.
 
         Returns:
-            An (async) iterator of `Boundary` object.
+            An (async) iterator of `Boundary` objects.
 
         Example:
             ```python linenums="1" hl_lines="8"
@@ -157,7 +157,7 @@ class BoundariesClient(BaseEntityClient):
 
     async def update(self, boundary: Boundary) -> Boundary:
         """Update a boundary's properties.
-        Only the `name`, `asq_rule` and `site_ids` fields are updatable.
+        Only `name`, `asq_rule` and `site_ids` fields are updatable.
 
         Args:
             boundary: The boundary to update.

@@ -28,14 +28,14 @@ class CollectorsClient(BaseEntityClient):
         destination: str | IO[bytes],
         image_type: CollectorImageType = "OVA",
     ) -> AsyncIterator[DownloadProgress]:
-        """Download a collector image to a specified destination path / file.
+        """Download a collector image to a specified destination path or file.
 
         Args:
             destination: The file path or file-like object where the collector image will be saved.
             image_type: The type of collector image to download. Defaults to "OVA".
 
         Returns:
-            An (async) iterator of `DownloadProgress` object.
+            An (async) iterator of `DownloadProgress` objects.
 
         Example:
             ```python linenums="1" hl_lines="10 15"
@@ -148,7 +148,7 @@ class CollectorsClient(BaseEntityClient):
         This method takes care of pagination, so you don't have to deal with it.
 
         Returns:
-            An (async) iterator of `Collector` object.
+            An (async) iterator of `Collector` objects.
 
         Example:
             ```python linenums="1" hl_lines="8"

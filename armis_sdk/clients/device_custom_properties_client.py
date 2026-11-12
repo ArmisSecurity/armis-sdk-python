@@ -24,7 +24,7 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
             property_: The `DeviceCustomProperty` to create.
 
         Returns:
-            The same property as the input with the addition of id.
+            The created `DeviceCustomProperty`, as returned by the API, including its ID.
 
         Example:
             Example:
@@ -132,11 +132,11 @@ class DeviceCustomPropertiesClient(BaseEntityClient):
             return DeviceCustomProperty.model_validate(data)
 
     async def list(self) -> AsyncIterator[DeviceCustomProperty]:
-        """List all the tenant's `DeviceCustomProperty`s.
+        """List all the tenant's device custom properties.
         This method takes care of pagination, so you don't have to deal with it.
 
         Returns:
-            An (async) iterator of `DeviceCustomProperty` object.
+            An (async) iterator of `DeviceCustomProperty` objects.
 
         Example:
             ```python linenums="1" hl_lines="8"

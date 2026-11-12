@@ -10,6 +10,8 @@ from pydantic import BaseModel
 
 
 class DetailItem(BaseModel):
+    """A single validation problem reported by the API."""
+
     loc: list[str | int]
     msg: str
     type: str
@@ -19,6 +21,8 @@ class DetailItem(BaseModel):
 
 
 class ErrorBody(BaseModel):
+    """The parsed body of an error response from the API."""
+
     detail: str | list[DetailItem]
 
 
@@ -29,12 +33,19 @@ class ArmisError(Exception):
 
 
 class BulkUpdateItemError(BaseModel):
+    """A single item that failed as part of a bulk update."""
+
     index: int
     request: dict
     response: dict
 
 
 class BulkUpdateError(ArmisError):
+    """
+    A class for errors raised when one or more items in a bulk update were rejected.
+    The failed items are available in the `items` attribute.
+    """
+
     def __init__(self, items: list[BulkUpdateItemError]):
         self.items = items
         display = "\n".join(
