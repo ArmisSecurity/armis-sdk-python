@@ -1,6 +1,7 @@
 from armis_sdk.clients.alerts_client import AlertsClient
 from armis_sdk.clients.arps_client import ArpsClient
 from armis_sdk.clients.assets_client import AssetsClient
+from armis_sdk.clients.boundaries_client import BoundariesClient
 from armis_sdk.clients.collectors_client import CollectorsClient
 from armis_sdk.clients.data_export_client import DataExportClient
 from armis_sdk.clients.device_custom_properties_client import DeviceCustomPropertiesClient
@@ -20,6 +21,7 @@ class ArmisSdk:
         alerts (AlertsClient): An instance of [AlertsClient][armis_sdk.clients.alerts_client.AlertsClient]
         arps (ArpsClient): An instance of [ArpsClient][armis_sdk.clients.arps_client.ArpsClient]
         assets (AssetsClient): An instance of [AssetsClient][armis_sdk.clients.assets_client.AssetsClient]
+        boundaries (BoundariesClient): An instance of [BoundariesClient][armis_sdk.clients.boundaries_client.BoundariesClient]
         collectors (CollectorsClient): An instance of [CollectorsClient][armis_sdk.clients.collectors_client.CollectorsClient]
         data_export (DataExportClient): An instance of [DataExportClient][armis_sdk.clients.data_export_client.DataExportClient]
         device_custom_properties (DeviceCustomPropertiesClient): An instance of [DeviceCustomPropertiesClient][armis_sdk.clients.device_custom_properties_client.DeviceCustomPropertiesClient]
@@ -49,6 +51,7 @@ class ArmisSdk:
         self.alerts: AlertsClient = AlertsClient(self.client)
         self.arps: ArpsClient = ArpsClient(self.client)
         self.assets: AssetsClient = AssetsClient(self.client)
+        self.boundaries: BoundariesClient = BoundariesClient(self.client)
         self.collectors: CollectorsClient = CollectorsClient(self.client)
         self.data_export: DataExportClient = DataExportClient(self.client)
         self.device_custom_properties: DeviceCustomPropertiesClient = DeviceCustomPropertiesClient(self.client)

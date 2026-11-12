@@ -43,6 +43,7 @@ nav:
       - AssetsClient:
           - clients/assets_client/index.md
           - clients/assets_client/AssetIdSource.md
+      - BoundariesClient: clients/BoundariesClient.md
       - CollectorsClient:
           - clients/collectors_client/index.md
           - clients/collectors_client/DownloadProgress.md
